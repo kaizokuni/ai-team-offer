@@ -74,6 +74,7 @@ section { display: grid; gap: 0.9rem; }
 .included { background: var(--ink); color: var(--bg); border-radius: 14px; padding: 1.4rem 1.4rem 1.5rem; display: grid; gap: 1rem; }
 .included h2 { color: var(--bg); }
 .promises { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: 1rem 1.4rem; }
+.promises div:first-child { grid-column: 1 / -1; }
 .promises div { display: grid; gap: 0.25rem; border-top: 2px solid var(--accent); padding-top: 0.7rem; }
 .promises b { font: 600 1rem/1.3 var(--display); }
 .promises p { opacity: 0.8; font-size: 0.95rem; }
@@ -225,7 +226,8 @@ const T = {
     extras: "Options", careName: "Maintenance", careDesc: "Peace of mind: we keep your team running, fix anything that breaks and improve it as your store grows. 4 hours of changes a month included, then €25 an hour.",
     winName: "Windows PC", winDesc: "Your computer is a Windows PC? We adapt the setup for it, once.", perMonthShort: "/ month", once: "once",
     incTitle: "Included in every package",
-    promises: [["Guarantee, 30 days", "Once your team is running, anything that does not work as described here is fixed free of charge."],
+    promises: [["Customized to your workflow", "Your team follows the way you already work: your tone with customers, your rules, your products, your approval steps. We adapt each agent to your store, not the other way around."],
+               ["Guarantee, 30 days", "Once your team is running, anything that does not work as described here is fixed free of charge."],
                ["Your accounts stay yours", "You never give us a password. Your access codes stay locked on your own computer, and you can cut any access in one click."],
                ["Tested before handover", "We test every agent and every connection live with you before the team is yours."],
                ["You stay in control", "Nothing is sent, published or paid without your yes. You can cancel any key or our access at any time."]],
@@ -248,7 +250,8 @@ const T = {
     extras: "Options", careName: "Maintenance", careDesc: "L'esprit tranquille : nous gardons votre équipe en marche, réparons ce qui casse et l'améliorons à mesure que votre boutique grandit. 4 heures de modifications par mois incluses, puis 25 € de l'heure.",
     winName: "PC Windows", winDesc: "Votre ordinateur est un PC Windows ? Nous adaptons l'installation, une seule fois.", perMonthShort: "/ mois", once: "une fois",
     incTitle: "Inclus dans chaque formule",
-    promises: [["Garantie 30 jours", "Une fois votre équipe en marche, tout ce qui ne fonctionne pas comme décrit ici est corrigé gratuitement."],
+    promises: [["Adaptée à votre façon de travailler", "Votre équipe suit votre façon de faire : votre ton avec les clients, vos règles, vos produits, vos étapes de validation. Nous adaptons chaque agent à votre boutique, pas l'inverse."],
+               ["Garantie 30 jours", "Une fois votre équipe en marche, tout ce qui ne fonctionne pas comme décrit ici est corrigé gratuitement."],
                ["Vos comptes restent à vous", "Vous ne nous donnez jamais de mot de passe. Vos codes d'accès restent verrouillés sur votre propre ordinateur, et vous pouvez couper un accès en un clic."],
                ["Testé avant la remise", "Nous testons chaque agent et chaque connexion en direct avec vous avant de vous remettre l'équipe."],
                ["Vous gardez la main", "Rien n'est envoyé, publié ou payé sans votre accord. Vous pouvez annuler une clé ou notre accès à tout moment."]],
