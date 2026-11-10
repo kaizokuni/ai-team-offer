@@ -3,307 +3,411 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>AI Team Offer</title>
+<meta name="description" content="Your own AI team for your online store, installed on your computer. It works, you approve.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@500;600&display=swap">
 <style>
-/* Layout: everything the package holds on the left, one price card on the right (a bottom bar on phones). */
+/* Layout: a single-column sales letter. Pain, mechanism shown as a real-looking approval message, the team, the guarantee, then the price alone, objections, and one request form. */
 :root {
   --bg: #eef3f2; --surface: #ffffff; --ink: #10211f; --muted: #536965; --line: #d3dfdc;
-  --accent: #0a7a62; --accent-ink: #ffffff; --accent-soft: #dcefe9; --chip: #f4f8f7;
+  --accent: #0a7a62; --accent-ink: #ffffff; --accent-soft: #dcefe9; --chat: #313338; --chat-ink: #dbdee1; --chat-muted: #949ba4;
   --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
   --body: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
   --mono: "JetBrains Mono", Consolas, ui-monospace, monospace;
+  color-scheme: light;
 }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+@media (prefers-color-scheme: dark) { :root {
   --bg: #0c1615; --surface: #13211f; --ink: #e3efec; --muted: #94aaa5; --line: #263936;
-  --accent: #3ccaa6; --accent-ink: #06231c; --accent-soft: #123129; --chip: #182a27; color-scheme: dark } }
-:root[data-theme="dark"] {
-  --bg: #0c1615; --surface: #13211f; --ink: #e3efec; --muted: #94aaa5; --line: #263936;
-  --accent: #3ccaa6; --accent-ink: #06231c; --accent-soft: #123129; --chip: #182a27; color-scheme: dark }
-
+  --accent: #3ccaa6; --accent-ink: #06231c; --accent-soft: #123129; color-scheme: dark } }
 * { box-sizing: border-box; }
-body { background: var(--bg); color: var(--ink); font: 400 1rem/1.55 var(--body);
-  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
-.wrap { max-width: 68rem; margin: 0 auto; padding-block: 2rem 7rem; display: grid; gap: 2.2rem; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 400 1.08rem/1.6 var(--body);
+  padding: env(safe-area-inset-top, 0px) max(16px, env(safe-area-inset-right, 0px)) env(safe-area-inset-bottom, 0px) max(16px, env(safe-area-inset-left, 0px)); }
+[hidden] { display: none !important; }
+.wrap { max-width: 46rem; margin: 0 auto; padding-block: 1.5rem 4rem; display: grid; gap: 3.2rem; }
 h1, h2, h3 { font-family: var(--display); margin: 0; text-wrap: balance; }
-h1 { font-size: clamp(2.1rem, 5.5vw, 3.4rem); line-height: 1.04; font-weight: 800; letter-spacing: -0.02em; max-width: 16ch; }
-h2 { font-size: 1.3rem; font-weight: 700; }
+h1 { font-size: clamp(2.3rem, 7vw, 3.8rem); line-height: 1.02; font-weight: 800; letter-spacing: -0.025em; }
+h2 { font-size: clamp(1.5rem, 4vw, 2rem); line-height: 1.12; font-weight: 800; letter-spacing: -0.015em; }
+h3 { font-size: 1.1rem; font-weight: 700; }
 p { margin: 0; }
+section { display: grid; gap: 1.1rem; }
 .muted { color: var(--muted); }
 .eyebrow { font: 600 0.75rem/1 var(--body); letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
-
-.top { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; }
+.top { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
 .lang { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; padding: 3px; background: var(--surface); }
-.lang button { font: 600 0.8rem/1 var(--body); letter-spacing: 0.05em; border: 0; background: none; color: var(--muted);
-  padding: 0.5rem 0.85rem; border-radius: 999px; cursor: pointer; }
+.lang button { font: 600 0.8rem/1 var(--body); border: 0; background: none; color: var(--muted); padding: 0.5rem 0.85rem; border-radius: 999px; cursor: pointer; }
 .lang button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
-header { display: grid; gap: 1rem; }
-.lead { font-size: 1.15rem; color: var(--muted); max-width: 44rem; }
+.lead { font-size: 1.22rem; color: var(--muted); }
+.cta { display: inline-block; justify-self: start; font: 700 1.05rem/1 var(--body); background: var(--accent); color: var(--accent-ink);
+  text-decoration: none; border: 0; border-radius: 12px; padding: 1rem 1.3rem; cursor: pointer; }
+.cta:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.small { font-size: 0.92rem; }
 
-.layout { display: grid; grid-template-columns: minmax(0, 1fr) 21rem; gap: 2rem; align-items: start; }
-@media (max-width: 56rem) { .layout { grid-template-columns: minmax(0, 1fr); } }
-.col { display: grid; gap: 2.2rem; min-width: 0; }
-section { display: grid; gap: 0.9rem; }
+/* pains */
+.pains { display: grid; gap: 0.6rem; margin: 0; padding: 0; list-style: none; }
+.pains li { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 0.85rem 1rem; font-style: italic; }
+.pains li::before { content: "“"; font: 800 1.4rem/0 var(--display); color: var(--accent); margin-right: 0.25rem; vertical-align: -0.35rem; }
 
-/* agent menu */
-.menu { display: grid; gap: 0.6rem; }
-.item { position: relative; cursor: default; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 0.25rem 0.9rem; align-items: start;
-  background: var(--surface); border: 1.5px solid var(--line); border-radius: 12px; padding: 1rem 1.1rem; cursor: pointer;
-  transition: border-color .15s, background .15s; }
-.item input { position: absolute; opacity: 0; pointer-events: none; }
-.box { grid-row: span 2; width: 1.4rem; height: 1.4rem; margin-top: 0.1rem; border-radius: 6px; border: 2px solid var(--line);
-  display: grid; place-items: center; transition: background .15s, border-color .15s; }
-.box svg { width: 0.9rem; height: 0.9rem; stroke: var(--accent-ink); stroke-width: 3; fill: none; opacity: 0; }
-.item b { font: 600 1.05rem/1.3 var(--display); }
-.item .price { font: 600 1.05rem/1.3 var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
-.item .desc { grid-column: 2 / 4; color: var(--muted); font-size: 0.95rem; }
-.item:has(input:checked) { border-color: var(--accent); background: var(--accent-soft); }
-.item:has(input:checked) .box { background: var(--accent); border-color: var(--accent); }
-.item:has(input:checked) .box svg { opacity: 1; }
-.item:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
-.item.locked { cursor: default; }
-.tag { font: 600 0.7rem/1 var(--body); letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent);
-  border: 1px solid var(--accent); border-radius: 999px; padding: 0.25rem 0.5rem; margin-left: 0.4rem; vertical-align: 0.15em; white-space: nowrap; }
-.extras { display: grid; gap: 0.6rem; }
+/* chat mock */
+.chat { background: var(--chat); color: var(--chat-ink); border-radius: 14px; padding: 1rem 1.1rem; display: grid; grid-template-columns: 2.5rem minmax(0, 1fr); gap: 0.2rem 0.8rem; }
+.chat .av { grid-row: span 3; width: 2.5rem; height: 2.5rem; border-radius: 50%; background: var(--accent); display: grid; place-items: center; font: 700 0.85rem/1 var(--body); color: #fff; }
+.chat .who { font-weight: 600; color: #fff; } .chat .who small { color: var(--chat-muted); font-weight: 400; margin-left: 0.4rem; }
+.chat .msg { font-size: 0.97rem; display: grid; gap: 0.5rem; }
+.chat .draft { border-left: 3px solid var(--accent); padding-left: 0.7rem; color: #fff; }
+.chat .btns { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.3rem; }
+.chat .btns span { font: 600 0.85rem/1 var(--body); padding: 0.5rem 0.8rem; border-radius: 6px; background: #4e5058; color: #fff; }
+.chat .btns span.ok { background: #248046; }
+.example { font: 600 0.7rem/1 var(--body); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
 
-/* included */
-.included { background: var(--ink); color: var(--bg); border-radius: 14px; padding: 1.4rem 1.4rem 1.5rem; display: grid; gap: 1rem; }
-.included h2 { color: var(--bg); }
-.promises { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: 1rem 1.4rem; }
-.promises div { display: grid; gap: 0.25rem; border-top: 2px solid var(--accent); padding-top: 0.7rem; }
-.promises b { font: 600 1rem/1.3 var(--display); }
-.promises p { opacity: 0.8; font-size: 0.95rem; }
+/* team */
+.team { display: grid; gap: 0.7rem; }
+.agent { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 1rem 1.1rem; display: grid; gap: 0.35rem; }
+.agent .gives { font-size: 0.93rem; color: var(--accent); font-weight: 600; }
+.also { display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); gap: 0.6rem; }
+.also div { border-top: 2px solid var(--accent); padding-top: 0.6rem; display: grid; gap: 0.2rem; }
+.also p { color: var(--muted); font-size: 0.95rem; }
 
-/* tools */
-.tablewrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
-table { width: 100%; border-collapse: collapse; min-width: 34rem; }
-th, td { text-align: left; padding: 0.7rem 0.9rem; border-top: 1px solid var(--line); vertical-align: top; }
-thead th { border-top: 0; font: 600 0.72rem/1.2 var(--body); letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); }
-td.p { text-align: right; white-space: nowrap; font: 500 0.92rem/1.5 var(--mono); font-variant-numeric: tabular-nums; }
-td small { display: block; color: var(--muted); font: 400 0.82rem/1.4 var(--body); white-space: normal; }
-td .need { font: 600 0.68rem/1 var(--body); letter-spacing: 0.05em; text-transform: uppercase; color: var(--accent); margin-left: 0.4rem; }
-tr.off td { opacity: 0.45; }
-.notes { margin: 0; padding-left: 1.2rem; display: grid; gap: 0.4rem; color: var(--muted); }
-.notes b { color: var(--ink); }
+/* steps */
+.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.9rem; counter-reset: s; }
+.steps li { display: grid; grid-template-columns: 2.2rem minmax(0, 1fr); gap: 0.15rem 0.8rem; counter-increment: s; }
+.steps li::before { content: counter(s); grid-row: span 2; width: 2.2rem; height: 2.2rem; border-radius: 50%; border: 2px solid var(--accent); color: var(--accent);
+  display: grid; place-items: center; font: 600 0.95rem/1 var(--mono); }
+.steps p { color: var(--muted); }
 
-/* receipt */
-.receipt { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 1rem); background: var(--surface); border: 1.5px solid var(--ink);
-  border-radius: 14px; padding: 1.3rem; display: grid; gap: 1rem; }
-.lines { display: grid; gap: 0.35rem; font-size: 0.95rem; }
-.line { display: flex; justify-content: space-between; gap: 1rem; }
-.line span:last-child { font-family: var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
-.sum { border-top: 1.5px dashed var(--line); padding-top: 0.9rem; display: grid; gap: 0.2rem; }
-.big { font: 800 2.4rem/1 var(--display); letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
-.month { display: flex; justify-content: space-between; gap: 1rem; font-size: 0.95rem; }
-.month span:last-child { font-family: var(--mono); white-space: nowrap; }
-.copy { font: 600 0.95rem/1 var(--body); background: var(--accent); color: var(--accent-ink); border: 0; border-radius: 10px;
-  padding: 0.85rem 1rem; cursor: pointer; }
-.copy:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
-.copied { font-size: 0.85rem; color: var(--accent); min-height: 1.2em; }
-#copytext { width: 100%; font: 0.85rem/1.4 var(--mono); border: 1px solid var(--line); border-radius: 8px; padding: 0.5rem; background: var(--chip); color: var(--ink); }
-@media (max-width: 56rem) {
-  .receipt { position: fixed; left: 0; right: 0; bottom: 0; top: auto; border-radius: 14px 14px 0 0; border-width: 1.5px 0 0;
-    padding: 0.8rem max(16px, env(safe-area-inset-right, 0px)) calc(0.8rem + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
-    grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 0.3rem 1rem; z-index: 5; box-shadow: 0 -8px 24px rgb(0 0 0 / 0.08); }
-  .receipt h2, .receipt .lines, .receipt .copied, .receipt #copytext { display: none; }
-  .receipt .sum { border: 0; padding: 0; }
-  .big { font-size: 1.8rem; }
-}
-@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+/* guarantee + price */
+.guarantee { background: var(--ink); color: var(--bg); border-radius: 16px; padding: 1.5rem; display: grid; gap: 0.8rem; }
+.guarantee h2 { color: var(--bg); }
+.guarantee p { opacity: 0.9; }
+.price { background: var(--surface); border: 2px solid var(--ink); border-radius: 16px; padding: 1.5rem; display: grid; gap: 0.9rem; }
+.big { font: 800 clamp(2.6rem, 9vw, 3.6rem)/1 var(--display); letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+.plus { font: 600 1.1rem/1.3 var(--body); }
+.price ul { margin: 0; padding-left: 1.2rem; display: grid; gap: 0.3rem; color: var(--muted); }
+details.tools { border-top: 1px dashed var(--line); padding-top: 0.8rem; }
+details.tools summary { cursor: pointer; font-weight: 600; }
+.tablewrap { overflow-x: auto; margin-top: 0.6rem; }
+table { width: 100%; border-collapse: collapse; min-width: 26rem; font-size: 0.93rem; }
+td { padding: 0.45rem 0.4rem; border-top: 1px solid var(--line); vertical-align: top; }
+td:last-child { text-align: right; white-space: nowrap; font-family: var(--mono); }
+
+/* faq */
+.faq { display: grid; gap: 0.5rem; }
+.faq details { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 0.9rem 1rem; }
+.faq summary { cursor: pointer; font-weight: 600; }
+.faq details p { margin-top: 0.5rem; color: var(--muted); }
+
+/* request */
+.request { background: var(--accent-soft); border-radius: 16px; padding: 1.5rem; display: grid; gap: 0.9rem; }
+.request label { display: grid; gap: 0.3rem; font-weight: 600; }
+.request input, .request select { font: 400 1rem/1.4 var(--body); padding: 0.7rem 0.8rem; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); color: var(--ink); width: 100%; }
+#out { width: 100%; font: 0.9rem/1.4 var(--mono); border: 1px solid var(--line); border-radius: 10px; padding: 0.6rem; background: var(--surface); color: var(--ink); }
+.status { color: var(--accent); font-weight: 600; min-height: 1.4em; }
+footer { color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--line); padding-top: 1rem; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 </style>
 </head>
 <body>
-
 <div class="wrap">
   <div class="top">
-    <span class="eyebrow" data-t="eyebrow"></span>
+    <span class="eyebrow" data-l="en">AI team for online stores</span><span class="eyebrow" data-l="fr">Équipe IA pour boutiques en ligne</span>
     <div class="lang" role="group" aria-label="Language">
       <button type="button" data-set="en" aria-pressed="true">EN</button>
       <button type="button" data-set="fr" aria-pressed="false">FR</button>
     </div>
   </div>
 
-  <header>
-    <h1 data-t="title"></h1>
-    <p class="lead" data-t="lead"></p>
-  </header>
+  <!-- HERO -->
+  <section data-l="en">
+    <h1>The AI team you install, not the one you rent.</h1>
+    <p class="lead">Six AI agents that answer your customers, make your ads and watch your competitors. They run on your own computer, they talk to you on Discord, and nothing goes out without your yes.</p>
+    <a class="cta" href="#request">Get a free sample on your store</a>
+  </section>
+  <section data-l="fr">
+    <h1>L'équipe IA que vous installez, pas celle que vous louez.</h1>
+    <p class="lead">Six agents IA qui répondent à vos clients, créent vos pubs et surveillent vos concurrents. Ils tournent sur votre propre ordinateur, vous parlent sur Discord, et rien ne part sans votre accord.</p>
+    <a class="cta" href="#request">Recevoir un échantillon gratuit sur ma boutique</a>
+  </section>
 
-  <div class="layout">
-    <div class="col">
-      <section aria-labelledby="h-pick">
-        <h2 id="h-pick" data-t="pick"></h2>
-        <p class="muted" data-t="pickHint"></p>
-        <div class="menu" id="menu"></div>
-      </section>
+  <!-- PAIN -->
+  <section data-l="en">
+    <h2>Sound familiar?</h2>
+    <ul class="pains">
+      <li>80% of my customer e-mails are the same questions, and I still answer every one myself.</li>
+      <li>My ads die after two or three weeks and I don't know why.</li>
+      <li>I don't have time to make new ad images and videos every week.</li>
+      <li>I'm doing good revenue, but I'm not sure how much of it is real profit.</li>
+      <li>I'd love help, but I won't hand my passwords to just anyone.</li>
+    </ul>
+    <p>You didn't start a store to spend your days in your inbox. The work that eats your week is the work this team does.</p>
+  </section>
+  <section data-l="fr">
+    <h2>Ça vous parle ?</h2>
+    <ul class="pains">
+      <li>80 % de mes e-mails clients, ce sont les mêmes questions, et j'y réponds encore moi-même.</li>
+      <li>Mes pubs meurent au bout de deux ou trois semaines et je ne sais pas pourquoi.</li>
+      <li>Je n'ai pas le temps de faire de nouveaux visuels et vidéos chaque semaine.</li>
+      <li>Je fais un bon chiffre d'affaires, mais je ne sais pas combien il me reste vraiment.</li>
+      <li>J'aimerais de l'aide, mais je ne donne pas mes mots de passe à n'importe qui.</li>
+    </ul>
+    <p>Vous n'avez pas lancé une boutique pour passer vos journées dans votre boîte mail. Le travail qui mange votre semaine, c'est celui que fait cette équipe.</p>
+  </section>
 
-      <section aria-labelledby="h-extra">
-        <h2 id="h-extra" data-t="extras"></h2>
-        <div class="extras" id="extras"></div>
-      </section>
-
-      <section class="included" aria-labelledby="h-inc">
-        <h2 id="h-inc" data-t="incTitle"></h2>
-        <div class="promises" id="promises"></div>
-      </section>
-
-      <section aria-labelledby="h-tools">
-        <h2 id="h-tools" data-t="toolsTitle"></h2>
-        <p class="muted" data-t="toolsHint"></p>
-        <div class="tablewrap"><table>
-          <thead><tr><th data-t="thTool"></th><th data-t="thFor"></th><th style="text-align:right" data-t="thPrice"></th></tr></thead>
-          <tbody id="tools"></tbody>
-        </table></div>
-      </section>
-
-      <section aria-labelledby="h-know">
-        <h2 id="h-know" data-t="knowTitle"></h2>
-        <ul class="notes" id="notes"></ul>
-      </section>
-    </div>
-
-    <aside class="receipt" aria-live="polite">
-      <h2 data-t="yours"></h2>
-      <div class="lines" id="lines"></div>
-      <div class="sum">
-        <span class="muted" data-t="oneTime"></span>
-        <span class="big" id="total"></span>
-        <div class="month"><span data-t="perMonth"></span><span id="monthly"></span></div>
-        <div class="month muted"><span data-t="toolsMonth"></span><span id="toolsum"></span></div>
+  <!-- MECHANISM -->
+  <section data-l="en">
+    <h2>Not another dashboard. A team that asks before it acts.</h2>
+    <p>Your agents live in your Discord, like colleagues. They do the work, then ask you. One tap to approve, one tap to change it.</p>
+    <span class="example">Example of a message you would get</span>
+    <div class="chat" aria-label="Example of an approval message">
+      <span class="av">CS</span>
+      <span class="who">Customer service <small>today at 09:12</small></span>
+      <div class="msg">
+        <span>Julie asks where order #1042 is. Tracking: in transit, delivery expected Thursday. Draft reply:</span>
+        <span class="draft">Hi Julie, your parcel left on Monday and should arrive on Thursday. Here is your tracking link. Have a lovely day!</span>
+        <span>OK to send?</span>
+        <div class="btns"><span class="ok">Send</span><span>Change it</span></div>
       </div>
-    </aside>
-  </div>
+    </div>
+  </section>
+  <section data-l="fr">
+    <h2>Pas un énième tableau de bord. Une équipe qui demande avant d'agir.</h2>
+    <p>Vos agents vivent dans votre Discord, comme des collègues. Ils font le travail, puis vous demandent. Un clic pour valider, un clic pour modifier.</p>
+    <span class="example">Exemple de message que vous recevriez</span>
+    <div class="chat" aria-label="Exemple de message de validation">
+      <span class="av">SC</span>
+      <span class="who">Service client <small>aujourd'hui à 09:12</small></span>
+      <div class="msg">
+        <span>Julie demande où est la commande n°1042. Suivi : en transit, livraison prévue jeudi. Proposition de réponse :</span>
+        <span class="draft">Bonjour Julie, votre colis est parti lundi et devrait arriver jeudi. Voici votre lien de suivi. Belle journée !</span>
+        <span>Je l'envoie ?</span>
+        <div class="btns"><span class="ok">Envoyer</span><span>Modifier</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEAM -->
+  <section data-l="en">
+    <h2>Your team of six</h2>
+    <div class="team">
+      <div class="agent"><h3>Customer service</h3><p>Twice a day it reads your store's e-mails, checks each real order and delivery in Shopify, and writes the answers. You approve each reply, refund or return.</p><span class="gives">The repetitive tickets handled, without hiring.</span></div>
+      <div class="agent"><h3>Ad images</h3><p>New ad images in 3 sizes, made from your own product photos.</p><span class="gives">A designer's weekly output, without the designer.</span></div>
+      <div class="agent"><h3>Ad videos</h3><p>Ready-to-post video ads with a professional voice-over, moving scenes and subtitles. You see the cost before anything is made.</p><span class="gives">No filming, no editing, no surprise invoice.</span></div>
+      <div class="agent"><h3>Competitor watch</h3><p>Every Monday, the 5 competitor ads that perform best right now, and why.</p><span class="gives">The research hour you never get to, done every week.</span></div>
+      <div class="agent"><h3>Meta ads</h3><p>Your Facebook and Instagram ads prepared in your own account, paused. You check them and press go yourself.</p><span class="gives">Ready-to-launch ads, and your money never moves without you.</span></div>
+      <div class="agent"><h3>E-mail and store</h3><p>E-mail campaigns prepared as drafts, ideas to make your store sell more, and your real margin on each product.</p><span class="gives">You finally see what you really earn.</span></div>
+    </div>
+    <div class="also">
+      <div><h3>Shaped to how you work</h3><p>Your tone with customers, your rules, your products.</p></div>
+      <div><h3>Mac or Windows</h3><p>Installed on the computer you already have.</p></div>
+      <div><h3>Set up with you</h3><p>We install it together, live, and show you how to use it.</p></div>
+    </div>
+  </section>
+  <section data-l="fr">
+    <h2>Votre équipe de six</h2>
+    <div class="team">
+      <div class="agent"><h3>Service client</h3><p>Deux fois par jour, il lit les e-mails de votre boutique, vérifie chaque vraie commande et livraison dans Shopify, et rédige les réponses. Vous validez chaque réponse, remboursement ou retour.</p><span class="gives">Les tickets répétitifs gérés, sans embaucher.</span></div>
+      <div class="agent"><h3>Visuels pub</h3><p>De nouveaux visuels pub en 3 formats, faits à partir de vos propres photos produit.</p><span class="gives">Le travail hebdomadaire d'un graphiste, sans le graphiste.</span></div>
+      <div class="agent"><h3>Vidéos pub</h3><p>Des vidéos pub prêtes à publier, avec une voix off professionnelle, des scènes animées et des sous-titres. Vous voyez le coût avant toute création.</p><span class="gives">Pas de tournage, pas de montage, pas de facture surprise.</span></div>
+      <div class="agent"><h3>Veille concurrents</h3><p>Chaque lundi, les 5 pubs concurrentes qui marchent le mieux en ce moment, et pourquoi.</p><span class="gives">L'heure de recherche que vous ne prenez jamais, faite chaque semaine.</span></div>
+      <div class="agent"><h3>Pubs Meta</h3><p>Vos pubs Facebook et Instagram préparées dans votre propre compte, en pause. Vous vérifiez et vous lancez vous-même.</p><span class="gives">Des pubs prêtes à lancer, et votre argent ne bouge jamais sans vous.</span></div>
+      <div class="agent"><h3>E-mails et boutique</h3><p>Des campagnes e-mail préparées en brouillon, des idées pour que votre boutique vende plus, et votre vraie marge sur chaque produit.</p><span class="gives">Vous voyez enfin ce que vous gagnez vraiment.</span></div>
+    </div>
+    <div class="also">
+      <div><h3>Adaptée à votre façon de travailler</h3><p>Votre ton avec les clients, vos règles, vos produits.</p></div>
+      <div><h3>Mac ou Windows</h3><p>Installée sur l'ordinateur que vous avez déjà.</p></div>
+      <div><h3>Installée avec vous</h3><p>Nous l'installons ensemble, en direct, et vous montrons comment l'utiliser.</p></div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section data-l="en">
+    <h2>How it works</h2>
+    <ol class="steps">
+      <li><h3>Free sample</h3><p>You get a quick check of your store's settings, or this Monday's competitor report for your niche. Free, no commitment.</p></li>
+      <li><h3>A short call</h3><p>We look at where your week goes and what your team should do first.</p></li>
+      <li><h3>Live setup</h3><p>We install it together on your computer. You create your own access codes; you never give us a password.</p></li>
+      <li><h3>Tested, then yours</h3><p>Every agent is tested live with you before the team is handed over.</p></li>
+    </ol>
+  </section>
+  <section data-l="fr">
+    <h2>Comment ça se passe</h2>
+    <ol class="steps">
+      <li><h3>Échantillon gratuit</h3><p>Vous recevez une vérification rapide des réglages de votre boutique, ou le rapport concurrents de ce lundi pour votre niche. Gratuit, sans engagement.</p></li>
+      <li><h3>Un court appel</h3><p>On regarde où passe votre semaine et ce que votre équipe doit faire en premier.</p></li>
+      <li><h3>Installation en direct</h3><p>On l'installe ensemble sur votre ordinateur. Vous créez vous-même vos codes d'accès ; vous ne nous donnez jamais de mot de passe.</p></li>
+      <li><h3>Testée, puis à vous</h3><p>Chaque agent est testé en direct avec vous avant la remise de l'équipe.</p></li>
+    </ol>
+  </section>
+
+  <!-- GUARANTEE -->
+  <section class="guarantee" data-l="en">
+    <h2>The guarantee</h2>
+    <p>If, after the live test with you, anything doesn't work exactly as described on this page, I fix it free, with no time limit on that issue. And you have 30 days to flag anything else you find; that's fixed free too.</p>
+    <p>You never give us a password, your access codes stay on your computer, and you can cut any access in one click.</p>
+  </section>
+  <section class="guarantee" data-l="fr">
+    <h2>La garantie</h2>
+    <p>Si, après le test en direct avec vous, quelque chose ne fonctionne pas exactement comme décrit sur cette page, je le corrige gratuitement, sans limite de temps pour ce problème. Et vous avez 30 jours pour signaler tout le reste ; c'est corrigé gratuitement aussi.</p>
+    <p>Vous ne nous donnez jamais de mot de passe, vos codes d'accès restent sur votre ordinateur, et vous pouvez couper un accès en un clic.</p>
+  </section>
+
+  <!-- PRICE -->
+  <section class="price" data-l="en">
+    <span class="eyebrow">The complete team</span>
+    <span class="big">€1,000</span>
+    <span class="plus">one time, everything included</span>
+    <ul>
+      <li>All 6 agents, shaped to how you work</li>
+      <li>Mac or Windows, set up live with you</li>
+      <li>The 30-day guarantee above</li>
+    </ul>
+    <p><b>+ €100 a month</b> to keep your team running and improving: fixes, updates, and 4 hours of changes a month (then €25 an hour). That's about €3.30 a day.</p>
+    <p class="muted">Less than one month of a part-time employee, for a team that works every day.</p>
+    <details class="tools"><summary>What you pay your AI services directly (in your own name)</summary>
+      <div class="tablewrap"><table>
+        <tr><td>Claude (the AI behind the team)</td><td>$100 / month</td></tr>
+        <tr><td>ChatGPT Plus (ad images)</td><td>$20 / month</td></tr>
+        <tr><td>ElevenLabs (voice-overs)</td><td>$6 / month</td></tr>
+        <tr><td>Higgsfield (video scenes, billed yearly)</td><td>€39 / month</td></tr>
+        <tr><td>TrendTrack Pro (competitor ads, billed yearly)</td><td>$62 / month</td></tr>
+        <tr><td>Klaviyo (free up to 250 contacts)</td><td>$0</td></tr>
+        <tr><td>Discord</td><td>free</td></tr>
+      </table></div>
+      <p class="muted small">Official prices checked 7 to 10 November 2026; providers can change them. These accounts are yours: we never pay them or hold them for you.</p>
+    </details>
+  </section>
+  <section class="price" data-l="fr">
+    <span class="eyebrow">L'équipe complète</span>
+    <span class="big">1 000 €</span>
+    <span class="plus">une seule fois, tout compris</span>
+    <ul>
+      <li>Les 6 agents, adaptés à votre façon de travailler</li>
+      <li>Mac ou Windows, installée en direct avec vous</li>
+      <li>La garantie 30 jours ci-dessus</li>
+    </ul>
+    <p><b>+ 100 € par mois</b> pour que votre équipe tourne et s'améliore : corrections, mises à jour, et 4 heures de modifications par mois (puis 25 € de l'heure). Environ 3,30 € par jour.</p>
+    <p class="muted">Moins qu'un mois d'employé à temps partiel, pour une équipe qui travaille tous les jours.</p>
+    <details class="tools"><summary>Ce que vous payez directement à vos services IA (à votre nom)</summary>
+      <div class="tablewrap"><table>
+        <tr><td>Claude (l'IA de l'équipe)</td><td>100 $ / mois</td></tr>
+        <tr><td>ChatGPT Plus (visuels pub)</td><td>20 $ / mois</td></tr>
+        <tr><td>ElevenLabs (voix off)</td><td>6 $ / mois</td></tr>
+        <tr><td>Higgsfield (scènes vidéo, facturé à l'année)</td><td>39 € / mois</td></tr>
+        <tr><td>TrendTrack Pro (pubs concurrentes, facturé à l'année)</td><td>62 $ / mois</td></tr>
+        <tr><td>Klaviyo (gratuit jusqu'à 250 contacts)</td><td>0 $</td></tr>
+        <tr><td>Discord</td><td>gratuit</td></tr>
+      </table></div>
+      <p class="muted small">Prix officiels relevés du 7 au 10 novembre 2026 ; les fournisseurs peuvent les changer. Ces comptes sont à vous : nous ne les payons ni ne les détenons à votre place.</p>
+    </details>
+  </section>
+
+  <!-- FAQ -->
+  <section data-l="en">
+    <h2>Questions owners ask</h2>
+    <div class="faq">
+      <details><summary>Isn't this just a $15 chatbot?</summary><p>A $15 tool runs in someone else's cloud and gives generic answers. This team is installed on your computer, checks your real Shopify orders before answering, and asks you before anything is sent.</p></details>
+      <details><summary>I'm not technical. Can I really use this?</summary><p>That's who it's built for. You chat with your team on Discord, from your phone or your PC. There is no dashboard to learn, and we set everything up with you.</p></details>
+      <details><summary>Do I have to give you my passwords?</summary><p>Never. You create each access code yourself, it stays on your computer, and you can cut it in one click.</p></details>
+      <details><summary>What if it sends something wrong to a customer?</summary><p>It can't send anything on its own. Every reply, e-mail and ad waits for your yes.</p></details>
+      <details><summary>Could my Facebook ad account get banned because of this?</summary><p>The ads agent only prepares paused ads in your existing account. Nothing is published or paid until you launch it yourself.</p></details>
+      <details><summary>Where does my data go?</summary><p>The team runs on your computer and uses AI services in your own name (Claude, ChatGPT and the others listed above). Nothing passes through us or through a server of ours.</p></details>
+      <details><summary>I already have someone for customer service.</summary><p>Then the agent takes the repetitive questions, and your person keeps the cases that need a human.</p></details>
+      <details><summary>Can I take only one or two agents?</summary><p>It's one package because the agents share your store's information and the same approval system. That's what makes them useful together.</p></details>
+      <details><summary>What happens if I stop the €100 a month?</summary><p>You keep everything that is installed. Fixes, updates and the included hours stop; later changes are €25 an hour if you need them.</p></details>
+      <details><summary>Why trust one person rather than an agency?</summary><p>You see and approve everything live, one person is responsible for all of it, and nothing happens without your yes. That's more control than most agencies give you.</p></details>
+    </div>
+  </section>
+  <section data-l="fr">
+    <h2>Les questions qu'on me pose</h2>
+    <div class="faq">
+      <details><summary>Ce n'est pas juste un chatbot à 15 $ ?</summary><p>Un outil à 15 $ tourne dans le cloud de quelqu'un d'autre et donne des réponses génériques. Cette équipe est installée sur votre ordinateur, vérifie vos vraies commandes Shopify avant de répondre, et vous demande avant tout envoi.</p></details>
+      <details><summary>Je ne suis pas technique. Je peux vraiment l'utiliser ?</summary><p>C'est pour vous qu'elle est faite. Vous parlez à votre équipe sur Discord, depuis votre téléphone ou votre PC. Pas de tableau de bord à apprendre, et on installe tout avec vous.</p></details>
+      <details><summary>Je dois vous donner mes mots de passe ?</summary><p>Jamais. Vous créez chaque code d'accès vous-même, il reste sur votre ordinateur, et vous pouvez le couper en un clic.</p></details>
+      <details><summary>Et s'il envoie une bêtise à un client ?</summary><p>Il ne peut rien envoyer seul. Chaque réponse, e-mail et pub attend votre accord.</p></details>
+      <details><summary>Mon compte pub Facebook risque d'être banni à cause de ça ?</summary><p>L'agent pubs prépare seulement des pubs en pause dans votre compte existant. Rien n'est publié ni payé tant que vous ne le lancez pas vous-même.</p></details>
+      <details><summary>Où vont mes données ?</summary><p>L'équipe tourne sur votre ordinateur et utilise des services IA à votre nom (Claude, ChatGPT et les autres listés plus haut). Rien ne passe par nous ni par un serveur à nous.</p></details>
+      <details><summary>J'ai déjà quelqu'un pour le service client.</summary><p>Alors l'agent prend les questions répétitives, et votre personne garde les cas qui demandent un humain.</p></details>
+      <details><summary>Je peux prendre seulement un ou deux agents ?</summary><p>C'est une seule formule parce que les agents partagent les informations de votre boutique et le même système de validation. C'est ce qui les rend utiles ensemble.</p></details>
+      <details><summary>Que se passe-t-il si j'arrête les 100 € par mois ?</summary><p>Vous gardez tout ce qui est installé. Les corrections, mises à jour et heures incluses s'arrêtent ; les changements plus tard sont à 25 € de l'heure si besoin.</p></details>
+      <details><summary>Pourquoi faire confiance à une seule personne plutôt qu'à une agence ?</summary><p>Vous voyez et validez tout en direct, une seule personne est responsable de l'ensemble, et rien ne se passe sans votre accord. C'est plus de contrôle que la plupart des agences.</p></details>
+    </div>
+  </section>
+
+  <!-- WHO -->
+  <section data-l="en">
+    <h2>Who builds it</h2>
+    <p>I'm Yassine. I build AI teams for online stores, and I install each one myself, live with the owner. I don't sell you a subscription to my software: the team is yours, on your computer, and I stay on hand to keep it running.</p>
+  </section>
+  <section data-l="fr">
+    <h2>Qui la construit</h2>
+    <p>Je suis Yassine. Je construis des équipes IA pour les boutiques en ligne, et j'installe chacune moi-même, en direct avec le commerçant. Je ne vous vends pas un abonnement à mon logiciel : l'équipe est à vous, sur votre ordinateur, et je reste disponible pour la faire tourner.</p>
+  </section>
+
+  <!-- REQUEST -->
+  <section class="request" id="request" aria-labelledby="req-en req-fr">
+    <h2 id="req-en" data-l="en">Get a free sample on your store</h2>
+    <h2 id="req-fr" data-l="fr">Recevez un échantillon gratuit sur votre boutique</h2>
+    <p data-l="en">No commitment. Tell me your store and what you'd like to see first.</p>
+    <p data-l="fr">Sans engagement. Dites-moi votre boutique et ce que vous voulez voir en premier.</p>
+    <form id="form" novalidate>
+      <div style="display:grid;gap:0.8rem">
+        <label for="store"><span data-l="en">Your store's website</span><span data-l="fr">Le site de votre boutique</span>
+          <input id="store" name="store" type="text" inputmode="url" autocomplete="url" placeholder="myshop.com"></label>
+        <label for="want"><span data-l="en">What would you like first?</span><span data-l="fr">Que voulez-vous en premier ?</span>
+          <select id="want" name="want">
+            <option value="check" data-en="A free check of my store's settings" data-fr="Une vérification gratuite des réglages de ma boutique">A free check of my store's settings</option>
+            <option value="watch" data-en="This Monday's competitor report for my niche" data-fr="Le rapport concurrents de ce lundi pour ma niche">This Monday's competitor report for my niche</option>
+            <option value="call" data-en="A short call to see if the team fits my store" data-fr="Un court appel pour voir si l'équipe convient à ma boutique">A short call to see if the team fits my store</option>
+          </select></label>
+        <button type="submit" class="cta"><span data-l="en">Create my request</span><span data-l="fr">Créer ma demande</span></button>
+      </div>
+    </form>
+    <p class="status" id="status" aria-live="polite"></p>
+    <textarea id="out" rows="4" readonly hidden aria-label="Your request"></textarea>
+  </section>
+
+  <footer>
+    <p data-l="en">Prices in euros, offer valid 30 days. Payment: 50% at the start, 50% once your team is running and tested.</p>
+    <p data-l="fr">Prix en euros, offre valable 30 jours. Paiement : 50 % au démarrage, 50 % quand votre équipe tourne et est testée.</p>
+  </footer>
 </div>
 
 <script>
-const PACKAGE = 1000, CARE = 100;
-const AGENTS = [
-  { id: "service", price: 200, tools: ["shopify", "mail"],
-    en: ["Customer service", "Never leave a customer waiting. Twice a day it reads your store's e-mails, checks each order and delivery, and writes the answers for you. You read, approve, done: hours saved every week."],
-    fr: ["Service client", "Plus aucun client qui attend. Deux fois par jour, il lit les e-mails de votre boutique, vérifie chaque commande et livraison, et rédige les réponses. Vous relisez, vous validez, c'est fini : des heures gagnées chaque semaine."] },
-  { id: "images", price: 150, tools: ["chatgpt"],
-    en: ["Ad images", "New ad images whenever you need them, without a designer. Made from your own product photos, ready for Facebook, Instagram and stories."],
-    fr: ["Visuels pub", "De nouveaux visuels pub quand vous en avez besoin, sans graphiste. Faits à partir de vos photos produit, prêts pour Facebook, Instagram et les stories."] },
-  { id: "videos", price: 200, tools: ["elevenlabs", "higgsfield"],
-    en: ["Ad videos", "Video ads ready to post, with a professional voice-over and subtitles. No filming, no editing, no freelancer to chase. You see the cost before anything is made."],
-    fr: ["Vidéos pub", "Des vidéos pub prêtes à publier, avec une voix off professionnelle et des sous-titres. Pas de tournage, pas de montage, pas de freelance à relancer. Vous voyez le coût avant toute création."] },
-  { id: "watch", price: 100, tools: ["trendtrack"],
-    en: ["Competitor watch", "Know what sells for your competitors. Every Monday you get their 5 ads that perform best, so your next ads start from proven ideas instead of guesses."],
-    fr: ["Veille concurrents", "Sachez ce qui fait vendre vos concurrents. Chaque lundi, vous recevez leurs 5 pubs qui marchent le mieux, pour que vos prochaines pubs partent d'idées qui ont fait leurs preuves."] },
-  { id: "meta", price: 100, tools: ["meta"],
-    en: ["Meta ads", "Your Facebook and Instagram ads set up in your account, ready to launch. You check them and press go yourself, so no money is ever spent without you."],
-    fr: ["Pubs Meta", "Vos pubs Facebook et Instagram préparées dans votre compte, prêtes à lancer. Vous vérifiez et vous lancez vous-même : aucun euro dépensé sans vous."] },
-  { id: "email", price: 100, tools: ["klaviyo", "shopify"],
-    en: ["E-mail and store", "E-mails that bring customers back to buy again, ideas to make your store sell more, and a clear view of what you really earn on each product."],
-    fr: ["E-mails et boutique", "Des e-mails qui font revenir vos clients, des idées pour que votre boutique vende plus, et une vision claire de ce que vous gagnez vraiment sur chaque produit."] },
-];
-// Official prices checked 7 to 10 November 2026. usd/eur = monthly amount counted in the estimate.
-const TOOLS = [
-  { id: "claude", always: true, usd: 100, en: ["Claude", "The AI behind every agent", "Max plan, advised for several agents"], fr: ["Claude", "L'IA de chaque agent", "offre Max, conseillée pour plusieurs agents"] },
-  { id: "chatgpt", usd: 20, en: ["ChatGPT", "Making ad images", "Plus plan"], fr: ["ChatGPT", "Créer les visuels pub", "offre Plus"] },
-  { id: "elevenlabs", usd: 6, en: ["ElevenLabs", "Voice-overs", "Starter: 30,000 credits, commercial use"], fr: ["ElevenLabs", "Voix off", "Starter : 30 000 crédits, usage commercial"] },
-  { id: "higgsfield", eur: 39, en: ["Higgsfield", "Moving video scenes", "Plus, billed yearly: 1,000 credits a month"], fr: ["Higgsfield", "Scènes vidéo animées", "Plus, facturé à l'année : 1 000 crédits par mois"] },
-  { id: "trendtrack", usd: 62, en: ["TrendTrack", "Finding competitor ads", "Pro plan, billed yearly"], fr: ["TrendTrack", "Trouver les pubs concurrentes", "offre Pro, facturée à l'année"] },
-  { id: "klaviyo", usd: 0, en: ["Klaviyo", "E-mail campaigns", "free up to 250 contacts, then from $20 / month"], fr: ["Klaviyo", "Campagnes e-mail", "gratuit jusqu'à 250 contacts, puis dès 20 $ / mois"] },
-  { id: "discord", always: true, usd: 0, en: ["Discord, Tailscale", "Chatting with your team, our secure help access", ""], fr: ["Discord, Tailscale", "Parler à votre équipe, notre accès sécurisé pour vous aider", ""] },
-  { id: "shopify", text: true, en: ["Shopify, store mailbox", "Your store and its e-mails", ""], fr: ["Shopify, boîte mail", "Votre boutique et ses e-mails", ""] },
-  { id: "meta", text: true, en: ["Meta ads", "Your ads", ""], fr: ["Pubs Meta", "Vos publicités", ""] },
-];
-const T = {
-  en: {
-    eyebrow: "Price sheet · November 2026", title: "An AI team that works for your store",
-    lead: "Answering customers, making ads, watching competitors: the work that eats your days, done for you. You chat with your team on Discord like with colleagues, and you always have the final say.",
-    pick: "Everything in your package", pickHint: "Your complete AI team, set up on your computer and customized to your store. One price, nothing to choose, nothing left out.",
-    baseName: "Base: the team on your computer", baseDesc: "Your team installed on your own computer and ready to work. You talk to it on Discord, from your phone or your PC. It runs day and night and restarts by itself if anything stops.",
-    required: "Required", guideName: "Guide and handover", guideDesc: "We set everything up together, step by step, and show you how to use your team. You are never left on your own.", included: "Included",
-    extras: "Also included", careName: "Maintenance (monthly)", careDesc: "Peace of mind: we keep your team running, fix anything that breaks and improve it as your store grows. 4 hours of changes a month included, then €25 an hour.",
-    customName: "Customized to your workflow", customDesc: "Your team built around the way you already work: your own processes, your tone with customers, your rules and your tools. We map your workflow with you, then shape every agent to it.",
-    winName: "Mac or Windows", winDesc: "Your team is set up on the computer you already have, Mac or Windows PC.", perMonthShort: "/ month", once: "once",
-    incTitle: "Included in every package",
-    promises: [["Guarantee, 30 days", "Once your team is running, anything that does not work as described here is fixed free of charge."],
-               ["Your accounts stay yours", "You never give us a password. Your access codes stay locked on your own computer, and you can cut any access in one click."],
-               ["Tested before handover", "We test every agent and every connection live with you before the team is yours."],
-               ["You stay in control", "Nothing is sent, published or paid without your yes. You can cancel any key or our access at any time."]],
-    toolsTitle: "Running costs", toolsHint: "Paid by you, directly to each provider, on your own accounts. Official prices checked 7 to 10 November 2026; providers can change them.",
-    thTool: "Tool", thFor: "Used for", thPrice: "Price", need: "needed", free: "Free", current: "Your current plans", budget: "Your budget", budgetNote: "you decide",
-    knowTitle: "Good to know",
-    notes: ["<b>Not included:</b> your ad budget, the tool subscriptions above, and new agents or features beyond this sheet (quoted before any work).",
-            "<b>Payment:</b> 50% at the start, 50% when the team is running.",
-            "Prices in euros, valid 30 days."],
-    yours: "Full package", oneTime: "One-time setup, everything included", allIn: "Every agent, customized to your workflow", inc: "Included", perMonth: "Maintenance", toolsMonth: "Tools, paid to providers", none: "none",
-    copy: "Copy my selection", copiedOk: "Copied. Paste it in your message to us.", copiedFallback: "Select the text below and copy it.",
-    summary: (names, total, care, win) => `My selection: ${names}.${win ? " Windows PC." : ""} One-time setup: ${total}. Maintenance: ${care}.`,
-  },
-  fr: {
-    eyebrow: "Grille tarifaire · novembre 2026", title: "Une équipe IA qui travaille pour votre boutique",
-    lead: "Répondre aux clients, créer les pubs, surveiller les concurrents : le travail qui mange vos journées, fait pour vous. Vous parlez à votre équipe sur Discord comme à des collègues, et vous avez toujours le dernier mot.",
-    pick: "Tout ce que comprend votre formule", pickHint: "Votre équipe IA complète, installée sur votre ordinateur et adaptée à votre boutique. Un seul prix, rien à choisir, rien d'oublié.",
-    baseName: "La base : l'équipe sur votre ordinateur", baseDesc: "Votre équipe installée sur votre propre ordinateur et prête à travailler. Vous lui parlez sur Discord, depuis votre téléphone ou votre PC. Elle tourne jour et nuit et redémarre seule si quelque chose s'arrête.",
-    required: "Obligatoire", guideName: "Guide et prise en main", guideDesc: "Nous installons tout ensemble, pas à pas, et vous montrons comment utiliser votre équipe. Vous n'êtes jamais seul.", included: "Inclus",
-    extras: "Également inclus", careName: "Maintenance (mensuelle)", careDesc: "L'esprit tranquille : nous gardons votre équipe en marche, réparons ce qui casse et l'améliorons à mesure que votre boutique grandit. 4 heures de modifications par mois incluses, puis 25 € de l'heure.",
-    customName: "Adaptée à votre façon de travailler", customDesc: "Votre équipe construite autour de votre façon de faire : vos propres procédures, votre ton avec les clients, vos règles et vos outils. Nous cartographions votre fonctionnement avec vous, puis nous y adaptons chaque agent.",
-    winName: "Mac ou Windows", winDesc: "Votre équipe est installée sur l'ordinateur que vous avez déjà, Mac ou PC Windows.", perMonthShort: "/ mois", once: "une fois",
-    incTitle: "Inclus dans chaque formule",
-    promises: [["Garantie 30 jours", "Une fois votre équipe en marche, tout ce qui ne fonctionne pas comme décrit ici est corrigé gratuitement."],
-               ["Vos comptes restent à vous", "Vous ne nous donnez jamais de mot de passe. Vos codes d'accès restent verrouillés sur votre propre ordinateur, et vous pouvez couper un accès en un clic."],
-               ["Testé avant la remise", "Nous testons chaque agent et chaque connexion en direct avec vous avant de vous remettre l'équipe."],
-               ["Vous gardez la main", "Rien n'est envoyé, publié ou payé sans votre accord. Vous pouvez annuler une clé ou notre accès à tout moment."]],
-    toolsTitle: "Coûts de fonctionnement", toolsHint: "Payés par vous, directement à chaque fournisseur, sur vos propres comptes. Prix officiels relevés du 7 au 10 novembre 2026 ; les fournisseurs peuvent les changer.",
-    thTool: "Outil", thFor: "Sert à", thPrice: "Prix", need: "nécessaire", free: "Gratuit", current: "Vos offres actuelles", budget: "Votre budget", budgetNote: "vous décidez",
-    knowTitle: "Bon à savoir",
-    notes: ["<b>Non inclus :</b> votre budget publicitaire, les abonnements ci-dessus, et tout nouvel agent ou fonction hors de cette grille (chiffré avant tout travail).",
-            "<b>Paiement :</b> 50 % au démarrage, 50 % quand l'équipe tourne.",
-            "Prix en euros, offre valable 30 jours."],
-    yours: "Formule complète", oneTime: "Mise en place, tout compris", allIn: "Tous les agents, adaptés à votre façon de travailler", inc: "Inclus", perMonth: "Maintenance", toolsMonth: "Outils, payés aux fournisseurs", none: "aucune",
-    copy: "Copier ma sélection", copiedOk: "Copié. Collez-le dans votre message.", copiedFallback: "Sélectionnez le texte ci-dessous et copiez-le.",
-    summary: (names, total, care, win) => `Ma sélection : ${names}.${win ? " PC Windows." : ""} Mise en place : ${total}. Maintenance : ${care}.`,
-  },
-};
-const CHECK = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3.2 3L13 4.5"/></svg>';
 let lang = "en";
-const store = { get(k) { try { return localStorage.getItem(k); } catch { return null; } },
-                set(k, v) { try { localStorage.setItem(k, v); } catch {} } };
-const group = (n) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, lang === "fr" ? " " : ",");
-const eur = (n) => lang === "fr" ? `${group(n)} €` : `€${group(n)}`;
-const usd = (n) => lang === "fr" ? `${group(n)} $` : `$${group(n)}`;
-const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-
-function item(name, desc, price) {
-  return `<div class="item"><span class="box" style="background:var(--accent);border-color:var(--accent)">${CHECK.replace("<svg", '<svg style="opacity:1"')}</span>
-    <b>${esc(name)}</b><span class="price">${esc(price)}</span><span class="desc">${esc(desc)}</span></div>`;
+function setLang(l) {
+  lang = l;
+  document.documentElement.lang = l;
+  document.querySelectorAll("[data-l]").forEach((el) => { el.hidden = el.dataset.l !== l; });
+  document.querySelectorAll(".lang button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.set === l)));
+  document.querySelectorAll("option[data-en]").forEach((o) => { o.textContent = o.dataset[l]; });
+  document.getElementById("status").textContent = "";
+  try { localStorage.setItem("lang", l); } catch {}
 }
+document.querySelectorAll(".lang button").forEach((b) => b.addEventListener("click", () => setLang(b.dataset.set)));
 
-function render() {
-  const t = T[lang];
-  document.documentElement.lang = lang;
-  document.querySelectorAll("[data-t]").forEach((el) => { el.textContent = t[el.dataset.t]; });
-  document.querySelectorAll(".lang button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.set === lang)));
-  document.getElementById("menu").innerHTML = [item(t.baseName, t.baseDesc, t.inc),
-    ...AGENTS.map((a) => item(a[lang][0], a[lang][1], t.inc))].join("");
-  document.getElementById("extras").innerHTML = [item(t.customName, t.customDesc, t.inc), item(t.winName, t.winDesc, t.inc),
-    item(t.guideName, t.guideDesc, t.inc), item(t.careName, t.careDesc, `${eur(CARE)} ${t.perMonthShort}`)].join("");
-  document.getElementById("promises").innerHTML = t.promises.map(([b, p]) => `<div><b>${esc(b)}</b><p>${esc(p)}</p></div>`).join("");
-  document.getElementById("notes").innerHTML = t.notes.map((n) => `<li>${n}</li>`).join("");
-  let u = 0, e = 0;
-  document.getElementById("tools").innerHTML = TOOLS.map((tool) => {
-    u += tool.usd || 0; e += tool.eur || 0;
-    const [name, use, note] = tool[lang];
-    const price = tool.id === "meta" ? t.budget : tool.text ? t.current : tool.eur ? `${eur(tool.eur)} ${t.perMonthShort}` : tool.usd ? `${usd(tool.usd)} ${t.perMonthShort}` : t.free;
-    const small = tool.id === "meta" ? t.budgetNote : note;
-    return `<tr><td><b>${esc(name)}</b></td><td>${esc(use)}</td><td class="p">${esc(price)}${small ? `<small>${esc(small)}</small>` : ""}</td></tr>`;
-  }).join("");
-  document.getElementById("lines").innerHTML = `<p>${esc(t.allIn)}</p>`;
-  document.getElementById("total").textContent = eur(PACKAGE);
-  document.getElementById("monthly").textContent = `${eur(CARE)} ${t.perMonthShort}`;
-  document.getElementById("toolsum").textContent = `≈ ${usd(u)} + ${eur(e)} ${t.perMonthShort}`;
-}
+document.getElementById("form").addEventListener("submit", (ev) => {
+  ev.preventDefault();
+  const store = document.getElementById("store").value.trim();
+  const status = document.getElementById("status"), out = document.getElementById("out");
+  if (!store) {
+    status.textContent = lang === "fr" ? "Indiquez le site de votre boutique, puis recommencez." : "Add your store's website, then try again.";
+    document.getElementById("store").focus();
+    return;
+  }
+  const want = document.getElementById("want").selectedOptions[0].textContent;
+  const text = lang === "fr"
+    ? `Bonjour, je veux un échantillon gratuit. Ma boutique : ${store}. En premier : ${want}.`
+    : `Hi, I'd like a free sample. My store: ${store}. First: ${want}.`;
+  const done = lang === "fr" ? "Copié. Collez-le dans la conversation où vous avez reçu ce lien." : "Copied. Paste it in the chat where you got this link.";
+  const manual = lang === "fr" ? "Copiez ce texte et envoyez-le dans la conversation où vous avez reçu ce lien." : "Copy this text and send it in the chat where you got this link.";
+  out.value = text; out.hidden = false;
+  const fallback = () => { out.select(); status.textContent = manual; };
+  try { navigator.clipboard.writeText(text).then(() => { status.textContent = done; }, fallback); } catch { fallback(); }
+});
 
-document.querySelectorAll(".lang button").forEach((b) => b.addEventListener("click", () => { lang = b.dataset.set; store.set("lang", lang); render(); }));
-lang = store.get("lang") || ((navigator.language || "").toLowerCase().startsWith("fr") ? "fr" : "en");
-render();
+let saved = null;
+try { saved = localStorage.getItem("lang"); } catch {}
+setLang(saved || ((navigator.language || "").toLowerCase().startsWith("fr") ? "fr" : "en"));
 </script>
-
 </body>
 </html>
