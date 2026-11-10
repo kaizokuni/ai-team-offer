@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>AI Team Offer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@500;600&display=swap">
+<style>
+/* Layout: a menu of agents you tick on the left, a receipt that totals itself on the right (a bottom bar on phones). */
+:root {
+  --bg: #eef3f2; --surface: #ffffff; --ink: #10211f; --muted: #536965; --line: #d3dfdc;
+  --accent: #0a7a62; --accent-ink: #ffffff; --accent-soft: #dcefe9; --chip: #f4f8f7;
+  --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", Consolas, ui-monospace, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0c1615; --surface: #13211f; --ink: #e3efec; --muted: #94aaa5; --line: #263936;
+  --accent: #3ccaa6; --accent-ink: #06231c; --accent-soft: #123129; --chip: #182a27; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0c1615; --surface: #13211f; --ink: #e3efec; --muted: #94aaa5; --line: #263936;
+  --accent: #3ccaa6; --accent-ink: #06231c; --accent-soft: #123129; --chip: #182a27; color-scheme: dark }
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font: 400 1rem/1.55 var(--body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.wrap { max-width: 68rem; margin: 0 auto; padding-block: 2rem 7rem; display: grid; gap: 2.2rem; }
+h1, h2, h3 { font-family: var(--display); margin: 0; text-wrap: balance; }
+h1 { font-size: clamp(2.1rem, 5.5vw, 3.4rem); line-height: 1.04; font-weight: 800; letter-spacing: -0.02em; max-width: 16ch; }
+h2 { font-size: 1.3rem; font-weight: 700; }
+p { margin: 0; }
+.muted { color: var(--muted); }
+.eyebrow { font: 600 0.75rem/1 var(--body); letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
+
+.top { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; }
+.lang { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; padding: 3px; background: var(--surface); }
+.lang button { font: 600 0.8rem/1 var(--body); letter-spacing: 0.05em; border: 0; background: none; color: var(--muted);
+  padding: 0.5rem 0.85rem; border-radius: 999px; cursor: pointer; }
+.lang button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+header { display: grid; gap: 1rem; }
+.lead { font-size: 1.15rem; color: var(--muted); max-width: 44rem; }
+
+.layout { display: grid; grid-template-columns: minmax(0, 1fr) 21rem; gap: 2rem; align-items: start; }
+@media (max-width: 56rem) { .layout { grid-template-columns: minmax(0, 1fr); } }
+.col { display: grid; gap: 2.2rem; min-width: 0; }
+section { display: grid; gap: 0.9rem; }
+
+/* agent menu */
+.menu { display: grid; gap: 0.6rem; }
+.item { position: relative; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 0.25rem 0.9rem; align-items: start;
+  background: var(--surface); border: 1.5px solid var(--line); border-radius: 12px; padding: 1rem 1.1rem; cursor: pointer;
+  transition: border-color .15s, background .15s; }
+.item:hover { border-color: var(--accent); }
+.item input { position: absolute; opacity: 0; pointer-events: none; }
+.box { grid-row: span 2; width: 1.4rem; height: 1.4rem; margin-top: 0.1rem; border-radius: 6px; border: 2px solid var(--line);
+  display: grid; place-items: center; transition: background .15s, border-color .15s; }
+.box svg { width: 0.9rem; height: 0.9rem; stroke: var(--accent-ink); stroke-width: 3; fill: none; opacity: 0; }
+.item b { font: 600 1.05rem/1.3 var(--display); }
+.item .price { font: 600 1.05rem/1.3 var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.item .desc { grid-column: 2 / 4; color: var(--muted); font-size: 0.95rem; }
+.item:has(input:checked) { border-color: var(--accent); background: var(--accent-soft); }
+.item:has(input:checked) .box { background: var(--accent); border-color: var(--accent); }
+.item:has(input:checked) .box svg { opacity: 1; }
+.item:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
+.item.locked { cursor: default; }
+.tag { font: 600 0.7rem/1 var(--body); letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent);
+  border: 1px solid var(--accent); border-radius: 999px; padding: 0.25rem 0.5rem; margin-left: 0.4rem; vertical-align: 0.15em; white-space: nowrap; }
+.extras { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 0.6rem; }
+
+/* included */
+.included { background: var(--ink); color: var(--bg); border-radius: 14px; padding: 1.4rem 1.4rem 1.5rem; display: grid; gap: 1rem; }
+.included h2 { color: var(--bg); }
+.promises { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: 1rem 1.4rem; }
+.promises div { display: grid; gap: 0.25rem; border-top: 2px solid var(--accent); padding-top: 0.7rem; }
+.promises b { font: 600 1rem/1.3 var(--display); }
+.promises p { opacity: 0.8; font-size: 0.95rem; }
+
+/* tools */
+.tablewrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
+table { width: 100%; border-collapse: collapse; min-width: 34rem; }
+th, td { text-align: left; padding: 0.7rem 0.9rem; border-top: 1px solid var(--line); vertical-align: top; }
+thead th { border-top: 0; font: 600 0.72rem/1.2 var(--body); letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); }
+td.p { text-align: right; white-space: nowrap; font: 500 0.92rem/1.5 var(--mono); font-variant-numeric: tabular-nums; }
+td small { display: block; color: var(--muted); font: 400 0.82rem/1.4 var(--body); white-space: normal; }
+td .need { font: 600 0.68rem/1 var(--body); letter-spacing: 0.05em; text-transform: uppercase; color: var(--accent); margin-left: 0.4rem; }
+tr.off td { opacity: 0.45; }
+.notes { margin: 0; padding-left: 1.2rem; display: grid; gap: 0.4rem; color: var(--muted); }
+.notes b { color: var(--ink); }
+
+/* receipt */
+.receipt { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 1rem); background: var(--surface); border: 1.5px solid var(--ink);
+  border-radius: 14px; padding: 1.3rem; display: grid; gap: 1rem; }
+.lines { display: grid; gap: 0.35rem; font-size: 0.95rem; }
+.line { display: flex; justify-content: space-between; gap: 1rem; }
+.line span:last-child { font-family: var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.sum { border-top: 1.5px dashed var(--line); padding-top: 0.9rem; display: grid; gap: 0.2rem; }
+.big { font: 800 2.4rem/1 var(--display); letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.month { display: flex; justify-content: space-between; gap: 1rem; font-size: 0.95rem; }
+.month span:last-child { font-family: var(--mono); white-space: nowrap; }
+.copy { font: 600 0.95rem/1 var(--body); background: var(--accent); color: var(--accent-ink); border: 0; border-radius: 10px;
+  padding: 0.85rem 1rem; cursor: pointer; }
+.copy:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.copied { font-size: 0.85rem; color: var(--accent); min-height: 1.2em; }
+#copytext { width: 100%; font: 0.85rem/1.4 var(--mono); border: 1px solid var(--line); border-radius: 8px; padding: 0.5rem; background: var(--chip); color: var(--ink); }
+@media (max-width: 56rem) {
+  .receipt { position: fixed; left: 0; right: 0; bottom: 0; top: auto; border-radius: 14px 14px 0 0; border-width: 1.5px 0 0;
+    padding: 0.8rem max(16px, env(safe-area-inset-right, 0px)) calc(0.8rem + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+    grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 0.3rem 1rem; z-index: 5; box-shadow: 0 -8px 24px rgb(0 0 0 / 0.08); }
+  .receipt h2, .receipt .lines, .receipt .copied, .receipt #copytext { display: none; }
+  .receipt .sum { border: 0; padding: 0; }
+  .big { font-size: 1.8rem; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="top">
+    <span class="eyebrow" data-t="eyebrow"></span>
+    <div class="lang" role="group" aria-label="Language">
+      <button type="button" data-set="en" aria-pressed="true">EN</button>
+      <button type="button" data-set="fr" aria-pressed="false">FR</button>
+    </div>
+  </div>
+
+  <header>
+    <h1 data-t="title"></h1>
+    <p class="lead" data-t="lead"></p>
+  </header>
+
+  <div class="layout">
+    <div class="col">
+      <section aria-labelledby="h-pick">
+        <h2 id="h-pick" data-t="pick"></h2>
+        <p class="muted" data-t="pickHint"></p>
+        <div class="menu" id="menu"></div>
+      </section>
+
+      <section aria-labelledby="h-extra">
+        <h2 id="h-extra" data-t="extras"></h2>
+        <div class="extras" id="extras"></div>
+      </section>
+
+      <section class="included" aria-labelledby="h-inc">
+        <h2 id="h-inc" data-t="incTitle"></h2>
+        <div class="promises" id="promises"></div>
+      </section>
+
+      <section aria-labelledby="h-tools">
+        <h2 id="h-tools" data-t="toolsTitle"></h2>
+        <p class="muted" data-t="toolsHint"></p>
+        <div class="tablewrap"><table>
+          <thead><tr><th data-t="thTool"></th><th data-t="thFor"></th><th style="text-align:right" data-t="thPrice"></th></tr></thead>
+          <tbody id="tools"></tbody>
+        </table></div>
+      </section>
+
+      <section aria-labelledby="h-know">
+        <h2 id="h-know" data-t="knowTitle"></h2>
+        <ul class="notes" id="notes"></ul>
+      </section>
+    </div>
+
+    <aside class="receipt" aria-live="polite">
+      <h2 data-t="yours"></h2>
+      <div class="lines" id="lines"></div>
+      <div class="sum">
+        <span class="muted" data-t="oneTime"></span>
+        <span class="big" id="total"></span>
+        <div class="month"><span data-t="perMonth"></span><span id="monthly"></span></div>
+        <div class="month muted"><span data-t="toolsMonth"></span><span id="toolsum"></span></div>
+      </div>
+      <button type="button" class="copy" id="copy" data-t="copy"></button>
+      <span class="copied" id="copied"></span>
+      <textarea id="copytext" rows="4" readonly hidden aria-label="Selection"></textarea>
+    </aside>
+  </div>
+</div>
+
+<script>
+const BASE = 500, WINDOWS = 80, CARE = 100;
+const AGENTS = [
+  { id: "service", price: 200, tools: ["shopify", "mail"],
+    en: ["Customer service", "Twice a day it reads the store mailbox, finds each customer's order and delivery in Shopify and writes the replies. You approve each reply, refund or return in one recap on Discord."],
+    fr: ["Service client", "Deux fois par jour, il lit la boîte mail de la boutique, retrouve la commande et la livraison de chaque client dans Shopify et rédige les réponses. Vous validez chaque réponse, remboursement ou retour dans un récapitulatif sur Discord."] },
+  { id: "images", price: 150, tools: ["chatgpt"],
+    en: ["Ad images", "Image ads in 3 formats (square, 4:5, story 9:16) from your product photos and the references you approved."],
+    fr: ["Visuels pub", "Des visuels publicitaires en 3 formats (carré, 4:5, story 9:16) à partir de vos photos produit et des références que vous avez validées."] },
+  { id: "videos", price: 200, tools: ["elevenlabs", "higgsfield"],
+    en: ["Ad videos", "Video ads with a voice-over in the voice you choose, moving scenes and subtitles. The credit cost is shown before every generation."],
+    fr: ["Vidéos pub", "Des vidéos publicitaires avec une voix off dans la voix de votre choix, des scènes animées et des sous-titres. Le coût en crédits est affiché avant chaque génération."] },
+  { id: "watch", price: 100, tools: ["trendtrack"],
+    en: ["Competitor watch", "Finds the competitor ads that perform (reach, estimated spend, days running) and sends you their top 5 every Monday."],
+    fr: ["Veille concurrents", "Repère les pubs concurrentes qui marchent (portée, dépenses estimées, jours de diffusion) et vous envoie leur top 5 chaque lundi."] },
+  { id: "meta", price: 100, tools: ["meta"],
+    en: ["Meta ads", "Secure access to your ad account through a limited \"system user\", never admin. Adds your approved ads as paused copies and reads the stats. You activate them."],
+    fr: ["Pubs Meta", "Un accès sécurisé à votre compte publicitaire par un « utilisateur système » limité, jamais administrateur. Ajoute vos pubs validées en copies en pause et lit les statistiques. C'est vous qui activez."] },
+  { id: "email", price: 100, tools: ["klaviyo", "shopify"],
+    en: ["E-mail and store", "Klaviyo campaigns prepared as drafts, store improvement proposals, and your margins worked out from your real costs."],
+    fr: ["E-mails et boutique", "Des campagnes Klaviyo préparées en brouillon, des propositions d'amélioration de la boutique et vos marges calculées à partir de vos vrais coûts."] },
+];
+// Official prices checked 7 to 10 November 2026. usd/eur = monthly amount counted in the estimate.
+const TOOLS = [
+  { id: "claude", always: true, usd: 100, en: ["Claude", "The AI behind every agent", "Max plan, advised for several agents"], fr: ["Claude", "L'IA de chaque agent", "offre Max, conseillée pour plusieurs agents"] },
+  { id: "chatgpt", usd: 20, en: ["ChatGPT", "Ad images (Codex)", "Plus plan"], fr: ["ChatGPT", "Visuels pub (Codex)", "offre Plus"] },
+  { id: "elevenlabs", usd: 6, en: ["ElevenLabs", "Voice-overs", "Starter: 30,000 credits, commercial use"], fr: ["ElevenLabs", "Voix off", "Starter : 30 000 crédits, usage commercial"] },
+  { id: "higgsfield", eur: 39, en: ["Higgsfield", "Moving video scenes", "Plus, billed yearly: 1,000 credits a month"], fr: ["Higgsfield", "Scènes vidéo animées", "Plus, facturé à l'année : 1 000 crédits par mois"] },
+  { id: "trendtrack", usd: 62, en: ["TrendTrack", "Competitor ads (needs the API)", "Pro, billed yearly"], fr: ["TrendTrack", "Pubs concurrentes (API nécessaire)", "Pro, facturé à l'année"] },
+  { id: "klaviyo", usd: 0, en: ["Klaviyo", "E-mail campaigns", "free up to 250 contacts, then from $20 / month"], fr: ["Klaviyo", "Campagnes e-mail", "gratuit jusqu'à 250 contacts, puis dès 20 $ / mois"] },
+  { id: "discord", always: true, usd: 0, en: ["Discord, Tailscale", "Talking to the agents, private remote access", ""], fr: ["Discord, Tailscale", "Parler aux agents, accès à distance privé", ""] },
+  { id: "shopify", text: true, en: ["Shopify, store mailbox", "Your store and its e-mails", ""], fr: ["Shopify, boîte mail", "Votre boutique et ses e-mails", ""] },
+  { id: "meta", text: true, en: ["Meta ads", "Your ads", ""], fr: ["Pubs Meta", "Vos publicités", ""] },
+];
+const T = {
+  en: {
+    eyebrow: "Price sheet · November 2026", title: "Your AI team, built around your store",
+    lead: "AI agents that run on your own computer and work with you on Discord. They prepare, you approve: nothing is sent, published or paid without your yes.",
+    pick: "Pick your agents", pickHint: "Tick the agents you want. The base is required, everything else is your choice.",
+    baseName: "Base: the team on your computer", baseDesc: "Your agents on Discord, each with its own job. An agent that stops restarts on its own. Your keys stored encrypted on your computer, created and pasted by you. Private remote access for maintenance, which you can switch off.",
+    required: "Required", guideName: "Guide and handover", guideDesc: "The step-by-step guide to create each key yourself, one setup session together and the operating notes.", included: "Included",
+    extras: "Options", careName: "Maintenance", careDesc: "We watch the agents, fix what breaks, adjust the workflows and guide your Meta key renewal every 60 days. 4 hours of changes a month included, then €25 an hour.",
+    winName: "Windows PC", winDesc: "The setup is built and proven on a Mac. On a Windows PC, a one-time adaptation.", perMonthShort: "/ month", once: "once",
+    incTitle: "Included in every package",
+    promises: [["Guarantee, 30 days", "Once your team is running, anything that does not work as described here is fixed free of charge."],
+               ["Secure by design", "You create every key yourself. It is stored encrypted on your computer and we never see it. Each key has the smallest access that works."],
+               ["Tested before handover", "We test every agent and every connection live with you before the team is yours."],
+               ["You stay in control", "Nothing is sent, published or paid without your yes. You can cancel any key or our access at any time."]],
+    toolsTitle: "Running costs", toolsHint: "Paid by you, directly to each provider, on your own accounts. The tools your selection needs are marked. Official prices checked 7 to 10 November 2026; providers can change them.",
+    thTool: "Tool", thFor: "Used for", thPrice: "Price", need: "needed", free: "Free", current: "Your current plans", budget: "Your budget", budgetNote: "you decide",
+    knowTitle: "Good to know",
+    notes: ["<b>Not included:</b> your ad budget, the tool subscriptions above, and new agents or features beyond this sheet (quoted before any work).",
+            "<b>Payment:</b> 50% at the start, 50% when the team is running.",
+            "Prices in euros, valid 30 days."],
+    yours: "Your selection", oneTime: "One-time setup", perMonth: "Maintenance", toolsMonth: "Tools, paid to providers", none: "none",
+    copy: "Copy my selection", copiedOk: "Copied. Paste it in your message to us.", copiedFallback: "Select the text below and copy it.",
+    summary: (names, total, care, win) => `My selection: ${names}.${win ? " Windows PC." : ""} One-time setup: ${total}. Maintenance: ${care}.`,
+  },
+  fr: {
+    eyebrow: "Grille tarifaire · novembre 2026", title: "Votre équipe IA, construite autour de votre boutique",
+    lead: "Des agents IA qui tournent sur votre propre ordinateur et travaillent avec vous sur Discord. Ils préparent, vous validez : rien n'est envoyé, publié ou payé sans votre accord.",
+    pick: "Choisissez vos agents", pickHint: "Cochez les agents que vous voulez. La base est obligatoire, le reste est à votre choix.",
+    baseName: "La base : l'équipe sur votre ordinateur", baseDesc: "Vos agents sur Discord, chacun avec son rôle. Un agent qui s'arrête redémarre seul. Vos clés chiffrées sur votre ordinateur, créées et collées par vous. Un accès à distance privé pour la maintenance, que vous pouvez couper.",
+    required: "Obligatoire", guideName: "Guide et prise en main", guideDesc: "Le guide pas à pas pour créer chaque clé vous-même, une séance d'installation ensemble et les notes d'utilisation.", included: "Inclus",
+    extras: "Options", careName: "Maintenance", careDesc: "Nous surveillons les agents, réparons ce qui casse, ajustons les procédures et vous guidons pour renouveler la clé Meta tous les 60 jours. 4 heures de modifications par mois incluses, puis 25 € de l'heure.",
+    winName: "PC Windows", winDesc: "L'installation est construite et éprouvée sur Mac. Sur un PC Windows, une adaptation unique.", perMonthShort: "/ mois", once: "une fois",
+    incTitle: "Inclus dans chaque formule",
+    promises: [["Garantie 30 jours", "Une fois votre équipe en marche, tout ce qui ne fonctionne pas comme décrit ici est corrigé gratuitement."],
+               ["Sécurisé dès la conception", "Vous créez chaque clé vous-même. Elle est chiffrée sur votre ordinateur et nous ne la voyons jamais. Chaque clé a le minimum d'accès nécessaire."],
+               ["Testé avant la remise", "Nous testons chaque agent et chaque connexion en direct avec vous avant de vous remettre l'équipe."],
+               ["Vous gardez la main", "Rien n'est envoyé, publié ou payé sans votre accord. Vous pouvez annuler une clé ou notre accès à tout moment."]],
+    toolsTitle: "Coûts de fonctionnement", toolsHint: "Payés par vous, directement à chaque fournisseur, sur vos propres comptes. Les outils nécessaires à votre sélection sont signalés. Prix officiels relevés du 7 au 10 novembre 2026 ; les fournisseurs peuvent les changer.",
+    thTool: "Outil", thFor: "Sert à", thPrice: "Prix", need: "nécessaire", free: "Gratuit", current: "Vos offres actuelles", budget: "Votre budget", budgetNote: "vous décidez",
+    knowTitle: "Bon à savoir",
+    notes: ["<b>Non inclus :</b> votre budget publicitaire, les abonnements ci-dessus, et tout nouvel agent ou fonction hors de cette grille (chiffré avant tout travail).",
+            "<b>Paiement :</b> 50 % au démarrage, 50 % quand l'équipe tourne.",
+            "Prix en euros, offre valable 30 jours."],
+    yours: "Votre sélection", oneTime: "Mise en place", perMonth: "Maintenance", toolsMonth: "Outils, payés aux fournisseurs", none: "aucune",
+    copy: "Copier ma sélection", copiedOk: "Copié. Collez-le dans votre message.", copiedFallback: "Sélectionnez le texte ci-dessous et copiez-le.",
+    summary: (names, total, care, win) => `Ma sélection : ${names}.${win ? " PC Windows." : ""} Mise en place : ${total}. Maintenance : ${care}.`,
+  },
+};
+const CHECK = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3.2 3L13 4.5"/></svg>';
+let lang = "en";
+const picked = new Set(["service", "images", "videos"]);
+let care = true, win = false;
+
+const store = { get(k) { try { return localStorage.getItem(k); } catch { return null; } },
+                set(k, v) { try { localStorage.setItem(k, v); } catch {} } };
+const group = (n) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, lang === "fr" ? " " : ",");
+const eur = (n) => lang === "fr" ? `${group(n)} €` : `€${group(n)}`;
+const usd = (n) => lang === "fr" ? `${group(n)} $` : `$${group(n)}`;
+const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+function item({ id, name, desc, price, checked, locked, tag }) {
+  return `<label class="item${locked ? " locked" : ""}" for="opt-${id}">
+    <input type="checkbox" id="opt-${id}" data-id="${id}" ${checked ? "checked" : ""} ${locked ? "disabled" : ""}>
+    <span class="box">${CHECK}</span>
+    <b>${esc(name)}${tag ? `<span class="tag">${esc(tag)}</span>` : ""}</b>
+    <span class="price">${price}</span>
+    <span class="desc">${esc(desc)}</span>
+  </label>`;
+}
+
+function render() {
+  const t = T[lang];
+  document.documentElement.lang = lang;
+  document.querySelectorAll("[data-t]").forEach((el) => { el.textContent = t[el.dataset.t]; });
+  document.querySelectorAll(".lang button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.set === lang)));
+  document.getElementById("menu").innerHTML =
+    item({ id: "base", name: t.baseName, desc: t.baseDesc, price: eur(BASE), checked: true, locked: true, tag: t.required }) +
+    AGENTS.map((a) => item({ id: a.id, name: a[lang][0], desc: a[lang][1], price: eur(a.price), checked: picked.has(a.id) })).join("") +
+    item({ id: "guide", name: t.guideName, desc: t.guideDesc, price: t.included, checked: true, locked: true });
+  document.getElementById("extras").innerHTML =
+    item({ id: "care", name: t.careName, desc: t.careDesc, price: `${eur(CARE)} ${t.perMonthShort}`, checked: care }) +
+    item({ id: "win", name: t.winName, desc: t.winDesc, price: `+${eur(WINDOWS)}`, checked: win });
+  document.getElementById("promises").innerHTML = t.promises.map(([b, p]) => `<div><b>${esc(b)}</b><p>${esc(p)}</p></div>`).join("");
+  document.getElementById("notes").innerHTML = t.notes.map((n) => `<li>${n}</li>`).join("");
+  update();
+}
+
+function update() {
+  const t = T[lang];
+  const chosen = AGENTS.filter((a) => picked.has(a.id));
+  const total = BASE + chosen.reduce((s, a) => s + a.price, 0) + (win ? WINDOWS : 0);
+  const needed = new Set(chosen.flatMap((a) => a.tools));
+  let u = 0, e = 0;
+  document.getElementById("tools").innerHTML = TOOLS.map((tool) => {
+    const on = tool.always || needed.has(tool.id);
+    if (on) { u += tool.usd || 0; e += tool.eur || 0; }
+    const [name, use, note] = tool[lang];
+    const price = tool.id === "meta" ? t.budget : tool.text ? t.current : tool.eur ? `${eur(tool.eur)} ${t.perMonthShort}` : tool.usd ? `${usd(tool.usd)} ${t.perMonthShort}` : t.free;
+    const small = tool.id === "meta" ? t.budgetNote : note;
+    return `<tr class="${on ? "" : "off"}"><td><b>${esc(name)}</b>${on && !tool.always ? `<span class="need">${t.need}</span>` : ""}</td>
+      <td>${esc(use)}</td><td class="p">${esc(price)}${small ? `<small>${esc(small)}</small>` : ""}</td></tr>`;
+  }).join("");
+  const lines = [[t.baseName.split(":")[0], eur(BASE)], ...chosen.map((a) => [a[lang][0], eur(a.price)]), [t.guideName, t.included]];
+  if (win) lines.push([t.winName, `+${eur(WINDOWS)}`]);
+  document.getElementById("lines").innerHTML = lines.map(([a, b]) => `<div class="line"><span>${esc(a)}</span><span>${b}</span></div>`).join("");
+  document.getElementById("total").textContent = eur(total);
+  document.getElementById("monthly").textContent = care ? `${eur(CARE)} ${t.perMonthShort}` : t.none;
+  document.getElementById("toolsum").textContent = `≈ ${usd(u)}${e ? ` + ${eur(e)}` : ""} ${t.perMonthShort}`;
+  store.set("offer", JSON.stringify({ picked: [...picked], care, win }));
+}
+
+function summary() {
+  const t = T[lang];
+  const names = [t.baseName.split(":")[0], ...AGENTS.filter((a) => picked.has(a.id)).map((a) => a[lang][0])].join(", ");
+  const total = BASE + AGENTS.filter((a) => picked.has(a.id)).reduce((s, a) => s + a.price, 0) + (win ? WINDOWS : 0);
+  return t.summary(names, eur(total), care ? `${eur(CARE)} ${t.perMonthShort}` : t.none, win);
+}
+
+document.addEventListener("change", (ev) => {
+  const id = ev.target.dataset && ev.target.dataset.id;
+  if (!id) return;
+  if (id === "care") care = ev.target.checked;
+  else if (id === "win") win = ev.target.checked;
+  else if (ev.target.checked) picked.add(id); else picked.delete(id);
+  document.getElementById("copied").textContent = "";
+  update();
+});
+document.querySelectorAll(".lang button").forEach((b) => b.addEventListener("click", () => { lang = b.dataset.set; store.set("lang", lang); render(); }));
+document.getElementById("copy").addEventListener("click", () => {
+  const text = summary(), out = document.getElementById("copied"), box = document.getElementById("copytext");
+  const fallback = () => { box.hidden = false; box.value = text; box.select(); out.textContent = T[lang].copiedFallback; };
+  try {
+    navigator.clipboard.writeText(text).then(() => { box.hidden = true; out.textContent = T[lang].copiedOk; }, fallback);
+  } catch { fallback(); }
+});
+
+try {
+  const saved = JSON.parse(store.get("offer") || "null");
+  if (saved) { picked.clear(); saved.picked.forEach((id) => picked.add(id)); care = !!saved.care; win = !!saved.win; }
+} catch {}
+lang = store.get("lang") || ((navigator.language || "").toLowerCase().startsWith("fr") ? "fr" : "en");
+render();
+</script>
+
+</body>
+</html>
