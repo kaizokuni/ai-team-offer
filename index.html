@@ -68,13 +68,12 @@ section { display: grid; gap: 0.9rem; }
 .item.locked { cursor: default; }
 .tag { font: 600 0.7rem/1 var(--body); letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent);
   border: 1px solid var(--accent); border-radius: 999px; padding: 0.25rem 0.5rem; margin-left: 0.4rem; vertical-align: 0.15em; white-space: nowrap; }
-.extras { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 0.6rem; }
+.extras { display: grid; gap: 0.6rem; }
 
 /* included */
 .included { background: var(--ink); color: var(--bg); border-radius: 14px; padding: 1.4rem 1.4rem 1.5rem; display: grid; gap: 1rem; }
 .included h2 { color: var(--bg); }
 .promises { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: 1rem 1.4rem; }
-.promises div:first-child { grid-column: 1 / -1; }
 .promises div { display: grid; gap: 0.25rem; border-top: 2px solid var(--accent); padding-top: 0.7rem; }
 .promises b { font: 600 1rem/1.3 var(--display); }
 .promises p { opacity: 0.8; font-size: 0.95rem; }
@@ -183,7 +182,7 @@ tr.off td { opacity: 0.45; }
 </div>
 
 <script>
-const BASE = 500, WINDOWS = 80, CARE = 100;
+const BASE = 500, WINDOWS = 80, CARE = 100, CUSTOM = 1000;
 const AGENTS = [
   { id: "service", price: 200, tools: ["shopify", "mail"],
     en: ["Customer service", "Never leave a customer waiting. Twice a day it reads your store's e-mails, checks each order and delivery, and writes the answers for you. You read, approve, done: hours saved every week."],
@@ -224,10 +223,10 @@ const T = {
     baseName: "Base: the team on your computer", baseDesc: "Your team installed on your own computer and ready to work. You talk to it on Discord, from your phone or your PC. It runs day and night and restarts by itself if anything stops.",
     required: "Required", guideName: "Guide and handover", guideDesc: "We set everything up together, step by step, and show you how to use your team. You are never left on your own.", included: "Included",
     extras: "Options", careName: "Maintenance", careDesc: "Peace of mind: we keep your team running, fix anything that breaks and improve it as your store grows. 4 hours of changes a month included, then €25 an hour.",
+    customName: "Customized to your workflow", customDesc: "Your team built around the way you already work: your own processes, your tone with customers, your rules and your tools. We map your workflow with you, then shape every agent to it.",
     winName: "Windows PC", winDesc: "Your computer is a Windows PC? We adapt the setup for it, once.", perMonthShort: "/ month", once: "once",
     incTitle: "Included in every package",
-    promises: [["Customized to your workflow", "Your team follows the way you already work: your tone with customers, your rules, your products, your approval steps. We adapt each agent to your store, not the other way around."],
-               ["Guarantee, 30 days", "Once your team is running, anything that does not work as described here is fixed free of charge."],
+    promises: [["Guarantee, 30 days", "Once your team is running, anything that does not work as described here is fixed free of charge."],
                ["Your accounts stay yours", "You never give us a password. Your access codes stay locked on your own computer, and you can cut any access in one click."],
                ["Tested before handover", "We test every agent and every connection live with you before the team is yours."],
                ["You stay in control", "Nothing is sent, published or paid without your yes. You can cancel any key or our access at any time."]],
@@ -248,10 +247,10 @@ const T = {
     baseName: "La base : l'équipe sur votre ordinateur", baseDesc: "Votre équipe installée sur votre propre ordinateur et prête à travailler. Vous lui parlez sur Discord, depuis votre téléphone ou votre PC. Elle tourne jour et nuit et redémarre seule si quelque chose s'arrête.",
     required: "Obligatoire", guideName: "Guide et prise en main", guideDesc: "Nous installons tout ensemble, pas à pas, et vous montrons comment utiliser votre équipe. Vous n'êtes jamais seul.", included: "Inclus",
     extras: "Options", careName: "Maintenance", careDesc: "L'esprit tranquille : nous gardons votre équipe en marche, réparons ce qui casse et l'améliorons à mesure que votre boutique grandit. 4 heures de modifications par mois incluses, puis 25 € de l'heure.",
+    customName: "Adaptée à votre façon de travailler", customDesc: "Votre équipe construite autour de votre façon de faire : vos propres procédures, votre ton avec les clients, vos règles et vos outils. Nous cartographions votre fonctionnement avec vous, puis nous y adaptons chaque agent.",
     winName: "PC Windows", winDesc: "Votre ordinateur est un PC Windows ? Nous adaptons l'installation, une seule fois.", perMonthShort: "/ mois", once: "une fois",
     incTitle: "Inclus dans chaque formule",
-    promises: [["Adaptée à votre façon de travailler", "Votre équipe suit votre façon de faire : votre ton avec les clients, vos règles, vos produits, vos étapes de validation. Nous adaptons chaque agent à votre boutique, pas l'inverse."],
-               ["Garantie 30 jours", "Une fois votre équipe en marche, tout ce qui ne fonctionne pas comme décrit ici est corrigé gratuitement."],
+    promises: [["Garantie 30 jours", "Une fois votre équipe en marche, tout ce qui ne fonctionne pas comme décrit ici est corrigé gratuitement."],
                ["Vos comptes restent à vous", "Vous ne nous donnez jamais de mot de passe. Vos codes d'accès restent verrouillés sur votre propre ordinateur, et vous pouvez couper un accès en un clic."],
                ["Testé avant la remise", "Nous testons chaque agent et chaque connexion en direct avec vous avant de vous remettre l'équipe."],
                ["Vous gardez la main", "Rien n'est envoyé, publié ou payé sans votre accord. Vous pouvez annuler une clé ou notre accès à tout moment."]],
@@ -269,7 +268,7 @@ const T = {
 const CHECK = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3.2 3L13 4.5"/></svg>';
 let lang = "en";
 const picked = new Set(["service", "images", "videos"]);
-let care = true, win = false;
+let care = true, win = false, custom = false;
 
 const store = { get(k) { try { return localStorage.getItem(k); } catch { return null; } },
                 set(k, v) { try { localStorage.setItem(k, v); } catch {} } };
@@ -299,6 +298,7 @@ function render() {
     item({ id: "guide", name: t.guideName, desc: t.guideDesc, price: t.included, checked: true, locked: true });
   document.getElementById("extras").innerHTML =
     item({ id: "care", name: t.careName, desc: t.careDesc, price: `${eur(CARE)} ${t.perMonthShort}`, checked: care }) +
+    item({ id: "custom", name: t.customName, desc: t.customDesc, price: `+${eur(CUSTOM)}`, checked: custom }) +
     item({ id: "win", name: t.winName, desc: t.winDesc, price: `+${eur(WINDOWS)}`, checked: win });
   document.getElementById("promises").innerHTML = t.promises.map(([b, p]) => `<div><b>${esc(b)}</b><p>${esc(p)}</p></div>`).join("");
   document.getElementById("notes").innerHTML = t.notes.map((n) => `<li>${n}</li>`).join("");
@@ -308,7 +308,7 @@ function render() {
 function update() {
   const t = T[lang];
   const chosen = AGENTS.filter((a) => picked.has(a.id));
-  const total = BASE + chosen.reduce((s, a) => s + a.price, 0) + (win ? WINDOWS : 0);
+  const total = BASE + chosen.reduce((s, a) => s + a.price, 0) + (win ? WINDOWS : 0) + (custom ? CUSTOM : 0);
   const needed = new Set(chosen.flatMap((a) => a.tools));
   let u = 0, e = 0;
   document.getElementById("tools").innerHTML = TOOLS.map((tool) => {
@@ -321,18 +321,19 @@ function update() {
       <td>${esc(use)}</td><td class="p">${esc(price)}${small ? `<small>${esc(small)}</small>` : ""}</td></tr>`;
   }).join("");
   const lines = [[t.baseName.split(":")[0], eur(BASE)], ...chosen.map((a) => [a[lang][0], eur(a.price)]), [t.guideName, t.included]];
+  if (custom) lines.push([t.customName, `+${eur(CUSTOM)}`]);
   if (win) lines.push([t.winName, `+${eur(WINDOWS)}`]);
   document.getElementById("lines").innerHTML = lines.map(([a, b]) => `<div class="line"><span>${esc(a)}</span><span>${b}</span></div>`).join("");
   document.getElementById("total").textContent = eur(total);
   document.getElementById("monthly").textContent = care ? `${eur(CARE)} ${t.perMonthShort}` : t.none;
   document.getElementById("toolsum").textContent = `≈ ${usd(u)}${e ? ` + ${eur(e)}` : ""} ${t.perMonthShort}`;
-  store.set("offer", JSON.stringify({ picked: [...picked], care, win }));
+  store.set("offer", JSON.stringify({ picked: [...picked], care, win, custom }));
 }
 
 function summary() {
   const t = T[lang];
-  const names = [t.baseName.split(":")[0], ...AGENTS.filter((a) => picked.has(a.id)).map((a) => a[lang][0])].join(", ");
-  const total = BASE + AGENTS.filter((a) => picked.has(a.id)).reduce((s, a) => s + a.price, 0) + (win ? WINDOWS : 0);
+  const names = [t.baseName.split(":")[0], ...AGENTS.filter((a) => picked.has(a.id)).map((a) => a[lang][0]), ...(custom ? [t.customName] : [])].join(", ");
+  const total = BASE + AGENTS.filter((a) => picked.has(a.id)).reduce((s, a) => s + a.price, 0) + (win ? WINDOWS : 0) + (custom ? CUSTOM : 0);
   return t.summary(names, eur(total), care ? `${eur(CARE)} ${t.perMonthShort}` : t.none, win);
 }
 
@@ -341,6 +342,7 @@ document.addEventListener("change", (ev) => {
   if (!id) return;
   if (id === "care") care = ev.target.checked;
   else if (id === "win") win = ev.target.checked;
+  else if (id === "custom") custom = ev.target.checked;
   else if (ev.target.checked) picked.add(id); else picked.delete(id);
   document.getElementById("copied").textContent = "";
   update();
@@ -356,7 +358,7 @@ document.getElementById("copy").addEventListener("click", () => {
 
 try {
   const saved = JSON.parse(store.get("offer") || "null");
-  if (saved) { picked.clear(); saved.picked.forEach((id) => picked.add(id)); care = !!saved.care; win = !!saved.win; }
+  if (saved) { picked.clear(); saved.picked.forEach((id) => picked.add(id)); care = !!saved.care; win = !!saved.win; custom = !!saved.custom; }
 } catch {}
 lang = store.get("lang") || ((navigator.language || "").toLowerCase().startsWith("fr") ? "fr" : "en");
 render();
