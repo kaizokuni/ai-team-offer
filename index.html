@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@500;600&display=swap">
 <style>
-/* Layout: a menu of agents you tick on the left, a receipt that totals itself on the right (a bottom bar on phones). */
+/* Layout: everything the package holds on the left, one price card on the right (a bottom bar on phones). */
 :root {
   --bg: #eef3f2; --surface: #ffffff; --ink: #10211f; --muted: #536965; --line: #d3dfdc;
   --accent: #0a7a62; --accent-ink: #ffffff; --accent-soft: #dcefe9; --chip: #f4f8f7;
@@ -50,10 +50,9 @@ section { display: grid; gap: 0.9rem; }
 
 /* agent menu */
 .menu { display: grid; gap: 0.6rem; }
-.item { position: relative; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 0.25rem 0.9rem; align-items: start;
+.item { position: relative; cursor: default; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 0.25rem 0.9rem; align-items: start;
   background: var(--surface); border: 1.5px solid var(--line); border-radius: 12px; padding: 1rem 1.1rem; cursor: pointer;
   transition: border-color .15s, background .15s; }
-.item:hover { border-color: var(--accent); }
 .item input { position: absolute; opacity: 0; pointer-events: none; }
 .box { grid-row: span 2; width: 1.4rem; height: 1.4rem; margin-top: 0.1rem; border-radius: 6px; border: 2px solid var(--line);
   display: grid; place-items: center; transition: background .15s, border-color .15s; }
@@ -174,15 +173,12 @@ tr.off td { opacity: 0.45; }
         <div class="month"><span data-t="perMonth"></span><span id="monthly"></span></div>
         <div class="month muted"><span data-t="toolsMonth"></span><span id="toolsum"></span></div>
       </div>
-      <button type="button" class="copy" id="copy" data-t="copy"></button>
-      <span class="copied" id="copied"></span>
-      <textarea id="copytext" rows="4" readonly hidden aria-label="Selection"></textarea>
     </aside>
   </div>
 </div>
 
 <script>
-const BASE = 500, WINDOWS = 80, CARE = 100, CUSTOM = 1000;
+const PACKAGE = 1000, CARE = 100;
 const AGENTS = [
   { id: "service", price: 200, tools: ["shopify", "mail"],
     en: ["Customer service", "Never leave a customer waiting. Twice a day it reads your store's e-mails, checks each order and delivery, and writes the answers for you. You read, approve, done: hours saved every week."],
@@ -219,57 +215,54 @@ const T = {
   en: {
     eyebrow: "Price sheet · November 2026", title: "An AI team that works for your store",
     lead: "Answering customers, making ads, watching competitors: the work that eats your days, done for you. You chat with your team on Discord like with colleagues, and you always have the final say.",
-    pick: "Pick your agents", pickHint: "Tick the agents you want. The base is required, everything else is your choice.",
+    pick: "Everything in your package", pickHint: "Your complete AI team, set up on your computer and customized to your store. One price, nothing to choose, nothing left out.",
     baseName: "Base: the team on your computer", baseDesc: "Your team installed on your own computer and ready to work. You talk to it on Discord, from your phone or your PC. It runs day and night and restarts by itself if anything stops.",
     required: "Required", guideName: "Guide and handover", guideDesc: "We set everything up together, step by step, and show you how to use your team. You are never left on your own.", included: "Included",
-    extras: "Options", careName: "Maintenance", careDesc: "Peace of mind: we keep your team running, fix anything that breaks and improve it as your store grows. 4 hours of changes a month included, then €25 an hour.",
+    extras: "Also included", careName: "Maintenance (monthly)", careDesc: "Peace of mind: we keep your team running, fix anything that breaks and improve it as your store grows. 4 hours of changes a month included, then €25 an hour.",
     customName: "Customized to your workflow", customDesc: "Your team built around the way you already work: your own processes, your tone with customers, your rules and your tools. We map your workflow with you, then shape every agent to it.",
-    winName: "Windows PC", winDesc: "Your computer is a Windows PC? We adapt the setup for it, once.", perMonthShort: "/ month", once: "once",
+    winName: "Mac or Windows", winDesc: "Your team is set up on the computer you already have, Mac or Windows PC.", perMonthShort: "/ month", once: "once",
     incTitle: "Included in every package",
     promises: [["Guarantee, 30 days", "Once your team is running, anything that does not work as described here is fixed free of charge."],
                ["Your accounts stay yours", "You never give us a password. Your access codes stay locked on your own computer, and you can cut any access in one click."],
                ["Tested before handover", "We test every agent and every connection live with you before the team is yours."],
                ["You stay in control", "Nothing is sent, published or paid without your yes. You can cancel any key or our access at any time."]],
-    toolsTitle: "Running costs", toolsHint: "Paid by you, directly to each provider, on your own accounts. The tools your selection needs are marked. Official prices checked 7 to 10 November 2026; providers can change them.",
+    toolsTitle: "Running costs", toolsHint: "Paid by you, directly to each provider, on your own accounts. Official prices checked 7 to 10 November 2026; providers can change them.",
     thTool: "Tool", thFor: "Used for", thPrice: "Price", need: "needed", free: "Free", current: "Your current plans", budget: "Your budget", budgetNote: "you decide",
     knowTitle: "Good to know",
     notes: ["<b>Not included:</b> your ad budget, the tool subscriptions above, and new agents or features beyond this sheet (quoted before any work).",
             "<b>Payment:</b> 50% at the start, 50% when the team is running.",
             "Prices in euros, valid 30 days."],
-    yours: "Your selection", oneTime: "One-time setup", perMonth: "Maintenance", toolsMonth: "Tools, paid to providers", none: "none",
+    yours: "Full package", oneTime: "One-time setup, everything included", allIn: "Every agent, customized to your workflow", inc: "Included", perMonth: "Maintenance", toolsMonth: "Tools, paid to providers", none: "none",
     copy: "Copy my selection", copiedOk: "Copied. Paste it in your message to us.", copiedFallback: "Select the text below and copy it.",
     summary: (names, total, care, win) => `My selection: ${names}.${win ? " Windows PC." : ""} One-time setup: ${total}. Maintenance: ${care}.`,
   },
   fr: {
     eyebrow: "Grille tarifaire · novembre 2026", title: "Une équipe IA qui travaille pour votre boutique",
     lead: "Répondre aux clients, créer les pubs, surveiller les concurrents : le travail qui mange vos journées, fait pour vous. Vous parlez à votre équipe sur Discord comme à des collègues, et vous avez toujours le dernier mot.",
-    pick: "Choisissez vos agents", pickHint: "Cochez les agents que vous voulez. La base est obligatoire, le reste est à votre choix.",
+    pick: "Tout ce que comprend votre formule", pickHint: "Votre équipe IA complète, installée sur votre ordinateur et adaptée à votre boutique. Un seul prix, rien à choisir, rien d'oublié.",
     baseName: "La base : l'équipe sur votre ordinateur", baseDesc: "Votre équipe installée sur votre propre ordinateur et prête à travailler. Vous lui parlez sur Discord, depuis votre téléphone ou votre PC. Elle tourne jour et nuit et redémarre seule si quelque chose s'arrête.",
     required: "Obligatoire", guideName: "Guide et prise en main", guideDesc: "Nous installons tout ensemble, pas à pas, et vous montrons comment utiliser votre équipe. Vous n'êtes jamais seul.", included: "Inclus",
-    extras: "Options", careName: "Maintenance", careDesc: "L'esprit tranquille : nous gardons votre équipe en marche, réparons ce qui casse et l'améliorons à mesure que votre boutique grandit. 4 heures de modifications par mois incluses, puis 25 € de l'heure.",
+    extras: "Également inclus", careName: "Maintenance (mensuelle)", careDesc: "L'esprit tranquille : nous gardons votre équipe en marche, réparons ce qui casse et l'améliorons à mesure que votre boutique grandit. 4 heures de modifications par mois incluses, puis 25 € de l'heure.",
     customName: "Adaptée à votre façon de travailler", customDesc: "Votre équipe construite autour de votre façon de faire : vos propres procédures, votre ton avec les clients, vos règles et vos outils. Nous cartographions votre fonctionnement avec vous, puis nous y adaptons chaque agent.",
-    winName: "PC Windows", winDesc: "Votre ordinateur est un PC Windows ? Nous adaptons l'installation, une seule fois.", perMonthShort: "/ mois", once: "une fois",
+    winName: "Mac ou Windows", winDesc: "Votre équipe est installée sur l'ordinateur que vous avez déjà, Mac ou PC Windows.", perMonthShort: "/ mois", once: "une fois",
     incTitle: "Inclus dans chaque formule",
     promises: [["Garantie 30 jours", "Une fois votre équipe en marche, tout ce qui ne fonctionne pas comme décrit ici est corrigé gratuitement."],
                ["Vos comptes restent à vous", "Vous ne nous donnez jamais de mot de passe. Vos codes d'accès restent verrouillés sur votre propre ordinateur, et vous pouvez couper un accès en un clic."],
                ["Testé avant la remise", "Nous testons chaque agent et chaque connexion en direct avec vous avant de vous remettre l'équipe."],
                ["Vous gardez la main", "Rien n'est envoyé, publié ou payé sans votre accord. Vous pouvez annuler une clé ou notre accès à tout moment."]],
-    toolsTitle: "Coûts de fonctionnement", toolsHint: "Payés par vous, directement à chaque fournisseur, sur vos propres comptes. Les outils nécessaires à votre sélection sont signalés. Prix officiels relevés du 7 au 10 novembre 2026 ; les fournisseurs peuvent les changer.",
+    toolsTitle: "Coûts de fonctionnement", toolsHint: "Payés par vous, directement à chaque fournisseur, sur vos propres comptes. Prix officiels relevés du 7 au 10 novembre 2026 ; les fournisseurs peuvent les changer.",
     thTool: "Outil", thFor: "Sert à", thPrice: "Prix", need: "nécessaire", free: "Gratuit", current: "Vos offres actuelles", budget: "Votre budget", budgetNote: "vous décidez",
     knowTitle: "Bon à savoir",
     notes: ["<b>Non inclus :</b> votre budget publicitaire, les abonnements ci-dessus, et tout nouvel agent ou fonction hors de cette grille (chiffré avant tout travail).",
             "<b>Paiement :</b> 50 % au démarrage, 50 % quand l'équipe tourne.",
             "Prix en euros, offre valable 30 jours."],
-    yours: "Votre sélection", oneTime: "Mise en place", perMonth: "Maintenance", toolsMonth: "Outils, payés aux fournisseurs", none: "aucune",
+    yours: "Formule complète", oneTime: "Mise en place, tout compris", allIn: "Tous les agents, adaptés à votre façon de travailler", inc: "Inclus", perMonth: "Maintenance", toolsMonth: "Outils, payés aux fournisseurs", none: "aucune",
     copy: "Copier ma sélection", copiedOk: "Copié. Collez-le dans votre message.", copiedFallback: "Sélectionnez le texte ci-dessous et copiez-le.",
     summary: (names, total, care, win) => `Ma sélection : ${names}.${win ? " PC Windows." : ""} Mise en place : ${total}. Maintenance : ${care}.`,
   },
 };
 const CHECK = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3.2 3L13 4.5"/></svg>';
 let lang = "en";
-const picked = new Set(["service", "images", "videos"]);
-let care = true, win = false, custom = false;
-
 const store = { get(k) { try { return localStorage.getItem(k); } catch { return null; } },
                 set(k, v) { try { localStorage.setItem(k, v); } catch {} } };
 const group = (n) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, lang === "fr" ? " " : ",");
@@ -277,14 +270,9 @@ const eur = (n) => lang === "fr" ? `${group(n)} €` : `€${group(n)}`;
 const usd = (n) => lang === "fr" ? `${group(n)} $` : `$${group(n)}`;
 const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
-function item({ id, name, desc, price, checked, locked, tag }) {
-  return `<label class="item${locked ? " locked" : ""}" for="opt-${id}">
-    <input type="checkbox" id="opt-${id}" data-id="${id}" ${checked ? "checked" : ""} ${locked ? "disabled" : ""}>
-    <span class="box">${CHECK}</span>
-    <b>${esc(name)}${tag ? `<span class="tag">${esc(tag)}</span>` : ""}</b>
-    <span class="price">${price}</span>
-    <span class="desc">${esc(desc)}</span>
-  </label>`;
+function item(name, desc, price) {
+  return `<div class="item"><span class="box" style="background:var(--accent);border-color:var(--accent)">${CHECK.replace("<svg", '<svg style="opacity:1"')}</span>
+    <b>${esc(name)}</b><span class="price">${esc(price)}</span><span class="desc">${esc(desc)}</span></div>`;
 }
 
 function render() {
@@ -292,74 +280,27 @@ function render() {
   document.documentElement.lang = lang;
   document.querySelectorAll("[data-t]").forEach((el) => { el.textContent = t[el.dataset.t]; });
   document.querySelectorAll(".lang button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.set === lang)));
-  document.getElementById("menu").innerHTML =
-    item({ id: "base", name: t.baseName, desc: t.baseDesc, price: eur(BASE), checked: true, locked: true, tag: t.required }) +
-    AGENTS.map((a) => item({ id: a.id, name: a[lang][0], desc: a[lang][1], price: eur(a.price), checked: picked.has(a.id) })).join("") +
-    item({ id: "guide", name: t.guideName, desc: t.guideDesc, price: t.included, checked: true, locked: true });
-  document.getElementById("extras").innerHTML =
-    item({ id: "care", name: t.careName, desc: t.careDesc, price: `${eur(CARE)} ${t.perMonthShort}`, checked: care }) +
-    item({ id: "custom", name: t.customName, desc: t.customDesc, price: `+${eur(CUSTOM)}`, checked: custom }) +
-    item({ id: "win", name: t.winName, desc: t.winDesc, price: `+${eur(WINDOWS)}`, checked: win });
+  document.getElementById("menu").innerHTML = [item(t.baseName, t.baseDesc, t.inc),
+    ...AGENTS.map((a) => item(a[lang][0], a[lang][1], t.inc))].join("");
+  document.getElementById("extras").innerHTML = [item(t.customName, t.customDesc, t.inc), item(t.winName, t.winDesc, t.inc),
+    item(t.guideName, t.guideDesc, t.inc), item(t.careName, t.careDesc, `${eur(CARE)} ${t.perMonthShort}`)].join("");
   document.getElementById("promises").innerHTML = t.promises.map(([b, p]) => `<div><b>${esc(b)}</b><p>${esc(p)}</p></div>`).join("");
   document.getElementById("notes").innerHTML = t.notes.map((n) => `<li>${n}</li>`).join("");
-  update();
-}
-
-function update() {
-  const t = T[lang];
-  const chosen = AGENTS.filter((a) => picked.has(a.id));
-  const total = BASE + chosen.reduce((s, a) => s + a.price, 0) + (win ? WINDOWS : 0) + (custom ? CUSTOM : 0);
-  const needed = new Set(chosen.flatMap((a) => a.tools));
   let u = 0, e = 0;
   document.getElementById("tools").innerHTML = TOOLS.map((tool) => {
-    const on = tool.always || needed.has(tool.id);
-    if (on) { u += tool.usd || 0; e += tool.eur || 0; }
+    u += tool.usd || 0; e += tool.eur || 0;
     const [name, use, note] = tool[lang];
     const price = tool.id === "meta" ? t.budget : tool.text ? t.current : tool.eur ? `${eur(tool.eur)} ${t.perMonthShort}` : tool.usd ? `${usd(tool.usd)} ${t.perMonthShort}` : t.free;
     const small = tool.id === "meta" ? t.budgetNote : note;
-    return `<tr class="${on ? "" : "off"}"><td><b>${esc(name)}</b>${on && !tool.always ? `<span class="need">${t.need}</span>` : ""}</td>
-      <td>${esc(use)}</td><td class="p">${esc(price)}${small ? `<small>${esc(small)}</small>` : ""}</td></tr>`;
+    return `<tr><td><b>${esc(name)}</b></td><td>${esc(use)}</td><td class="p">${esc(price)}${small ? `<small>${esc(small)}</small>` : ""}</td></tr>`;
   }).join("");
-  const lines = [[t.baseName.split(":")[0], eur(BASE)], ...chosen.map((a) => [a[lang][0], eur(a.price)]), [t.guideName, t.included]];
-  if (custom) lines.push([t.customName, `+${eur(CUSTOM)}`]);
-  if (win) lines.push([t.winName, `+${eur(WINDOWS)}`]);
-  document.getElementById("lines").innerHTML = lines.map(([a, b]) => `<div class="line"><span>${esc(a)}</span><span>${b}</span></div>`).join("");
-  document.getElementById("total").textContent = eur(total);
-  document.getElementById("monthly").textContent = care ? `${eur(CARE)} ${t.perMonthShort}` : t.none;
-  document.getElementById("toolsum").textContent = `≈ ${usd(u)}${e ? ` + ${eur(e)}` : ""} ${t.perMonthShort}`;
-  store.set("offer", JSON.stringify({ picked: [...picked], care, win, custom }));
+  document.getElementById("lines").innerHTML = `<p>${esc(t.allIn)}</p>`;
+  document.getElementById("total").textContent = eur(PACKAGE);
+  document.getElementById("monthly").textContent = `${eur(CARE)} ${t.perMonthShort}`;
+  document.getElementById("toolsum").textContent = `≈ ${usd(u)} + ${eur(e)} ${t.perMonthShort}`;
 }
 
-function summary() {
-  const t = T[lang];
-  const names = [t.baseName.split(":")[0], ...AGENTS.filter((a) => picked.has(a.id)).map((a) => a[lang][0]), ...(custom ? [t.customName] : [])].join(", ");
-  const total = BASE + AGENTS.filter((a) => picked.has(a.id)).reduce((s, a) => s + a.price, 0) + (win ? WINDOWS : 0) + (custom ? CUSTOM : 0);
-  return t.summary(names, eur(total), care ? `${eur(CARE)} ${t.perMonthShort}` : t.none, win);
-}
-
-document.addEventListener("change", (ev) => {
-  const id = ev.target.dataset && ev.target.dataset.id;
-  if (!id) return;
-  if (id === "care") care = ev.target.checked;
-  else if (id === "win") win = ev.target.checked;
-  else if (id === "custom") custom = ev.target.checked;
-  else if (ev.target.checked) picked.add(id); else picked.delete(id);
-  document.getElementById("copied").textContent = "";
-  update();
-});
 document.querySelectorAll(".lang button").forEach((b) => b.addEventListener("click", () => { lang = b.dataset.set; store.set("lang", lang); render(); }));
-document.getElementById("copy").addEventListener("click", () => {
-  const text = summary(), out = document.getElementById("copied"), box = document.getElementById("copytext");
-  const fallback = () => { box.hidden = false; box.value = text; box.select(); out.textContent = T[lang].copiedFallback; };
-  try {
-    navigator.clipboard.writeText(text).then(() => { box.hidden = true; out.textContent = T[lang].copiedOk; }, fallback);
-  } catch { fallback(); }
-});
-
-try {
-  const saved = JSON.parse(store.get("offer") || "null");
-  if (saved) { picked.clear(); saved.picked.forEach((id) => picked.add(id)); care = !!saved.care; win = !!saved.win; custom = !!saved.custom; }
-} catch {}
 lang = store.get("lang") || ((navigator.language || "").toLowerCase().startsWith("fr") ? "fr" : "en");
 render();
 </script>
