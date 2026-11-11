@@ -16,7 +16,8 @@
   var t = null; try { t = localStorage.getItem("theme"); } catch (e) {}
   if (!t) { var h = new Date().getHours(); t = h >= 7 && h < 17 ? "day" : h >= 17 && h < 20 ? "sunset" : "night"; }
   document.documentElement.dataset.theme = t;
-  document.documentElement.classList.add("js");
+  /* "live" = the scroll-driven 3D story; "flat" = the plain page (reduced motion, or no WebGL) */
+  document.documentElement.classList.add("js", matchMedia("(prefers-reduced-motion: reduce)").matches ? "flat" : "live");
 })();
 </script>
 <style>
@@ -39,9 +40,9 @@
   --sky: linear-gradient(180deg, #1f2250 0%, #683c70 38%, #b85a4c 72%, #d98663 100%); --hero-ink: #ffffff; --hero-muted: #fff1e6; color-scheme: light;
 }
 [data-theme="night"] {
-  --bg: #070c16; --surface: #0f1828; --ink: #e8eefb; --muted: #9aa8c2; --line: #1e2a40;
+  --bg: #08080d; --surface: #121219; --ink: #eeeef6; --muted: #a3a4b8; --line: #24242f;
   --accent: #3ce0b0; --accent-ink: #04150f; --accent-soft: rgba(60, 224, 176, 0.12);
-  --sky: linear-gradient(180deg, #03060e 0%, #0a1630 55%, #16264a 100%); --hero-ink: #ffffff; --hero-muted: #b9c6e0; color-scheme: dark;
+  --sky: linear-gradient(180deg, #03060e 0%, #0a1630 55%, #16264a 100%); --hero-ink: #ffffff; --hero-muted: #c6c7d8; color-scheme: dark;
 }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
@@ -80,8 +81,14 @@ header:not(.solid) .seg button[aria-pressed="true"] { background: var(--hero-ink
 .btn:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
 /* hero: sky + canvas + text */
-.hero { position: relative; min-height: max(640px, 100svh); background: var(--sky); overflow: hidden; color: var(--hero-ink); display: grid; align-items: center; }
-.hero canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.hero { position: relative; z-index: 1; min-height: max(640px, 100svh); color: var(--hero-ink); display: grid; align-items: center; }
+.skybg, #sky { position: absolute; top: 0; left: 0; width: 100%; height: max(640px, 100svh); display: block; z-index: 0; }
+.live .skybg, .live #sky { position: fixed; height: 100%; }
+.skybg i { position: absolute; inset: 0; opacity: 0; transition: opacity 0.9s; }
+.skybg .d { background: linear-gradient(180deg, #4f86d3 0%, #9dbfea 46%, #e6edf7 100%); }
+.skybg .u { background: linear-gradient(180deg, #1f2250 0%, #683c70 38%, #b85a4c 72%, #d98663 100%); }
+.skybg .n { background: linear-gradient(180deg, #020204 0%, #08080e 55%, #11111b 100%); }
+[data-theme="day"] .skybg .d, [data-theme="sunset"] .skybg .u, [data-theme="night"] .skybg .n { opacity: 1; }
 .hero .inner { position: relative; z-index: 2; max-width: 76rem; width: 100%; margin: 0 auto; padding: 6rem 16px 4rem; pointer-events: none; }
 .hero .text { max-width: 37rem; display: grid; gap: 1.4rem; justify-items: start; pointer-events: auto; }
 .hero .eyebrow { color: var(--hero-ink); opacity: 0.85; }
@@ -101,10 +108,11 @@ header:not(.solid) .seg button[aria-pressed="true"] { background: var(--hero-ink
 }
 
 /* sections */
-main { padding: 0 16px; }
-.wide { max-width: 72rem; margin: 0 auto; }
-.col { max-width: 46rem; margin: 0 auto; }
-section.s { padding: 5rem 0; border-bottom: 1px solid var(--line); display: grid; gap: 1.3rem; }
+main, footer { position: relative; z-index: 1; }
+main { padding: 0; }
+.wide { max-width: calc(72rem + 32px); margin: 0 auto; }
+.col { max-width: calc(46rem + 32px); margin: 0 auto; }
+section.s { padding: 5rem 16px; border-bottom: 1px solid var(--line); display: grid; gap: 1.3rem; }
 .head { display: grid; gap: 0.8rem; margin-bottom: 0.6rem; }
 .card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 1.35rem 1.4rem; transition: background-color 0.8s, border-color 0.8s; }
 .pains { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); gap: 0.8rem; }
@@ -177,7 +185,7 @@ section.s { padding: 5rem 0; border-bottom: 1px solid var(--line); display: grid
 .receipt .rh span { font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: #6d6858; }
 .receipt ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.15rem; }
 .receipt li { display: flex; gap: 0.5rem; align-items: baseline; }
-.receipt li .dots { flex: 1 1 1rem; border-bottom: 1px dotted var(--paper-line); transform: translateY(-0.3rem); min-width: 1rem; }
+.receipt li .dots2 { flex: 1 1 1rem; border-bottom: 1px dotted var(--paper-line); transform: translateY(-0.3rem); min-width: 1rem; }
 .receipt li .v { font-weight: 700; }
 .receipt .none { margin-top: 0.8rem; padding-top: 0.8rem; border-top: 1px dashed var(--paper-line); color: #6d6858; }
 .receipt .none li .v { color: #8a8472; font-weight: 500; }
@@ -209,8 +217,8 @@ td:last-child { text-align: right; white-space: nowrap; font-family: var(--mono)
 .who { display: grid; grid-template-columns: 4.6rem minmax(0, 1fr); gap: 1.1rem; align-items: start; }
 .who .mono { width: 4.6rem; height: 4.6rem; border-radius: 50%; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; font: 900 1.9rem/1 var(--display); }
 .request { background: var(--surface); border: 1px solid var(--line); border-top: 4px solid var(--accent); border-radius: 18px; padding: 2rem 1.7rem; display: grid; gap: 1rem; }
-.request label { display: grid; gap: 0.35rem; font-weight: 700; font-size: 0.95rem; }
-.request input, .request select { font: 400 1rem/1.4 var(--sans); padding: 0.8rem 0.9rem; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--ink); width: 100%; }
+.request .row { display: flex; flex-wrap: wrap; gap: 0.7rem; }
+.btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
 #out { width: 100%; font: 0.9rem/1.4 var(--mono); border: 1px solid var(--line); border-radius: 10px; padding: 0.7rem; background: var(--bg); color: var(--ink); }
 .status { color: var(--accent); font-weight: 700; min-height: 1.4em; }
 footer { max-width: 46rem; margin: 0 auto; padding: 1.6rem 16px 3rem; color: var(--muted); font-size: 0.85rem; }
@@ -224,9 +232,57 @@ footer { max-width: 46rem; margin: 0 auto; padding: 1.6rem 16px 3rem; color: var
   .js .chat.typing-now .typing { display: none; }
   .js .chat.play .btns .ok, .typing i { animation: none; }
 }
+
+/* the scroll story (only when "live"): sky everywhere, pinned stages, agent cards one at a time */
+.solid { background: var(--bg); transition: background-color 0.8s; }
+.live .oversky > .head h2, .live .stage h2 { color: var(--hero-ink); }
+.live .stage .muted { color: var(--hero-muted); }
+.live .oversky > .head .eyebrow, .live .stage .head .eyebrow { color: var(--hero-ink); opacity: 0.85; }
+.live[data-theme="sunset"] :is(.stage, .oversky > .head) h2 em { color: #ffd9b0; }
+.live[data-theme="sunset"] :is(.stage .head, .oversky > .head) { text-shadow: 0 1px 14px rgba(70, 20, 40, 0.5); }
+.live footer { color: var(--hero-muted); }
+.live .stage { position: relative; height: var(--len); }
+.live .pin { position: sticky; top: 0; height: 100svh; display: grid; align-items: center; padding: 5rem 16px 2rem; }
+html:not(.live) .pin { padding: 5rem 16px; }
+.live #method .chat { display: none; }
+.teamgrid .right { display: grid; gap: 1.2rem; }
+.live .teamgrid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 3rem; align-items: center; width: 100%; }
+.live .team { display: block; position: relative; min-height: 15.5rem; }
+.live .team .agent { position: absolute; inset: 0 0 auto 0; opacity: 0; transform: translateY(26px); pointer-events: none; transition: opacity 0.45s, transform 0.45s; }
+.live .team .agent.on { opacity: 1; transform: none; pointer-events: auto; }
+.dots { display: none; gap: 0.4rem; }
+.live .dots { display: flex; }
+.dots i { width: 1.6rem; height: 4px; border-radius: 2px; background: color-mix(in srgb, var(--hero-ink) 25%, transparent); transition: background-color 0.3s; }
+.dots i.on { background: var(--accent); }
+.live .final { padding-top: 54svh; }
+@media (max-width: 860px) {
+  .live .teamgrid { grid-template-columns: minmax(0, 1fr); }
+  .teamgrid .left { display: none; }
+  .live .pin { align-items: end; padding-bottom: 2.5rem; }
+  .live .team { min-height: 19rem; }
+}
+#labels { position: fixed; inset: 0; z-index: 2; pointer-events: none; overflow: hidden; }
+html:not(.live) #labels { display: none; }
+.chip { position: absolute; left: 0; top: 0; white-space: nowrap; font: 700 0.72rem/1 var(--sans); background: rgba(255, 255, 255, 0.94); color: #0f1a2a;
+  border-radius: 999px; padding: 0.38rem 0.62rem; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18); opacity: 0; transition: opacity 0.3s; will-change: transform; }
+.chip.me { background: var(--accent); color: var(--accent-ink); }
+html.lenis { scroll-behavior: auto; }
+
+/* the contact panel */
+dialog#panel { border: 1px solid var(--line); border-radius: 20px; background: var(--surface); color: var(--ink); padding: 0; width: min(34rem, calc(100vw - 24px)); max-height: calc(100svh - 24px); }
+dialog#panel::backdrop { background: rgba(4, 8, 16, 0.6); backdrop-filter: blur(4px); }
+#form { display: grid; gap: 0.9rem; padding: 1.8rem 1.6rem; position: relative; }
+#form label { display: grid; gap: 0.35rem; font-weight: 700; font-size: 0.95rem; }
+#form input, #form select, #form textarea { font: 400 1rem/1.4 var(--sans); padding: 0.8rem 0.9rem; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--ink); width: 100%; }
+#form .x { position: absolute; top: 0.7rem; right: 0.9rem; border: 0; background: none; color: var(--muted); font-size: 1.9rem; line-height: 1; cursor: pointer; }
+.hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+button.amount { border: 0; cursor: pointer; }
 </style>
 </head>
 <body>
+<div class="skybg" aria-hidden="true"><i class="d"></i><i class="u"></i><i class="n"></i></div>
+<canvas id="sky" aria-hidden="true"></canvas>
+<div id="labels" aria-hidden="true"></div>
 <header id="hdr">
   <div class="bar">
     <a class="logo" href="#top">AI <span>Team</span></a>
@@ -240,13 +296,12 @@ footer { max-width: 46rem; margin: 0 auto; padding: 1.6rem 16px 3rem; color: var
         <button type="button" data-set="fr" aria-pressed="false">FR</button>
         <button type="button" data-set="en" aria-pressed="true">EN</button>
       </div>
-      <a class="btn sm" href="#request"><span data-l="en">Free sample</span><span data-l="fr">Échantillon gratuit</span></a>
+      <a class="btn sm" href="#request" data-open="check"><span data-l="en">Free sample</span><span data-l="fr">Échantillon gratuit</span></a>
     </div>
   </div>
 </header>
 
 <div class="hero" id="top">
-  <canvas id="sky" aria-hidden="true"></canvas>
   <div class="inner">
     <div class="text">
       <span class="eyebrow" data-l="en">For online stores · France &amp; Belgium</span>
@@ -255,7 +310,7 @@ footer { max-width: 46rem; margin: 0 auto; padding: 1.6rem 16px 3rem; color: var
       <h1 data-l="fr">L'équipe IA que vous <em>installez</em>, pas celle que vous louez.</h1>
       <p class="lead" data-l="en">Six AI assistants work on your store every day, from your own computer. <b>They prepare, you approve.</b> Nothing goes out without your OK.</p>
       <p class="lead" data-l="fr">Six assistants IA travaillent sur votre boutique chaque jour, depuis votre propre ordinateur. <b>Ils préparent, vous validez.</b> Rien ne part sans votre accord.</p>
-      <a class="btn" href="#request"><span data-l="en">Get a free sample on your store</span><span data-l="fr">Recevoir un échantillon gratuit sur ma boutique</span></a>
+      <a class="btn" href="#request" data-open="check"><span data-l="en">Get a free sample on your store</span><span data-l="fr">Recevoir un échantillon gratuit sur ma boutique</span></a>
       <ul class="trust" data-l="en"><li>Runs on your own computer</li><li>You approve everything</li><li>No password given to us</li></ul>
       <ul class="trust" data-l="fr"><li>Tourne sur votre ordinateur</li><li>Vous validez tout</li><li>Aucun mot de passe donné</li></ul>
     </div>
@@ -266,7 +321,7 @@ footer { max-width: 46rem; margin: 0 auto; padding: 1.6rem 16px 3rem; color: var
 <main>
 
   <!-- PAIN -->
-  <section class="s wide" id="problem">
+  <section class="s wide oversky" id="problem">
     <div class="head rv">
       <span class="eyebrow" data-l="en">The problem</span><span class="eyebrow" data-l="fr">Le problème</span>
       <h2 data-l="en">Sound <em>familiar?</em></h2><h2 data-l="fr">Ça vous <em>parle ?</em></h2>
@@ -288,8 +343,8 @@ footer { max-width: 46rem; margin: 0 auto; padding: 1.6rem 16px 3rem; color: var
   </section>
 
   <!-- METHOD -->
-  <section class="s wide">
-    <div class="method">
+  <section class="stage" id="method" style="--len: 220vh"><div class="pin">
+    <div class="wide method">
       <div class="head rv">
         <span class="eyebrow" data-l="en">The method</span><span class="eyebrow" data-l="fr">La méthode</span>
         <h2 data-l="en">Not another dashboard. <em>A team that asks.</em></h2>
@@ -330,10 +385,10 @@ footer { max-width: 46rem; margin: 0 auto; padding: 1.6rem 16px 3rem; color: var
         </div>
       </div>
     </div>
-  </section>
+  </div></section>
 
   <!-- TEAM -->
-  <section class="s wide" id="team">
+  <section class="stage" id="team" style="--len: 460vh"><div class="pin"><div class="wide teamgrid"><div class="left"></div><div class="right">
     <div class="head rv">
       <span class="eyebrow" data-l="en">Your team</span><span class="eyebrow" data-l="fr">Votre équipe</span>
       <h2 data-l="en">Six assistants. <em>One team.</em></h2><h2 data-l="fr">Six assistants. <em>Une équipe.</em></h2>
@@ -354,6 +409,11 @@ footer { max-width: 46rem; margin: 0 auto; padding: 1.6rem 16px 3rem; color: var
       <div class="card agent rv"><div class="meta"><span class="num">05 / PUBS META</span><span class="tag">Toujours en pause</span></div><p>Vos pubs Facebook et Instagram préparées dans votre propre compte, en pause. Vous vérifiez et vous lancez vous-même.</p><span class="gives">Des pubs prêtes à lancer, et votre argent ne bouge jamais sans vous.</span></div>
       <div class="card agent rv"><div class="meta"><span class="num">06 / E-MAILS &amp; BOUTIQUE</span><span class="tag">Brouillons seulement</span></div><p>Des campagnes e-mail préparées en brouillon, des idées pour que votre boutique vende plus, et votre vraie marge sur chaque produit.</p><span class="gives">Vous voyez enfin ce que vous gagnez vraiment.</span></div>
     </div>
+    <div class="dots" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  </div></div></div></section>
+
+  <div class="solid">
+  <section class="s wide">
     <div class="also" data-l="en">
       <div class="rv"><h3>Shaped to how you work</h3><p>Your tone with customers, your rules, your products.</p></div>
       <div class="rv"><h3>Mac or Windows</h3><p>Installed on the computer you already have.</p></div>
@@ -404,94 +464,68 @@ footer { max-width: 46rem; margin: 0 auto; padding: 1.6rem 16px 3rem; color: var
     </div>
   </section>
 
-  <!-- PRICE -->
+  <!-- INCLUDED -->
   <section class="s wide" id="price">
     <div class="price-wrap" data-l="en">
       <div class="price-side">
-        <span class="eyebrow">Clear pricing</span>
-        <h2>One price. <em>Everything included.</em></h2>
-        <p class="muted">Less than one month of a part-time employee, for a team that works every day. The €100 a month keeps it running and improving: fixes, updates, and 4 hours of changes a month (then €25 an hour).</p>
-        <details class="tools"><summary>What you pay your AI services directly (in your own name)</summary>
-          <div class="tablewrap"><table>
-            <tr><td>Claude (the AI behind the team)</td><td>$100 / month</td></tr>
-            <tr><td>ChatGPT Plus (ad images)</td><td>$20 / month</td></tr>
-            <tr><td>ElevenLabs (voice-overs)</td><td>$6 / month</td></tr>
-            <tr><td>Higgsfield (video scenes, billed yearly)</td><td>€39 / month</td></tr>
-            <tr><td>TrendTrack Pro (competitor ads, billed yearly)</td><td>$62 / month</td></tr>
-            <tr><td>Klaviyo (free up to 250 contacts)</td><td>$0</td></tr>
-            <tr><td>Discord</td><td>free</td></tr>
-          </table></div>
-          <p class="muted" style="font-size:0.85rem;margin-top:0.5rem">Official prices checked 7 to 10 November 2026; providers can change them. These accounts are yours: we never pay them or hold them for you.</p>
-        </details>
-        <a class="btn" href="#request" style="justify-self:start">Get a free sample on your store</a>
-        <span class="pay">Payment: 50% at the start, 50% once your team is running and tested.</span>
+        <span class="eyebrow">One package</span>
+        <h2>Everything <em>included.</em></h2>
+        <p class="muted">One complete team, set up with you, yours to keep. Tell me about your store and I'll send you the price, with what the team would do for you first.</p>
+        <button type="button" class="btn" data-open="price" style="justify-self:start">Get your price</button>
+        <span class="pay">One short message, no commitment.</span>
       </div>
-      <div class="slot" aria-label="Price summary">
+      <div class="slot" aria-label="What is included">
         <div class="receipt">
-          <div class="rh"><strong>AI Team</strong><span>Installed on your computer · one time</span></div>
+          <div class="rh"><strong>AI Team</strong><span>Installed on your computer</span></div>
           <ul>
-            <li><span>Customer service</span><span class="dots"></span><span class="v">incl.</span></li>
-            <li><span>Ad images</span><span class="dots"></span><span class="v">incl.</span></li>
-            <li><span>Ad videos</span><span class="dots"></span><span class="v">incl.</span></li>
-            <li><span>Competitor watch</span><span class="dots"></span><span class="v">incl.</span></li>
-            <li><span>Meta ads (paused)</span><span class="dots"></span><span class="v">incl.</span></li>
-            <li><span>E-mail &amp; store</span><span class="dots"></span><span class="v">incl.</span></li>
-            <li><span>Live setup with you</span><span class="dots"></span><span class="v">incl.</span></li>
-            <li><span>Shaped to your store</span><span class="dots"></span><span class="v">incl.</span></li>
-            <li><span>The guarantee</span><span class="dots"></span><span class="v">incl.</span></li>
+            <li><span>Customer service</span><span class="dots2"></span><span class="v">incl.</span></li>
+            <li><span>Ad images</span><span class="dots2"></span><span class="v">incl.</span></li>
+            <li><span>Ad videos</span><span class="dots2"></span><span class="v">incl.</span></li>
+            <li><span>Competitor watch</span><span class="dots2"></span><span class="v">incl.</span></li>
+            <li><span>Meta ads (paused)</span><span class="dots2"></span><span class="v">incl.</span></li>
+            <li><span>E-mail &amp; store</span><span class="dots2"></span><span class="v">incl.</span></li>
+            <li><span>Live setup with you</span><span class="dots2"></span><span class="v">incl.</span></li>
+            <li><span>Shaped to your store</span><span class="dots2"></span><span class="v">incl.</span></li>
+            <li><span>The guarantee</span><span class="dots2"></span><span class="v">incl.</span></li>
           </ul>
           <ul class="none">
-            <li><span>Passwords given to us</span><span class="dots"></span><span class="v">none</span></li>
-            <li><span>Sent without your OK</span><span class="dots"></span><span class="v">none</span></li>
-            <li><span>Surprise invoices</span><span class="dots"></span><span class="v">none</span></li>
+            <li><span>Passwords given to us</span><span class="dots2"></span><span class="v">none</span></li>
+            <li><span>Sent without your OK</span><span class="dots2"></span><span class="v">none</span></li>
+            <li><span>Surprise invoices</span><span class="dots2"></span><span class="v">none</span></li>
           </ul>
-          <div class="total"><b>Total</b><span class="amount">€1,000</span></div>
-          <p class="then">then €100 / month · about €3.30 a day</p>
+          <div class="total"><b>Your price</b><button type="button" class="amount" data-open="price">Ask me →</button></div>
           <p class="thanks">YOURS TO KEEP</p>
         </div>
       </div>
     </div>
     <div class="price-wrap" data-l="fr">
       <div class="price-side">
-        <span class="eyebrow">Un prix clair</span>
-        <h2>Un seul prix. <em>Tout compris.</em></h2>
-        <p class="muted">Moins qu'un mois d'employé à temps partiel, pour une équipe qui travaille tous les jours. Les 100 € par mois la font tourner et l'améliorent : corrections, mises à jour, et 4 heures de modifications par mois (puis 25 € de l'heure).</p>
-        <details class="tools"><summary>Ce que vous payez directement à vos services IA (à votre nom)</summary>
-          <div class="tablewrap"><table>
-            <tr><td>Claude (l'IA de l'équipe)</td><td>100 $ / mois</td></tr>
-            <tr><td>ChatGPT Plus (visuels pub)</td><td>20 $ / mois</td></tr>
-            <tr><td>ElevenLabs (voix off)</td><td>6 $ / mois</td></tr>
-            <tr><td>Higgsfield (scènes vidéo, facturé à l'année)</td><td>39 € / mois</td></tr>
-            <tr><td>TrendTrack Pro (pubs concurrentes, facturé à l'année)</td><td>62 $ / mois</td></tr>
-            <tr><td>Klaviyo (gratuit jusqu'à 250 contacts)</td><td>0 $</td></tr>
-            <tr><td>Discord</td><td>gratuit</td></tr>
-          </table></div>
-          <p class="muted" style="font-size:0.85rem;margin-top:0.5rem">Prix officiels relevés du 7 au 10 novembre 2026 ; les fournisseurs peuvent les changer. Ces comptes sont à vous : nous ne les payons ni ne les détenons à votre place.</p>
-        </details>
-        <a class="btn" href="#request" style="justify-self:start">Recevoir un échantillon gratuit</a>
-        <span class="pay">Paiement : 50 % au démarrage, 50 % quand votre équipe tourne et est testée.</span>
+        <span class="eyebrow">Une seule formule</span>
+        <h2>Tout est <em>compris.</em></h2>
+        <p class="muted">Une équipe complète, installée avec vous, à vous pour de bon. Parlez-moi de votre boutique et je vous envoie le tarif, avec ce que l'équipe ferait pour vous en premier.</p>
+        <button type="button" class="btn" data-open="price" style="justify-self:start">Recevoir votre tarif</button>
+        <span class="pay">Un court message, sans engagement.</span>
       </div>
-      <div class="slot" aria-label="Résumé du prix">
+      <div class="slot" aria-label="Ce qui est compris">
         <div class="receipt">
-          <div class="rh"><strong>AI Team</strong><span>Installée sur votre ordinateur · une fois</span></div>
+          <div class="rh"><strong>AI Team</strong><span>Installée sur votre ordinateur</span></div>
           <ul>
-            <li><span>Service client</span><span class="dots"></span><span class="v">inclus</span></li>
-            <li><span>Visuels pub</span><span class="dots"></span><span class="v">inclus</span></li>
-            <li><span>Vidéos pub</span><span class="dots"></span><span class="v">inclus</span></li>
-            <li><span>Veille concurrents</span><span class="dots"></span><span class="v">inclus</span></li>
-            <li><span>Pubs Meta (en pause)</span><span class="dots"></span><span class="v">inclus</span></li>
-            <li><span>E-mails &amp; boutique</span><span class="dots"></span><span class="v">inclus</span></li>
-            <li><span>Installation avec vous</span><span class="dots"></span><span class="v">inclus</span></li>
-            <li><span>Adaptée à votre boutique</span><span class="dots"></span><span class="v">inclus</span></li>
-            <li><span>La garantie</span><span class="dots"></span><span class="v">inclus</span></li>
+            <li><span>Service client</span><span class="dots2"></span><span class="v">inclus</span></li>
+            <li><span>Visuels pub</span><span class="dots2"></span><span class="v">inclus</span></li>
+            <li><span>Vidéos pub</span><span class="dots2"></span><span class="v">inclus</span></li>
+            <li><span>Veille concurrents</span><span class="dots2"></span><span class="v">inclus</span></li>
+            <li><span>Pubs Meta (en pause)</span><span class="dots2"></span><span class="v">inclus</span></li>
+            <li><span>E-mails &amp; boutique</span><span class="dots2"></span><span class="v">inclus</span></li>
+            <li><span>Installation avec vous</span><span class="dots2"></span><span class="v">inclus</span></li>
+            <li><span>Adaptée à votre boutique</span><span class="dots2"></span><span class="v">inclus</span></li>
+            <li><span>La garantie</span><span class="dots2"></span><span class="v">inclus</span></li>
           </ul>
           <ul class="none">
-            <li><span>Mots de passe donnés</span><span class="dots"></span><span class="v">aucun</span></li>
-            <li><span>Envoyé sans votre accord</span><span class="dots"></span><span class="v">rien</span></li>
-            <li><span>Factures surprises</span><span class="dots"></span><span class="v">aucune</span></li>
+            <li><span>Mots de passe donnés</span><span class="dots2"></span><span class="v">aucun</span></li>
+            <li><span>Envoyé sans votre accord</span><span class="dots2"></span><span class="v">rien</span></li>
+            <li><span>Factures surprises</span><span class="dots2"></span><span class="v">aucune</span></li>
           </ul>
-          <div class="total"><b>Total</b><span class="amount">1 000 €</span></div>
-          <p class="then">puis 100 € / mois · environ 3,30 € par jour</p>
+          <div class="total"><b>Votre tarif</b><button type="button" class="amount" data-open="price">Demander →</button></div>
           <p class="thanks">À VOUS POUR DE BON</p>
         </div>
       </div>
@@ -505,27 +539,27 @@ footer { max-width: 46rem; margin: 0 auto; padding: 1.6rem 16px 3rem; color: var
       <h2 data-l="en">Questions owners <em>ask</em></h2><h2 data-l="fr">Les questions qu'on me <em>pose</em></h2>
     </div>
     <div class="faq" data-l="en">
-      <details><summary>Isn't this just a $15 chatbot?</summary><p>A $15 tool runs in someone else's cloud and gives generic answers. This team is installed on your computer, checks your real Shopify orders before answering, and asks you before anything is sent.</p></details>
+      <details><summary>Isn't this just a cheap chatbot?</summary><p>A cheap chatbot runs in someone else's cloud and gives generic answers. This team is installed on your computer, checks your real Shopify orders before answering, and asks you before anything is sent.</p></details>
       <details><summary>I'm not technical. Can I really use this?</summary><p>That's who it's built for. You chat with your team on Discord, from your phone or your PC. There is no dashboard to learn, and we set everything up with you.</p></details>
       <details><summary>Do I have to give you my passwords?</summary><p>Never. You create each access code yourself, it stays on your computer, and you can cut it in one click.</p></details>
       <details><summary>What if it sends something wrong to a customer?</summary><p>It can't send anything on its own. Every reply, e-mail and ad waits for your yes.</p></details>
       <details><summary>Could my Facebook ad account get banned because of this?</summary><p>The ads assistant only prepares paused ads in your existing account. Nothing is published or paid until you launch it yourself.</p></details>
-      <details><summary>Where does my data go?</summary><p>The team runs on your computer and uses AI services in your own name (Claude, ChatGPT and the others listed above). Nothing passes through us or through a server of ours.</p></details>
+      <details><summary>Where does my data go?</summary><p>The team runs on your computer and uses AI services in your own name (Claude, ChatGPT and a few others). Nothing passes through us or through a server of ours.</p></details>
       <details><summary>I already have someone for customer service.</summary><p>Then the assistant takes the repetitive questions, and your person keeps the cases that need a human.</p></details>
       <details><summary>Can I take only one or two assistants?</summary><p>It's one package because the assistants share your store's information and the same approval system. That's what makes them useful together.</p></details>
-      <details><summary>What happens if I stop the €100 a month?</summary><p>You keep everything that is installed. Fixes, updates and the included hours stop; later changes are €25 an hour if you need them.</p></details>
+      <details><summary>How much does it cost?</summary><p>One price for the whole team, set up with you. Open "Get your price", tell me about your store, and I'll send it to you with what the team would do for you first.</p></details>
       <details><summary>Why trust one person rather than an agency?</summary><p>You see and approve everything live, one person is responsible for all of it, and nothing happens without your yes. That's more control than most agencies give you.</p></details>
     </div>
     <div class="faq" data-l="fr">
-      <details><summary>Ce n'est pas juste un chatbot à 15 $ ?</summary><p>Un outil à 15 $ tourne dans le cloud de quelqu'un d'autre et donne des réponses génériques. Cette équipe est installée sur votre ordinateur, vérifie vos vraies commandes Shopify avant de répondre, et vous demande avant tout envoi.</p></details>
+      <details><summary>Ce n'est pas juste un chatbot bon marché ?</summary><p>Un chatbot bon marché tourne dans le cloud de quelqu'un d'autre et donne des réponses génériques. Cette équipe est installée sur votre ordinateur, vérifie vos vraies commandes Shopify avant de répondre, et vous demande avant tout envoi.</p></details>
       <details><summary>Je ne suis pas technique. Je peux vraiment l'utiliser ?</summary><p>C'est pour vous qu'elle est faite. Vous parlez à votre équipe sur Discord, depuis votre téléphone ou votre PC. Pas de tableau de bord à apprendre, et on installe tout avec vous.</p></details>
       <details><summary>Je dois vous donner mes mots de passe ?</summary><p>Jamais. Vous créez chaque code d'accès vous-même, il reste sur votre ordinateur, et vous pouvez le couper en un clic.</p></details>
       <details><summary>Et s'il envoie une bêtise à un client ?</summary><p>Il ne peut rien envoyer seul. Chaque réponse, e-mail et pub attend votre accord.</p></details>
       <details><summary>Mon compte pub Facebook risque d'être banni à cause de ça ?</summary><p>L'assistant pubs prépare seulement des pubs en pause dans votre compte existant. Rien n'est publié ni payé tant que vous ne le lancez pas vous-même.</p></details>
-      <details><summary>Où vont mes données ?</summary><p>L'équipe tourne sur votre ordinateur et utilise des services IA à votre nom (Claude, ChatGPT et les autres listés plus haut). Rien ne passe par nous ni par un serveur à nous.</p></details>
+      <details><summary>Où vont mes données ?</summary><p>L'équipe tourne sur votre ordinateur et utilise des services IA à votre nom (Claude, ChatGPT et quelques autres). Rien ne passe par nous ni par un serveur à nous.</p></details>
       <details><summary>J'ai déjà quelqu'un pour le service client.</summary><p>Alors l'assistant prend les questions répétitives, et votre personne garde les cas qui demandent un humain.</p></details>
       <details><summary>Je peux prendre seulement un ou deux assistants ?</summary><p>C'est une seule formule parce que les assistants partagent les informations de votre boutique et le même système de validation. C'est ce qui les rend utiles ensemble.</p></details>
-      <details><summary>Que se passe-t-il si j'arrête les 100 € par mois ?</summary><p>Vous gardez tout ce qui est installé. Les corrections, mises à jour et heures incluses s'arrêtent ; les changements plus tard sont à 25 € de l'heure si besoin.</p></details>
+      <details><summary>Combien ça coûte ?</summary><p>Un seul prix pour toute l'équipe, installée avec vous. Ouvrez « Recevoir votre tarif », parlez-moi de votre boutique, et je vous l'envoie avec ce que l'équipe ferait pour vous en premier.</p></details>
       <details><summary>Pourquoi faire confiance à une seule personne plutôt qu'à une agence ?</summary><p>Vous voyez et validez tout en direct, une seule personne est responsable de l'ensemble, et rien ne se passe sans votre accord. C'est plus de contrôle que la plupart des agences.</p></details>
     </div>
   </section>
@@ -543,38 +577,59 @@ footer { max-width: 46rem; margin: 0 auto; padding: 1.6rem 16px 3rem; color: var
     </div>
   </section>
 
+  </div>
+
   <!-- REQUEST -->
-  <section class="s col" id="request" style="border-bottom:0">
-    <div class="request rv" aria-labelledby="req-en req-fr">
+  <section class="s col oversky final" id="request" style="border-bottom:0">
+    <div class="request rv">
       <span class="eyebrow" data-l="en">Free, no commitment</span><span class="eyebrow" data-l="fr">Gratuit, sans engagement</span>
-      <h2 id="req-en" data-l="en">Get a free sample on your <em>store</em></h2>
-      <h2 id="req-fr" data-l="fr">Un échantillon gratuit sur votre <em>boutique</em></h2>
-      <p class="muted" data-l="en">Tell me your store and what you'd like to see first.</p>
-      <p class="muted" data-l="fr">Dites-moi votre boutique et ce que vous voulez voir en premier.</p>
-      <form id="form" novalidate style="display:grid;gap:0.9rem">
-        <label for="store"><span data-l="en">Your store's website</span><span data-l="fr">Le site de votre boutique</span>
-          <input id="store" name="store" type="text" inputmode="url" autocomplete="url" placeholder="myshop.com"></label>
-        <label for="want"><span data-l="en">What would you like first?</span><span data-l="fr">Que voulez-vous en premier ?</span>
-          <select id="want" name="want">
-            <option value="check" data-en="A free check of my store's settings" data-fr="Une vérification gratuite des réglages de ma boutique">A free check of my store's settings</option>
-            <option value="watch" data-en="This Monday's competitor report for my niche" data-fr="Le rapport concurrents de ce lundi pour ma niche">This Monday's competitor report for my niche</option>
-            <option value="call" data-en="A short call to see if the team fits my store" data-fr="Un court appel pour voir si l'équipe convient à ma boutique">A short call to see if the team fits my store</option>
-          </select></label>
-        <button type="submit" class="btn"><span data-l="en">Create my request</span><span data-l="fr">Créer ma demande</span></button>
-      </form>
-      <p class="status" id="status" aria-live="polite"></p>
-      <textarea id="out" rows="4" readonly hidden aria-label="Your request"></textarea>
+      <h2 data-l="en">Your team is <em>ready.</em></h2>
+      <h2 data-l="fr">Votre équipe est <em>prête.</em></h2>
+      <p class="muted" data-l="en">Tell me about your store. I'll send you the price, or a free sample of what the team would do for you.</p>
+      <p class="muted" data-l="fr">Parlez-moi de votre boutique. Je vous envoie le tarif, ou un échantillon gratuit de ce que l'équipe ferait pour vous.</p>
+      <div class="row">
+        <button type="button" class="btn" data-open="price"><span data-l="en">Get your price</span><span data-l="fr">Recevoir votre tarif</span></button>
+        <button type="button" class="btn ghost" data-open="check"><span data-l="en">Get a free sample</span><span data-l="fr">Recevoir un échantillon gratuit</span></button>
+      </div>
     </div>
   </section>
 
 </main>
 <footer>
-  <p data-l="en">Prices in euros, offer valid 30 days. Payment: 50% at the start, 50% once your team is running and tested.</p>
-  <p data-l="fr">Prix en euros, offre valable 30 jours. Paiement : 50 % au démarrage, 50 % quand votre équipe tourne et est testée.</p>
+  <p data-l="en">AI Team. Built and installed by Yassine, live with you.</p>
+  <p data-l="fr">AI Team. Construite et installée par Yassine, en direct avec vous.</p>
 </footer>
 
+<dialog id="panel" aria-labelledby="panel-t" data-lenis-prevent>
+  <form id="form" novalidate>
+    <button type="button" class="x" data-close aria-label="Close">×</button>
+    <span class="eyebrow" data-l="en">Free, no commitment</span><span class="eyebrow" data-l="fr">Gratuit, sans engagement</span>
+    <h3 id="panel-t" style="font-size:1.5rem"><span data-l="en">Tell me about your store</span><span data-l="fr">Parlez-moi de votre boutique</span></h3>
+    <label for="name"><span data-l="en">Your name</span><span data-l="fr">Votre nom</span>
+      <input id="name" name="name" type="text" autocomplete="name"></label>
+    <label for="email"><span data-l="en">Your e-mail</span><span data-l="fr">Votre e-mail</span>
+      <input id="email" name="email" type="email" autocomplete="email"></label>
+    <label for="store"><span data-l="en">Your store's website</span><span data-l="fr">Le site de votre boutique</span>
+      <input id="store" name="store" type="text" inputmode="url" autocomplete="url" placeholder="myshop.com"></label>
+    <label for="want"><span data-l="en">What would you like?</span><span data-l="fr">Que voulez-vous ?</span>
+      <select id="want" name="want">
+        <option value="price" data-en="The price for my store" data-fr="Le tarif pour ma boutique">The price for my store</option>
+        <option value="check" data-en="A free check of my store's settings" data-fr="Une vérification gratuite des réglages de ma boutique">A free check of my store's settings</option>
+        <option value="watch" data-en="This Monday's competitor report for my niche" data-fr="Le rapport concurrents de ce lundi pour ma niche">This Monday's competitor report for my niche</option>
+        <option value="call" data-en="A short call to see if the team fits my store" data-fr="Un court appel pour voir si l'équipe convient à ma boutique">A short call to see if the team fits my store</option>
+      </select></label>
+    <label for="msg"><span data-l="en">Anything to add? (optional)</span><span data-l="fr">Autre chose à dire ? (facultatif)</span>
+      <textarea id="msg" name="message" rows="3"></textarea></label>
+    <input class="hp" type="text" name="company" tabindex="-1" autocomplete="off" aria-hidden="true">
+    <button type="submit" class="btn"><span data-l="en">Send</span><span data-l="fr">Envoyer</span></button>
+    <p class="status" id="status" aria-live="polite"></p>
+    <textarea id="out" rows="4" readonly hidden aria-label="Your request"></textarea>
+  </form>
+</dialog>
+
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
 <script>
-/* language, theme, header, reveals, request form */
+/* language, theme, header, reveals, the scroll story, the contact panel */
 let lang = "en";
 function setLang(l) {
   lang = l;
@@ -586,6 +641,7 @@ function setLang(l) {
   try { localStorage.setItem("lang", l); } catch {}
   window.dispatchEvent(new CustomEvent("langchange", { detail: l }));
   watch();
+  if (typeof stage === "function") { shown = -1; stage(); }
 }
 document.querySelectorAll("[data-set]").forEach((b) => b.addEventListener("click", () => setLang(b.dataset.set)));
 
@@ -621,21 +677,57 @@ function watch() {
   });
 }
 
-document.getElementById("form").addEventListener("submit", (ev) => {
+/* the scroll story: which scene is on stage (scene.js reads window.stageState) and which agent card is showing */
+const stageEls = { method: document.getElementById("method"), team: document.getElementById("team"), solid: document.querySelector(".solid"), final: document.getElementById("request") };
+const through = (el) => { const r = el.getBoundingClientRect(); return Math.min(1, Math.max(0, -r.top / Math.max(1, r.height - innerHeight))); };
+let shown = -1;
+function stage() {
+  const vh = innerHeight, top = (el) => el.getBoundingClientRect().top;
+  const mode = scrollY < vh * 0.55 ? "hero" : top(stageEls.final) < vh * 0.75 ? "final" : top(stageEls.solid) < vh * 0.5 ? "away"
+    : top(stageEls.team) < vh * 0.6 ? "team" : top(stageEls.method) < vh * 0.6 ? "method" : "travel";
+  const team = through(stageEls.team), idx = Math.min(5, Math.floor(team * 6));
+  window.stageState = { mode, method: through(stageEls.method), team, idx };
+  if (idx === shown) return;
+  shown = idx;
+  document.querySelectorAll(".team").forEach((list) => [...list.children].forEach((c, i) => c.classList.toggle("on", i === idx)));
+  document.querySelectorAll(".dots i").forEach((d, i) => d.classList.toggle("on", i === idx));
+}
+addEventListener("scroll", stage, { passive: true }); addEventListener("resize", stage); stage();
+
+/* smooth scrolling for the story (not with reduced motion) */
+let lenis = null;
+if (window.Lenis && document.documentElement.classList.contains("live")) {
+  lenis = new Lenis({ lerp: 0.09 });
+  const raf = (now) => { lenis.raf(now); requestAnimationFrame(raf); };
+  requestAnimationFrame(raf);
+  document.querySelectorAll('a[href^="#"]:not([data-open])').forEach((a) => a.addEventListener("click", (e) => {
+    const el = document.querySelector(a.getAttribute("href")); if (el) { e.preventDefault(); lenis.scrollTo(el); } }));
+}
+
+/* the contact panel. ENDPOINT = the lead service (POST, JSON) once it is online; while empty, the visitor copies the message. */
+const ENDPOINT = "";
+const panel = document.getElementById("panel"), form = document.getElementById("form"), want = document.getElementById("want");
+document.querySelectorAll("[data-open]").forEach((b) => b.addEventListener("click", (e) => {
+  e.preventDefault(); want.value = b.dataset.open; panel.showModal(); if (lenis) lenis.stop(); document.getElementById("name").focus(); }));
+panel.addEventListener("click", (e) => { if (e.target === panel || e.target.closest("[data-close]")) panel.close(); });
+panel.addEventListener("close", () => { if (lenis) lenis.start(); });
+form.addEventListener("submit", async (ev) => {
   ev.preventDefault();
-  const store = document.getElementById("store").value.trim();
-  const status = document.getElementById("status"), out = document.getElementById("out");
-  if (!store) {
-    status.textContent = lang === "fr" ? "Indiquez le site de votre boutique, puis recommencez." : "Add your store's website, then try again.";
-    document.getElementById("store").focus();
-    return;
+  const d = Object.fromEntries(new FormData(form)), fr = lang === "fr", status = document.getElementById("status"), out = document.getElementById("out");
+  if (!d.name.trim() || !/^\S+@\S+\.\S+$/.test(d.email.trim())) { status.textContent = fr ? "Indiquez votre nom et un e-mail valide." : "Add your name and a valid e-mail."; return; }
+  d.want = want.selectedOptions[0].textContent; d.lang = lang;
+  if (ENDPOINT) {
+    status.textContent = fr ? "Envoi…" : "Sending…";
+    try {
+      const r = await fetch(ENDPOINT, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(d) });
+      if (!r.ok) throw new Error(r.status);
+      form.reset(); out.hidden = true; status.textContent = fr ? "Bien reçu. Je vous réponds par e-mail." : "Received. I'll reply by e-mail.";
+      return;
+    } catch { /* fall through: the visitor can still copy the message */ }
   }
-  const want = document.getElementById("want").selectedOptions[0].textContent;
-  const text = lang === "fr"
-    ? `Bonjour, je veux un échantillon gratuit. Ma boutique : ${store}. En premier : ${want}.`
-    : `Hi, I'd like a free sample. My store: ${store}. First: ${want}.`;
-  const done = lang === "fr" ? "Copié. Collez-le dans la conversation où vous avez reçu ce lien." : "Copied. Paste it in the chat where you got this link.";
-  const manual = lang === "fr" ? "Copiez ce texte et envoyez-le dans la conversation où vous avez reçu ce lien." : "Copy this text and send it in the chat where you got this link.";
+  const text = (fr ? `Bonjour, je suis ${d.name} (${d.email}). Ma boutique : ${d.store || "-"}. Je voudrais : ${d.want}.` : `Hi, I'm ${d.name} (${d.email}). My store: ${d.store || "-"}. I'd like: ${d.want}.`) + (d.message ? " " + d.message : "");
+  const done = fr ? "Copié. Collez-le dans la conversation où vous avez reçu ce lien." : "Copied. Paste it in the chat where you got this link.";
+  const manual = fr ? "Copiez ce texte et envoyez-le dans la conversation où vous avez reçu ce lien." : "Copy this text and send it in the chat where you got this link.";
   out.value = text; out.hidden = false;
   const fallback = () => { out.select(); status.textContent = manual; };
   try { navigator.clipboard.writeText(text).then(() => { status.textContent = done; }, fallback); } catch { fallback(); }
@@ -646,192 +738,7 @@ try { saved = localStorage.getItem("lang"); } catch {}
 setLang(saved || ((navigator.language || "").toLowerCase().startsWith("fr") ? "fr" : "en"));
 </script>
 
-<script type="module">
-/* The 3D sky: a laptop floating in the clouds, its screen showing an approval message, six glowing assistants circling it.
-   Day / Sunset / Night change the light, clouds and stars. Paused when off screen; one still frame with reduced motion.
-   ponytail: no post-processing bloom, glow is additive sprites; add EffectComposer only if it looks flat on real screens. */
-import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js";
-
-const canvas = document.getElementById("sky");
-let renderer;
-try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true }); } catch (e) { canvas.remove(); throw e; }
-renderer.setPixelRatio(Math.min(devicePixelRatio, 1.75));
-renderer.outputColorSpace = THREE.SRGBColorSpace;
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 200);
-camera.position.set(0, 0.4, 9);
-
-/* themes: light, clouds, stars, materials */
-const THEMES = {
-  day:    { sun: 0xfff4e0, sunI: 2.4, sunPos: [5, 6, 4],  hemiSky: 0xd6e7ff, hemiGround: 0xb9b2a8, hemiI: 1.1, cloud: 0xffffff, cloudO: 0.7,  stars: 0,   body: 0xe9e5de, orb: 0x0fa57e, glowO: 0.35, screenGlow: 0.9, emis: 0.35 },
-  sunset: { sun: 0xff9a5c, sunI: 2.8, sunPos: [-6, 1.2, 3], hemiSky: 0xffb48a, hemiGround: 0x4a2f45, hemiI: 0.9, cloud: 0xffb38f, cloudO: 0.7,  stars: 0.25, body: 0xf0d8c8, orb: 0xffd27a, glowO: 0.75, screenGlow: 1.0, emis: 0.8 },
-  night:  { sun: 0x9fb4ff, sunI: 0.7, sunPos: [3, 5, 2],  hemiSky: 0x2a3a66, hemiGround: 0x06080e, hemiI: 0.55, cloud: 0x34466f, cloudO: 0.5,  stars: 1,   body: 0x8f98ab, orb: 0x3ce0b0, glowO: 1.0, screenGlow: 1.25, emis: 1.6 },
-};
-const sun = new THREE.DirectionalLight(0xffffff, 2); scene.add(sun);
-const hemi = new THREE.HemisphereLight(0xffffff, 0x888888, 1); scene.add(hemi);
-
-/* soft textures drawn once on a 2D canvas */
-function puff(size, blobs, seed) {
-  const c = document.createElement("canvas"); c.width = c.height = size;
-  const g = c.getContext("2d"); let s = seed;
-  const rnd = () => (s = (s * 9301 + 49297) % 233280) / 233280;
-  for (let i = 0; i < blobs; i++) {
-    const x = size * (0.25 + rnd() * 0.5), y = size * (0.35 + rnd() * 0.3), r = size * (0.12 + rnd() * 0.18);
-    const gr = g.createRadialGradient(x, y, 0, x, y, r);
-    gr.addColorStop(0, "rgba(255,255,255,0.55)"); gr.addColorStop(1, "rgba(255,255,255,0)");
-    g.fillStyle = gr; g.beginPath(); g.arc(x, y, r, 0, Math.PI * 2); g.fill();
-  }
-  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
-}
-function glowTex() {
-  const c = document.createElement("canvas"); c.width = c.height = 128;
-  const g = c.getContext("2d"), gr = g.createRadialGradient(64, 64, 0, 64, 64, 64);
-  gr.addColorStop(0, "rgba(255,255,255,1)"); gr.addColorStop(0.25, "rgba(255,255,255,0.45)"); gr.addColorStop(1, "rgba(255,255,255,0)");
-  g.fillStyle = gr; g.fillRect(0, 0, 128, 128);
-  return new THREE.CanvasTexture(c);
-}
-
-/* clouds */
-const clouds = [];
-for (let i = 0; i < 22; i++) {
-  const mat = new THREE.SpriteMaterial({ map: puff(256, 9, i * 7 + 3), transparent: true, depthWrite: false, opacity: 0.9 });
-  const sp = new THREE.Sprite(mat);
-  const depth = -4 - Math.random() * 22;
-  sp.position.set((Math.random() - 0.5) * 34, -4.5 + Math.random() * 6.5, depth);
-  const s = 4 + Math.random() * 5; sp.scale.set(s * 1.7, s, 1);
-  sp.userData.v = 0.08 + Math.random() * 0.12;
-  scene.add(sp); clouds.push(sp);
-}
-
-/* stars */
-const starGeo = new THREE.BufferGeometry(), N = 700, pos = new Float32Array(N * 3);
-for (let i = 0; i < N; i++) { pos[i * 3] = (Math.random() - 0.5) * 120; pos[i * 3 + 1] = Math.random() * 45 - 5; pos[i * 3 + 2] = -40 - Math.random() * 30; }
-starGeo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
-const starMat = new THREE.PointsMaterial({ color: 0xffffff, size: 0.18, transparent: true, opacity: 0, depthWrite: false });
-scene.add(new THREE.Points(starGeo, starMat));
-
-/* the laptop */
-const rig = new THREE.Group(); scene.add(rig);
-const laptop = new THREE.Group(); rig.add(laptop);
-const bodyMat = new THREE.MeshStandardMaterial({ color: 0xe9e5de, roughness: 0.55, metalness: 0.15 });
-const base = new THREE.Mesh(new THREE.BoxGeometry(3.2, 0.12, 2.1), bodyMat); laptop.add(base);
-const keys = new THREE.Mesh(new THREE.PlaneGeometry(2.7, 1.0), new THREE.MeshStandardMaterial({ color: 0x2a2f36, roughness: 0.8 }));
-keys.rotation.x = -Math.PI / 2; keys.position.set(0, 0.061, -0.25); laptop.add(keys);
-const pad = new THREE.Mesh(new THREE.PlaneGeometry(0.9, 0.55), new THREE.MeshStandardMaterial({ color: 0xcfcac2, roughness: 0.4 }));
-pad.rotation.x = -Math.PI / 2; pad.position.set(0, 0.062, 0.62); laptop.add(pad);
-const lid = new THREE.Group(); lid.position.set(0, 0.06, -1.05); lid.rotation.x = -0.32; laptop.add(lid);
-const back = new THREE.Mesh(new THREE.BoxGeometry(3.2, 2.05, 0.08), bodyMat); back.position.set(0, 1.03, -0.04); lid.add(back);
-
-const sc = document.createElement("canvas"); sc.width = 1024; sc.height = 640;
-const screenTex = new THREE.CanvasTexture(sc); screenTex.colorSpace = THREE.SRGBColorSpace;
-const screenMat = new THREE.MeshBasicMaterial({ map: screenTex, toneMapped: false });
-const screen = new THREE.Mesh(new THREE.PlaneGeometry(2.95, 1.84), screenMat); screen.position.set(0, 1.03, 0.005); lid.add(screen);
-function drawScreen(l) {
-  const g = sc.getContext("2d"), fr = l === "fr";
-  g.fillStyle = "#1e2124"; g.fillRect(0, 0, 1024, 640);
-  g.fillStyle = "#2b2f33"; g.fillRect(0, 0, 1024, 64);
-  g.fillStyle = "#8e9297"; g.font = "600 26px system-ui, sans-serif"; g.fillText(fr ? "# service-client" : "# customer-service", 36, 42);
-  g.fillStyle = "#3ce0b0"; g.beginPath(); g.arc(70, 130, 30, 0, Math.PI * 2); g.fill();
-  g.fillStyle = "#04150f"; g.font = "800 22px system-ui, sans-serif"; g.fillText(fr ? "SC" : "CS", 54, 138);
-  g.fillStyle = "#ffffff"; g.font = "700 28px system-ui, sans-serif"; g.fillText(fr ? "Service client" : "Customer service", 120, 122);
-  g.fillStyle = "#dcdee1"; g.font = "400 25px system-ui, sans-serif";
-  g.fillText(fr ? "Julie demande où est la commande n°1042." : "Julie asks where order #1042 is.", 120, 162);
-  g.fillStyle = "#2b2f33"; g.fillRect(120, 192, 860, 170); g.fillStyle = "#3ce0b0"; g.fillRect(120, 192, 6, 170);
-  g.fillStyle = "#8e9297"; g.font = "700 18px monospace"; g.fillText(fr ? "PROPOSITION DE RÉPONSE" : "DRAFT REPLY", 146, 228);
-  g.fillStyle = "#ffffff"; g.font = "400 24px system-ui, sans-serif";
-  g.fillText(fr ? "Bonjour Julie, votre colis est parti lundi" : "Hi Julie, your parcel left on Monday and", 146, 270);
-  g.fillText(fr ? "et devrait arriver jeudi. Belle journée !" : "should arrive on Thursday. Have a lovely day!", 146, 306);
-  g.fillStyle = "#dcdee1"; g.font = "600 26px system-ui, sans-serif"; g.fillText(fr ? "Je l'envoie ?" : "OK to send?", 120, 412);
-  g.fillStyle = "#248046"; g.fillRect(120, 440, 200, 64); g.fillStyle = "#4e5058"; g.fillRect(336, 440, 200, 64);
-  g.fillStyle = "#ffffff"; g.font = "700 26px system-ui, sans-serif"; g.fillText(fr ? "✓ Envoyer" : "✓ Send", 150, 482); g.fillText(fr ? "Modifier" : "Change it", 372, 482);
-  screenTex.needsUpdate = true;
-}
-drawScreen(document.documentElement.lang);
-window.addEventListener("langchange", (e) => drawScreen(e.detail));
-const screenGlow = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex(), color: 0x7fd8ff, transparent: true, opacity: 0.25, depthWrite: false, blending: THREE.AdditiveBlending }));
-screenGlow.position.set(0, 1.03, 0.3); screenGlow.scale.set(5, 3.4, 1); lid.add(screenGlow);
-laptop.rotation.set(0.32, -0.5, 0.04);
-
-/* six assistants */
-const orbs = [], gtex = glowTex();
-for (let i = 0; i < 6; i++) {
-  const core = new THREE.Mesh(new THREE.SphereGeometry(0.12, 32, 20), new THREE.MeshStandardMaterial({ color: 0x3ce0b0, emissive: 0x3ce0b0, emissiveIntensity: 1, roughness: 0.3 }));
-  const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: gtex, color: 0x3ce0b0, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, opacity: 0.8 }));
-  halo.scale.set(0.95, 0.95, 1); core.add(halo); rig.add(core);
-  orbs.push({ core, halo, r: 2.1 + (i % 3) * 0.25, lift: -0.25 + (i % 2) * 0.5, speed: 0.22 + i * 0.03, phase: (i / 6) * Math.PI * 2 });
-}
-
-/* theme blending */
-const cur = { sun: new THREE.Color(), hemiSky: new THREE.Color(), hemiGround: new THREE.Color(), cloud: new THREE.Color(), body: new THREE.Color(), orb: new THREE.Color(),
-  sunI: 2, hemiI: 1, cloudO: 0.9, stars: 0, glowO: 0.6, screenGlow: 1, emis: 1, sunPos: new THREE.Vector3(5, 6, 4) };
-let target = THEMES[document.documentElement.dataset.theme] || THEMES.day;
-function snap(t) {
-  cur.sun.set(t.sun); cur.hemiSky.set(t.hemiSky); cur.hemiGround.set(t.hemiGround); cur.cloud.set(t.cloud); cur.body.set(t.body); cur.orb.set(t.orb);
-  Object.assign(cur, { sunI: t.sunI, hemiI: t.hemiI, cloudO: t.cloudO, stars: t.stars, glowO: t.glowO, screenGlow: t.screenGlow, emis: t.emis }); cur.sunPos.set(...t.sunPos);
-}
-snap(target);
-window.addEventListener("themechange", (e) => { target = THEMES[e.detail] || THEMES.day; if (still) { snap(target); frame(0); } });
-const tmp = new THREE.Color();
-function blend(k) {
-  cur.sun.lerp(tmp.set(target.sun), k); cur.hemiSky.lerp(tmp.set(target.hemiSky), k); cur.hemiGround.lerp(tmp.set(target.hemiGround), k);
-  cur.cloud.lerp(tmp.set(target.cloud), k); cur.body.lerp(tmp.set(target.body), k); cur.orb.lerp(tmp.set(target.orb), k);
-  for (const key of ["sunI", "hemiI", "cloudO", "stars", "glowO", "screenGlow", "emis"]) cur[key] += (target[key] - cur[key]) * k;
-  cur.sunPos.lerp(new THREE.Vector3(...target.sunPos), k);
-}
-
-/* layout: object to the right on wide screens, above the text on phones */
-function layout() {
-  const w = canvas.clientWidth, h = canvas.clientHeight;
-  renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
-  const narrow = w < 860;
-  rig.position.set(narrow ? 0 : 2.45, narrow ? 1.45 : -0.1, 0);
-  rig.scale.setScalar(narrow ? 0.58 : 0.76);
-}
-layout(); addEventListener("resize", layout);
-
-/* motion: float, orbit, mouse parallax, scroll tilt */
-const mouse = { x: 0, y: 0 };
-addEventListener("pointermove", (e) => { mouse.x = e.clientX / innerWidth - 0.5; mouse.y = e.clientY / innerHeight - 0.5; }, { passive: true });
-const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
-let visible = true, running = false, last = performance.now(), t0 = 0;
-function kick() { if (!running && visible && !document.hidden && !still) { running = true; last = performance.now(); requestAnimationFrame(loop); } }
-new IntersectionObserver(([e]) => { visible = e.isIntersecting; kick(); }).observe(canvas);
-document.addEventListener("visibilitychange", kick);
-
-function frame(dt) {
-  t0 += dt;
-  blend(still ? 1 : Math.min(1, dt * 2.5));
-  sun.color.copy(cur.sun); sun.intensity = cur.sunI; sun.position.copy(cur.sunPos);
-  hemi.color.copy(cur.hemiSky); hemi.groundColor.copy(cur.hemiGround); hemi.intensity = cur.hemiI;
-  bodyMat.color.copy(cur.body);
-  starMat.opacity = cur.stars;
-  screenGlow.material.opacity = 0.18 * cur.screenGlow;
-  for (const c of clouds) {
-    c.material.color.copy(cur.cloud); c.material.opacity = cur.cloudO;
-    c.position.x += c.userData.v * dt; if (c.position.x > 19) c.position.x = -19;
-  }
-  const scrollK = Math.min(1, scrollY / innerHeight);
-  laptop.position.y = Math.sin(t0 * 0.8) * 0.12;
-  laptop.rotation.y = -0.5 + Math.sin(t0 * 0.3) * 0.08 + mouse.x * 0.35 + scrollK * 0.6;
-  laptop.rotation.x = 0.32 + mouse.y * 0.15 - scrollK * 0.2;
-  for (const o of orbs) {
-    const a = o.phase + t0 * o.speed;
-    o.core.position.set(Math.cos(a) * o.r, 0.75 + o.lift + Math.sin(a * 2 + o.phase) * 0.18, Math.sin(a) * o.r * 0.8);
-    o.core.material.color.copy(cur.orb); o.core.material.emissive.copy(cur.orb); o.core.material.emissiveIntensity = cur.emis; o.halo.material.color.copy(cur.orb);
-    o.halo.material.opacity = cur.glowO * (0.75 + 0.25 * Math.sin(t0 * 2 + o.phase));
-  }
-  camera.position.x += (mouse.x * 0.6 - camera.position.x) * 0.05;
-  camera.position.y += (0.4 - mouse.y * 0.4 - scrollK * 1.2 - camera.position.y) * 0.05;
-  camera.lookAt(0, 0.2 - scrollK * 0.8, 0);
-  renderer.render(scene, camera);
-}
-function loop(now) {
-  if (!visible || document.hidden) { running = false; return; }
-  const dt = Math.min(0.05, (now - last) / 1000); last = now;
-  frame(dt);
-  requestAnimationFrame(loop);
-}
-if (still) frame(0); else kick();
-</script>
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.min.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/" } }</script>
+<script type="module" src="scene.js"></script>
 </body>
 </html>
