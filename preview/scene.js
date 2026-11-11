@@ -168,6 +168,23 @@ const PROPS = [
     return { o, act: (t, k) => { bars.forEach((b, i) => { b.scale.y = hs[i] * (0.55 + 0.45 * (0.5 + 0.5 * Math.sin(t * 1.6 + i))) * (0.6 + 0.4 * k); b.position.y = b.scale.y / 2 + 0.0125; }); } };
   },
 ];
+/* crew looks: each agent wears something of its own (original designs, not existing characters) */
+const hatDark = phys(0x1c1f27, { roughness: 0.6, clearcoat: 0.2 }), gold = phys(0xd9a441, { metalness: 0.8, roughness: 0.3 });
+const HATS = [
+  null,                                                                                   // customer service: the headset comes with its prop
+  (head, col) => { const b = M(new THREE.SphereGeometry(0.27, 24, 16), col, 0.04, 0.25, 0); b.scale.y = 0.36; b.rotation.z = -0.22;   // painter's beret
+    head.add(b, M(new THREE.SphereGeometry(0.03, 12, 8), col, 0.02, 0.36, 0)); },
+  (head, col) => { head.add(M(new THREE.SphereGeometry(0.3, 24, 12, 0, Math.PI * 2, 0, Math.PI / 2), hatDark, 0, 0.19, 0));          // director's cap
+    const visor = M(new THREE.CylinderGeometry(0.2, 0.2, 0.025, 24), col, 0, 0.215, 0.24); visor.scale.z = 0.75; head.add(visor); },
+  (head, col) => { const d = M(new THREE.SphereGeometry(0.345, 24, 12, 0, Math.PI * 2, 0, Math.PI / 2), col, 0, 0.1, 0); d.scale.set(1, 0.5, 0.76); head.add(d);   // lookout's bandana
+    for (const s of [-1, 1]) { const k = M(new THREE.ConeGeometry(0.05, 0.17, 12), col, 0.41, 0.09 + 0.05 * s, -0.08); k.rotation.z = Math.PI / 2 + 0.5 * s; head.add(k); } },
+  (head, col) => { const brim = M(new THREE.CylinderGeometry(0.4, 0.4, 0.025, 32), hatDark, 0, 0.24, 0); brim.scale.z = 0.8;          // captain's hat
+    const crown = M(new THREE.CylinderGeometry(0.24, 0.27, 0.17, 32), hatDark, 0, 0.335, 0); crown.scale.z = 0.85;
+    const band = M(new THREE.TorusGeometry(0.265, 0.02, 8, 32), col, 0, 0.275, 0); band.rotation.x = Math.PI / 2; band.scale.y = 0.85; head.add(brim, crown, band); },
+  (head, col, g) => { for (const s of [-1, 1]) { head.add(M(new THREE.TorusGeometry(0.072, 0.012, 8, 24), gold, 0.1 * s, 0.015, 0.262));   // bookkeeper's glasses and bow tie
+      const bow = M(new THREE.ConeGeometry(0.05, 0.1, 12), col, 0.055 * s, 0.215, 0.2); bow.rotation.z = (Math.PI / 2) * s; g.add(bow); }
+    head.add(M(new THREE.CylinderGeometry(0.008, 0.008, 0.06), gold, 0, 0.03, 0.262).rotateZ(Math.PI / 2)); },
+];
 const agents = ROLES.map((role, i) => {
   const g = new THREE.Group(), col = phys(role.c), glow = lit(role.c);
   const body = M(new THREE.CapsuleGeometry(0.24, 0.14, 8, 24), shell); body.scale.z = 0.9; g.add(body);
@@ -179,7 +196,8 @@ const agents = ROLES.map((role, i) => {
   const eyes = [-1, 1].map((s) => { const e = M(new THREE.CapsuleGeometry(0.032, 0.05, 4, 12), glow, 0.1 * s, 0.015, 0.252); e.scale.z = 0.3; return e; }); head.add(...eyes);
   const smile = M(new THREE.TorusGeometry(0.04, 0.009, 8, 16, Math.PI), glow, 0, -0.065, 0.252); smile.rotation.z = Math.PI; head.add(smile);
   for (const s of [-1, 1]) { const ear = M(new THREE.CylinderGeometry(0.075, 0.075, 0.07, 24), col, 0.335 * s, 0, 0); ear.rotation.z = Math.PI / 2; head.add(ear); }
-  head.add(M(new THREE.CylinderGeometry(0.012, 0.012, 0.14), shell, 0, 0.3, 0), M(new THREE.SphereGeometry(0.045, 16, 12), glow, 0, 0.39, 0));
+  if (HATS[i]) HATS[i](head, col, g);
+  if (i === 0 || i === 5) head.add(M(new THREE.CylinderGeometry(0.012, 0.012, 0.14), shell, 0, 0.3, 0), M(new THREE.SphereGeometry(0.045, 16, 12), glow, 0, 0.39, 0));
   const arms = [-1, 1].map((s) => { const sh = new THREE.Group(); sh.position.set(0.27 * s, 0.1, 0); sh.rotation.z = 0.4 * s;
     sh.add(M(new THREE.CapsuleGeometry(0.05, 0.14, 4, 12), shell, 0, -0.12, 0), M(new THREE.SphereGeometry(0.065, 16, 12), col, 0, -0.26, 0)); g.add(sh); return sh; });
   const prop = PROPS[i](col, glow, head); g.add(prop.o);
