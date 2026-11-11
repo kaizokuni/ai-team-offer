@@ -64,6 +64,20 @@ for (let i = 0; i < 700; i++) { starPos[i * 3] = (Math.random() - 0.5) * 120; st
 const starMat = new THREE.PointsMaterial({ color: 0xffffff, size: 0.18, transparent: true, opacity: 0, depthWrite: false });
 scene.add(new THREE.Points(new THREE.BufferGeometry().setAttribute("position", new THREE.BufferAttribute(starPos, 3)), starMat));
 
+/* northern lights: three slow curtains of light, visible at night (faint at sunset) */
+const aurora = new THREE.ShaderMaterial({ transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, uniforms: { t: { value: 0 }, o: { value: 0 } },
+  vertexShader: "varying vec2 vUv; void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }",
+  fragmentShader: `uniform float t, o; varying vec2 vUv;
+    void main() { float x = vUv.x * 6.0, light = 0.0;
+      for (int i = 0; i < 3; i++) { float f = float(i);
+        float edge = 0.5 + 0.22 * sin(x * (0.6 + f * 0.35) + t * (0.12 + f * 0.05) + f * 2.1) + 0.08 * sin(x * 2.3 - t * 0.2 + f);
+        float d = vUv.y - edge * 0.6 - 0.15;
+        float rays = 0.6 + 0.4 * sin(x * 18.0 + f * 4.0 + sin(t * 0.4 + x) * 2.0);
+        light += smoothstep(0.0, 0.03, d) * exp(-d * 5.0) * rays * (0.9 - f * 0.2); }
+      vec3 col = mix(vec3(0.15, 1.0, 0.6), vec3(0.45, 0.3, 1.0), smoothstep(0.35, 0.95, vUv.y));
+      gl_FragColor = vec4(col * light, light * o); }` });
+scene.add(M(new THREE.PlaneGeometry(90, 32), aurora, 0, 6, -38));
+
 /* ---------- the laptop: space black, notch, opens on its hinge ---------- */
 const mac = (() => {
   const g = new THREE.Group();
@@ -169,18 +183,18 @@ const PROPS = [
   },
 ];
 /* crew looks: each agent wears something of its own (original designs, not existing characters) */
-const hatDark = phys(0x1c1f27, { roughness: 0.6, clearcoat: 0.2 }), gold = phys(0xd9a441, { metalness: 0.8, roughness: 0.3 });
+const hatDark = phys(0x1c1f27, { roughness: 0.6, clearcoat: 0.2 }), gold = phys(0xd9a441, { metalness: 0.8, roughness: 0.3 }), straw = phys(0xe6c574, { roughness: 0.9, clearcoat: 0 });
 const HATS = [
   null,                                                                                   // customer service: the headset comes with its prop
   (head, col) => { const b = M(new THREE.SphereGeometry(0.27, 24, 16), col, 0.04, 0.25, 0); b.scale.y = 0.36; b.rotation.z = -0.22;   // painter's beret
     head.add(b, M(new THREE.SphereGeometry(0.03, 12, 8), col, 0.02, 0.36, 0)); },
   (head, col) => { head.add(M(new THREE.SphereGeometry(0.3, 24, 12, 0, Math.PI * 2, 0, Math.PI / 2), hatDark, 0, 0.19, 0));          // director's cap
     const visor = M(new THREE.CylinderGeometry(0.2, 0.2, 0.025, 24), col, 0, 0.215, 0.24); visor.scale.z = 0.75; head.add(visor); },
-  (head, col) => { const d = M(new THREE.SphereGeometry(0.345, 24, 12, 0, Math.PI * 2, 0, Math.PI / 2), col, 0, 0.1, 0); d.scale.set(1, 0.5, 0.76); head.add(d);   // lookout's bandana
-    for (const s of [-1, 1]) { const k = M(new THREE.ConeGeometry(0.05, 0.17, 12), col, 0.41, 0.09 + 0.05 * s, -0.08); k.rotation.z = Math.PI / 2 + 0.5 * s; head.add(k); } },
-  (head, col) => { const brim = M(new THREE.CylinderGeometry(0.4, 0.4, 0.025, 32), hatDark, 0, 0.24, 0); brim.scale.z = 0.8;          // captain's hat
-    const crown = M(new THREE.CylinderGeometry(0.24, 0.27, 0.17, 32), hatDark, 0, 0.335, 0); crown.scale.z = 0.85;
-    const band = M(new THREE.TorusGeometry(0.265, 0.02, 8, 32), col, 0, 0.275, 0); band.rotation.x = Math.PI / 2; band.scale.y = 0.85; head.add(brim, crown, band); },
+  (head, col) => { const band = M(new THREE.TorusGeometry(0.335, 0.04, 10, 40), col, 0, 0.135, 0); band.rotation.x = Math.PI / 2; band.scale.y = 0.76; head.add(band);   // bandana tied on the forehead
+    for (const s of [-1, 1]) { const k = M(new THREE.ConeGeometry(0.045, 0.2, 12), col, 0.4, 0.11 + 0.06 * s, -0.1); k.rotation.z = Math.PI / 2 + 0.55 * s; head.add(k); } },
+  (head, col) => { const brim = M(new THREE.CylinderGeometry(0.46, 0.46, 0.022, 40), straw, 0, 0.235, 0); brim.scale.z = 0.85;          // straw hat
+    const crown = M(new THREE.SphereGeometry(0.27, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2), straw, 0, 0.24, 0); crown.scale.set(1, 0.72, 0.85);
+    const band = M(new THREE.TorusGeometry(0.272, 0.022, 8, 40), col, 0, 0.262, 0); band.rotation.x = Math.PI / 2; band.scale.y = 0.85; head.add(brim, crown, band); },
   (head, col, g) => { for (const s of [-1, 1]) { head.add(M(new THREE.TorusGeometry(0.072, 0.012, 8, 24), gold, 0.1 * s, 0.015, 0.262));   // bookkeeper's glasses and bow tie
       const bow = M(new THREE.ConeGeometry(0.05, 0.1, 12), col, 0.055 * s, 0.215, 0.2); bow.rotation.z = (Math.PI / 2) * s; g.add(bow); }
     head.add(M(new THREE.CylinderGeometry(0.008, 0.008, 0.06), gold, 0, 0.03, 0.262).rotateZ(Math.PI / 2)); },
@@ -256,7 +270,7 @@ function blend(k) {
   for (const key of ["sunI", "hemiI", "env", "cloudO", "stars"]) cur[key] += (target[key] - cur[key]) * k;
   sun.color.copy(cur.sun); sun.intensity = cur.sunI; sun.position.copy(cur.sunPos);
   hemi.color.copy(cur.sky); hemi.groundColor.copy(cur.ground); hemi.intensity = cur.hemiI;
-  scene.environmentIntensity = cur.env; starMat.opacity = cur.stars; yas.puff.color.copy(cur.cloud).lerp(tmpC.set(0xffffff), 0.5);
+  scene.environmentIntensity = cur.env; starMat.opacity = cur.stars; aurora.uniforms.o.value = cur.stars * 0.85; yas.puff.color.copy(cur.cloud).lerp(tmpC.set(0xffffff), 0.5);
   for (const c of clouds) { c.material.color.copy(cur.cloud); c.material.opacity = cur.cloudO; }
 }
 blend(1); addEventListener("themechange", (e) => { target = THEMES[e.detail] || THEMES.day; if (!live()) draw(); });
@@ -280,7 +294,7 @@ function frame(dt, k) {
   t += dt;
   const st = live() ? (window.stageState || HERO) : HERO, sy = live() ? scrollY : 0, vh = innerHeight;
   const hH = Math.tan(THREE.MathUtils.degToRad(FOV / 2)) * DIST, hW = hH * camera.aspect, narrow = camera.aspect < 0.85, UP = hH * 2.3;
-  blend(k);
+  blend(k); aurora.uniforms.t.value = t;
   for (const c of clouds) { c.position.x += c.userData.v * dt; if (c.position.x > 20) c.position.x = -20; c.position.y = ((c.userData.y0 + sy * 0.0016) % 14) - 6.5; }
 
   /* the laptop */
