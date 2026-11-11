@@ -1,6 +1,6 @@
 /* The 3D story behind the offer page: a space-black laptop in the sky, six mini agents (one per job) and Yassine on his cloud.
    The page's inline script publishes window.stageState = { mode, method, team, idx } on scroll; this file only poses and draws.
-   Modes: hero (agents orbit the laptop), travel/away (everything flies off), method (the laptop opens as you scroll),
+   Modes: hero (agents orbit the laptop), travel/away (the laptop leaves, the agents follow the scroll along the edges), method (the laptop opens as you scroll),
    team (one agent at a time comes forward), final (everyone lines up above the last call to action).
    Everything is built from primitives in code: no downloaded models, nothing taken from another site. */
 import * as THREE from "three";
@@ -279,7 +279,7 @@ blend(1); addEventListener("themechange", (e) => { target = THEMES[e.detail] || 
 const live = () => root.classList.contains("live");
 const HERO = { mode: "hero", method: 0, team: 0, idx: 0 }, finalEl = document.getElementById("request");
 const mouse = { x: 0, y: 0 }, v = new THREE.Vector3();
-let W = 1, H = 1, t = 0, last = performance.now(), awayFor = 0;
+let W = 1, H = 1, t = 0, last = performance.now(), vel = 0, lastSy = 0;
 function resize() { W = canvas.clientWidth; H = canvas.clientHeight; renderer.setSize(W, H, false); camera.aspect = W / H; camera.updateProjectionMatrix(); if (!live()) draw(); }
 addEventListener("resize", resize);
 addEventListener("pointermove", (e) => { mouse.x = e.clientX / innerWidth - 0.5; mouse.y = e.clientY / innerHeight - 0.5; }, { passive: true });
@@ -307,6 +307,10 @@ function frame(dt, k) {
   const on = smooth((1.25 - mac.lid.rotation.x) / 1.2); mac.screen.material.color.setScalar(on); mac.halo.material.opacity = 0.16 * on * (1.4 - cur.env);
 
   /* the agents */
+  /* between the scenes the agents follow the visitor: they keep a place along the edges and trail behind the scroll */
+  const follow = st.mode === "travel" || st.mode === "away";
+  if (dt > 0) vel += ((sy - lastSy) / dt - vel) * 0.15; lastSy = sy;
+  const drag = THREE.MathUtils.clamp(vel * 0.0009, -1.4, 1.4), lean = THREE.MathUtils.clamp(-vel * 0.0004, -0.5, 0.5);
   const fTop = finalEl.getBoundingClientRect().top, rowY = hH * (1 - (2 * (fTop + vh * 0.27)) / vh), gap = Math.min(1.25, (hW * 1.8) / 7);
   agents.forEach((ag, i) => {
     const d = ag.g.userData; let s = 0.45, emph = 0.35, turn = 0;
@@ -319,9 +323,10 @@ function frame(dt, k) {
       if (i === st.idx) { s = narrow ? 1.05 : 1.75; emph = 1; turn = Math.sin(t * 0.6) * 0.3; d.tp.set(narrow ? 0 : -hW * 0.45, (narrow ? hH * 0.38 : -hH * 0.12) + bob, 1); }
       else { s = narrow ? 0.2 : 0.3; d.tp.set(narrow ? (i - 2.5) * 0.42 : -hW * 0.45 + (i - 2.5) * 0.62, hH * (narrow ? 0.82 : 0.62) + bob, 0); } }
     else if (st.mode === "final") { s = Math.min(0.62, gap * 0.52); emph = 0.7; d.tp.set((i < 3 ? i - 3 : i - 2) * gap, rowY + bob, 0); }
-    else d.tp.set(ag.g.position.x, UP + i * 0.25, 0);
+    else if (narrow) { s = 0.2; d.tp.set((i - 2.5) * ((hW * 1.7) / 6), hH * 0.72 + bob + drag * (0.4 + i * 0.1), 0); }
+    else { s = hW > 4.4 ? 0.34 : 0.3; d.tp.set((i % 2 ? 1 : -1) * (hW - 0.5), (1 - Math.floor(i / 2)) * hH * 0.5 - 0.2 + bob + drag * (0.5 + i * 0.12), 0); }
     d.ts = s; go(ag.g, k);
-    ag.g.rotation.y += (turn + mouse.x * 0.5 - ag.g.rotation.y) * k; ag.g.rotation.z = Math.sin(t * 1.1 + ag.phase) * 0.06;
+    ag.g.rotation.y += (turn + mouse.x * 0.5 - ag.g.rotation.y) * k; ag.g.rotation.z = Math.sin(t * 1.1 + ag.phase) * 0.06; ag.g.rotation.x += ((follow ? lean : 0) - ag.g.rotation.x) * k;
     ag.head.rotation.x = mouse.y * 0.25; ag.arms[0].rotation.z = -0.4 - (emph > 0.9 ? 1.9 + Math.sin(t * 7) * 0.25 : Math.sin(t * 1.3 + ag.phase) * 0.12);
     if (t > ag.blink) ag.blink = t + 2 + Math.random() * 4;
     ag.eyes.forEach((e) => { e.scale.y = ag.blink - t > 0.12 && ag.blink - t < 100 ? 1 : 0.12; });
@@ -352,8 +357,6 @@ function loop(now) {
   requestAnimationFrame(loop);
   if (document.hidden || !live()) { last = now; return; }
   const dt = Math.min(0.05, (now - last) / 1000); last = now;
-  awayFor = (window.stageState || HERO).mode === "away" ? awayFor + dt : 0;
-  if (awayFor > 1.2) return;                                        // hidden behind the solid sections: no drawing
   frame(dt, 1 - Math.exp(-dt * 4.5));
 }
 resize(); draw(); requestAnimationFrame(loop);

@@ -277,6 +277,15 @@ dialog#panel::backdrop { background: rgba(4, 8, 16, 0.6); backdrop-filter: blur(
 #form .x { position: absolute; top: 0.7rem; right: 0.9rem; border: 0; background: none; color: var(--muted); font-size: 1.9rem; line-height: 1; cursor: pointer; }
 .hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
 button.amount { border: 0; cursor: pointer; }
+
+/* the sky continues behind every section, so the agents can follow the visitor down the page */
+.live .solid { background: transparent; color: var(--hero-ink); }
+.live .solid :is(.card, .faq details, details.tools) { color: var(--ink); }
+.live .solid :is(.muted, .also p, .guarantee .sign, .pay) { color: var(--hero-muted); }
+.live .solid :is(.card, .faq details, details.tools) :is(.muted, p) { color: var(--muted); }
+.live .solid .eyebrow { color: var(--hero-ink); opacity: 0.85; }
+.live[data-theme="sunset"] .solid h2 em { color: #ffd9b0; }
+.live[data-theme="sunset"] .solid :is(.head, .guarantee, .who, .also, .price-side) { text-shadow: 0 1px 14px rgba(70, 20, 40, 0.5); }
 </style>
 </head>
 <body>
