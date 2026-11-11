@@ -1,0 +1,837 @@
+<!doctype html>
+<html lang="en" data-theme="day">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:,">
+<title>AI Team Offer</title>
+<meta name="description" content="Your own AI team for your online store, installed on your computer. It works, you approve.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75,800;75,900;100,700&family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<script>
+/* theme before paint: the visitor's choice, else the time of day where they are */
+(function () {
+  var t = null; try { t = localStorage.getItem("theme"); } catch (e) {}
+  if (!t) { var h = new Date().getHours(); t = h >= 7 && h < 17 ? "day" : h >= 17 && h < 20 ? "sunset" : "night"; }
+  document.documentElement.dataset.theme = t;
+  document.documentElement.classList.add("js");
+})();
+</script>
+<style>
+/* A 3D sky hero (your computer floating, six assistants circling it) with a Day / Sunset / Night switch that recolors the whole page.
+   Below it, the sales letter: pain, team, steps, guarantee, the price as a receipt, objections, one request form. */
+:root {
+  --display: "Archivo", "Arial Narrow", Impact, sans-serif;
+  --sans: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", Consolas, ui-monospace, monospace;
+  --paper: #f3f0e6; --paper-ink: #1b1a17; --paper-line: #c9c3b2;
+}
+[data-theme="day"] {
+  --bg: #eef3fa; --surface: #ffffff; --ink: #0f1a2a; --muted: #4a5a70; --line: #d5deea;
+  --accent: #0a7a62; --accent-ink: #ffffff; --accent-soft: #dff3ec;
+  --sky: linear-gradient(180deg, #4f86d3 0%, #9dbfea 46%, #e6edf7 100%); --hero-ink: #0f1a2a; --hero-muted: #2c3c55; color-scheme: light;
+}
+[data-theme="sunset"] {
+  --bg: #fbefe6; --surface: #fffaf6; --ink: #2a1622; --muted: #6e5160; --line: #ecd5c8;
+  --accent: #c2410c; --accent-ink: #ffffff; --accent-soft: #fde2d2;
+  --sky: linear-gradient(180deg, #1f2250 0%, #683c70 38%, #b85a4c 72%, #d98663 100%); --hero-ink: #ffffff; --hero-muted: #fff1e6; color-scheme: light;
+}
+[data-theme="night"] {
+  --bg: #070c16; --surface: #0f1828; --ink: #e8eefb; --muted: #9aa8c2; --line: #1e2a40;
+  --accent: #3ce0b0; --accent-ink: #04150f; --accent-soft: rgba(60, 224, 176, 0.12);
+  --sky: linear-gradient(180deg, #03060e 0%, #0a1630 55%, #16264a 100%); --hero-ink: #ffffff; --hero-muted: #b9c6e0; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 400 1.06rem/1.65 var(--sans); transition: background-color 0.8s, color 0.8s; }
+[hidden] { display: none !important; }
+a { color: inherit; }
+h1, h2, h3 { margin: 0; text-wrap: balance; }
+h1, h2 { font-family: var(--display); font-weight: 900; font-stretch: 75%; text-transform: uppercase; }
+h1 { font-size: clamp(2.8rem, 7.6vw, 5.6rem); line-height: 0.95; }
+h2 { font-size: clamp(2.1rem, 6vw, 3.6rem); line-height: 0.98; }
+h3 { font: 700 1.15rem/1.3 var(--sans); }
+em { font-style: normal; color: var(--accent); }
+p { margin: 0; }
+.muted { color: var(--muted); }
+.eyebrow { font: 700 0.72rem/1.2 var(--mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); }
+
+/* header */
+header { position: fixed; inset: 0 0 auto 0; z-index: 10; transition: background-color 0.3s, border-color 0.3s; border-bottom: 1px solid transparent; }
+header.solid { background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(10px); border-bottom-color: var(--line); }
+.bar { max-width: 76rem; margin: 0 auto; padding: 0.75rem 16px; display: flex; align-items: center; gap: 1rem; color: var(--hero-ink); }
+header.solid .bar { color: var(--ink); }
+.logo { font: 900 1.35rem/1 var(--display); font-stretch: 75%; text-transform: uppercase; text-decoration: none; white-space: nowrap; }
+.logo span { color: var(--accent); }
+.bar .right { margin-left: auto; display: flex; gap: 0.5rem; align-items: center; }
+.seg { display: inline-flex; border: 1px solid color-mix(in srgb, currentColor 28%, transparent); border-radius: 999px; padding: 3px; background: color-mix(in srgb, var(--bg) 35%, transparent); backdrop-filter: blur(8px); }
+.seg button { font: 700 0.74rem/1 var(--mono); border: 0; background: none; color: inherit; opacity: 0.75; padding: 0.5rem 0.7rem; border-radius: 999px; cursor: pointer; display: inline-flex; gap: 0.35rem; align-items: center; }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); opacity: 1; }
+header:not(.solid) .seg button[aria-pressed="true"] { background: var(--hero-ink); color: #0b1220; }
+[data-theme="day"] header:not(.solid) .seg button[aria-pressed="true"] { color: #fff; }
+.seg .lbl { display: inline; }
+@media (max-width: 720px) { .seg .lbl { display: none; } .bar .btn { display: none; } }
+.btn { display: inline-block; font: 700 1rem/1 var(--sans); background: var(--accent); color: var(--accent-ink); text-decoration: none;
+  border: 0; border-radius: 999px; padding: 1.05rem 1.6rem; cursor: pointer; text-align: center; transition: transform 0.15s, box-shadow 0.15s; }
+.btn:hover { transform: translateY(-1px); box-shadow: 0 10px 30px color-mix(in srgb, var(--accent) 35%, transparent); }
+.btn.sm { padding: 0.62rem 1rem; font-size: 0.86rem; }
+.btn:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+/* hero: sky + canvas + text */
+.hero { position: relative; min-height: max(640px, 100svh); background: var(--sky); overflow: hidden; color: var(--hero-ink); display: grid; align-items: center; }
+.hero canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.hero .inner { position: relative; z-index: 2; max-width: 76rem; width: 100%; margin: 0 auto; padding: 6rem 16px 4rem; pointer-events: none; }
+.hero .text { max-width: 37rem; display: grid; gap: 1.4rem; justify-items: start; pointer-events: auto; }
+.hero .eyebrow { color: var(--hero-ink); opacity: 0.85; }
+.hero h1 { color: var(--hero-ink); text-shadow: 0 2px 30px rgba(0, 0, 0, 0.12); }
+.hero h1 em { color: inherit; -webkit-text-stroke: 0; background: linear-gradient(90deg, var(--accent), color-mix(in srgb, var(--accent) 50%, #fff)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+[data-theme="sunset"] .hero .lead, [data-theme="sunset"] .trust, [data-theme="sunset"] .scrollcue { text-shadow: 0 1px 14px rgba(70, 20, 40, 0.55); }
+[data-theme="sunset"] .hero h1 em { background: linear-gradient(90deg, #ffd29e, #ffffff); -webkit-background-clip: text; background-clip: text; }
+.hero .lead { font-size: 1.2rem; color: var(--hero-muted); max-width: 32rem; }
+.hero .lead b { color: var(--hero-ink); }
+.trust { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.5rem 1.3rem; font: 700 0.86rem/1.3 var(--sans); color: var(--hero-ink); }
+.trust li { display: flex; align-items: center; gap: 0.4rem; }
+.trust li::before { content: ""; width: 0.45rem; height: 0.45rem; border-radius: 50%; background: var(--accent); flex: none; }
+.scrollcue { position: absolute; z-index: 2; left: 50%; bottom: 1.2rem; transform: translateX(-50%); font: 700 0.7rem/1 var(--mono); letter-spacing: 0.2em; color: var(--hero-ink); opacity: 0.7; text-decoration: none; }
+@media (max-width: 860px) {
+  .hero { align-items: end; }
+  .hero .inner { padding-top: 46svh; padding-bottom: 3.5rem; }
+}
+
+/* sections */
+main { padding: 0 16px; }
+.wide { max-width: 72rem; margin: 0 auto; }
+.col { max-width: 46rem; margin: 0 auto; }
+section.s { padding: 5rem 0; border-bottom: 1px solid var(--line); display: grid; gap: 1.3rem; }
+.head { display: grid; gap: 0.8rem; margin-bottom: 0.6rem; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 1.35rem 1.4rem; transition: background-color 0.8s, border-color 0.8s; }
+.pains { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); gap: 0.8rem; }
+.pains li { font: 600 1.08rem/1.45 var(--sans); }
+.pains li::before { content: "“"; display: block; font: 900 2.6rem/0.7 var(--display); color: var(--accent); margin-bottom: 0.2rem; }
+
+/* chat (approval message) */
+.chat { background: #1e2124; color: #dcdee1; border-radius: 16px; border: 1px solid #2b2f33; box-shadow: 0 30px 80px rgba(0, 0, 0, 0.25); overflow: hidden; }
+.chat .top { display: flex; justify-content: space-between; gap: 1rem; padding: 0.75rem 1.1rem; border-bottom: 1px solid #2b2f33; font: 700 0.68rem/1.2 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: #8e9297; }
+.chat .top .live::before { content: ""; display: inline-block; width: 0.45rem; height: 0.45rem; border-radius: 50%; background: #3ce0b0; margin-right: 0.45rem; }
+.chat .body { padding: 1.15rem; display: grid; grid-template-columns: 2.4rem minmax(0, 1fr); gap: 0.25rem 0.85rem; }
+.chat .av { grid-row: span 2; width: 2.4rem; height: 2.4rem; border-radius: 50%; background: #3ce0b0; color: #04150f; display: grid; place-items: center; font: 800 0.78rem/1 var(--sans); }
+.chat .who { font-weight: 700; color: #fff; } .chat .who small { color: #8e9297; font-weight: 400; margin-left: 0.4rem; font-size: 0.78rem; }
+.chat .bot { font: 700 0.6rem/1 var(--sans); background: #5865f2; color: #fff; border-radius: 3px; padding: 0.15rem 0.3rem; margin-left: 0.35rem; vertical-align: 0.12rem; }
+.chat .msg { display: grid; gap: 0.6rem; font-size: 0.97rem; }
+.chat .draft { border-left: 3px solid #3ce0b0; background: #2b2f33; border-radius: 0 6px 6px 0; padding: 0.7rem 0.85rem; color: #fff; }
+.chat .draft b { display: block; font: 700 0.62rem/1.2 var(--mono); letter-spacing: 0.08em; color: #8e9297; margin-bottom: 0.3rem; }
+.chat .btns { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.chat .btns span { font: 700 0.85rem/1 var(--sans); padding: 0.6rem 1rem; border-radius: 6px; background: #4e5058; color: #fff; }
+.chat .btns span.ok { background: #248046; }
+.chat .foot { padding: 0 1.15rem 1rem; font: 500 0.75rem/1.3 var(--mono); color: #8e9297; }
+.typing { display: none; gap: 0.25rem; align-items: center; height: 1.2rem; }
+.typing i { width: 0.4rem; height: 0.4rem; border-radius: 50%; background: #8e9297; animation: dot 1s infinite; }
+.typing i:nth-child(2) { animation-delay: 0.15s; } .typing i:nth-child(3) { animation-delay: 0.3s; }
+@keyframes dot { 0%, 100% { opacity: 0.3; transform: translateY(0); } 50% { opacity: 1; transform: translateY(-3px); } }
+.js .chat .step { opacity: 0; transform: translateY(6px); transition: opacity 0.4s, transform 0.4s; }
+.js .chat.typing-now .typing { display: flex; }
+.js .chat.play .step { opacity: 1; transform: none; }
+.js .chat.play .step:nth-child(2) { transition-delay: 0.6s; } .js .chat.play .step:nth-child(3) { transition-delay: 1.2s; } .js .chat.play .step:nth-child(4) { transition-delay: 1.8s; }
+.js .chat.play .btns .ok { animation: pulse 1.6s 2.6s 2 ease-in-out; }
+@keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(36, 128, 70, 0.6); } 50% { box-shadow: 0 0 0 8px rgba(36, 128, 70, 0); } }
+.method { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: 3rem; align-items: center; }
+@media (max-width: 860px) { .method { grid-template-columns: minmax(0, 1fr); gap: 1.6rem; } }
+
+/* team */
+.team { display: grid; grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr)); gap: 0.9rem; }
+.agent { display: grid; gap: 0.55rem; align-content: start; transition: border-color 0.2s, transform 0.2s, background-color 0.8s; }
+.agent:hover { border-color: var(--accent); transform: translateY(-2px); }
+.agent .meta { display: flex; justify-content: space-between; gap: 0.6rem; align-items: center; }
+.agent .num { font: 700 0.72rem/1.2 var(--mono); color: var(--accent); }
+.tag { font: 700 0.66rem/1 var(--mono); letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 0.35rem 0.55rem; white-space: nowrap; }
+.agent p { color: var(--muted); font-size: 0.97rem; }
+.agent .gives { border-top: 1px solid var(--line); padding-top: 0.65rem; margin-top: 0.2rem; font-weight: 700; }
+.also { display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); gap: 1rem; margin-top: 0.8rem; }
+.also div { border-top: 2px solid var(--accent); padding-top: 0.8rem; display: grid; gap: 0.25rem; }
+.also p { color: var(--muted); font-size: 0.95rem; }
+
+/* steps */
+.steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: 0.9rem; counter-reset: s; }
+.steps li { counter-increment: s; display: grid; gap: 0.4rem; align-content: start; }
+.steps li::before { content: "0" counter(s); font: 900 2.6rem/1 var(--display); font-stretch: 75%; color: var(--accent); }
+.steps p { color: var(--muted); font-size: 0.97rem; }
+
+/* guarantee */
+.guarantee { display: grid; gap: 1.2rem; border-left: 4px solid var(--accent); padding: 0.4rem 0 0.4rem 1.6rem; }
+.guarantee blockquote { margin: 0; font: 600 clamp(1.25rem, 3vw, 1.6rem)/1.45 var(--sans); }
+.guarantee .sign { font: 500 0.8rem/1.3 var(--mono); color: var(--muted); }
+
+/* price: the receipt */
+.price-wrap { display: grid; grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr); gap: 3rem; align-items: start; }
+@media (max-width: 900px) { .price-wrap { grid-template-columns: minmax(0, 1fr); } }
+.price-side { display: grid; gap: 1.2rem; align-content: start; }
+.slot { position: relative; padding-top: 0.6rem; overflow: hidden; }
+.slot::before { content: ""; position: absolute; top: 0; left: 4%; right: 4%; height: 0.6rem; border-radius: 999px; background: #10151c; z-index: 2; }
+.receipt { position: relative; background: var(--paper); color: var(--paper-ink); font: 500 0.9rem/1.6 var(--mono); padding: 1.6rem 1.5rem 2.4rem; margin: 0 6%; box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+  -webkit-mask: radial-gradient(circle 9px at 50% 100%, transparent 98%, #000) bottom / 22px 100% repeat-x, linear-gradient(#000, #000) top / 100% calc(100% - 9px) no-repeat;
+          mask: radial-gradient(circle 9px at 50% 100%, transparent 98%, #000) bottom / 22px 100% repeat-x, linear-gradient(#000, #000) top / 100% calc(100% - 9px) no-repeat; }
+.receipt .rh { text-align: center; display: grid; gap: 0.2rem; padding-bottom: 0.9rem; border-bottom: 1px dashed var(--paper-line); margin-bottom: 0.8rem; }
+.receipt .rh strong { font: 900 1.6rem/1 var(--display); font-stretch: 75%; text-transform: uppercase; }
+.receipt .rh span { font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: #6d6858; }
+.receipt ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.15rem; }
+.receipt li { display: flex; gap: 0.5rem; align-items: baseline; }
+.receipt li .dots { flex: 1 1 1rem; border-bottom: 1px dotted var(--paper-line); transform: translateY(-0.3rem); min-width: 1rem; }
+.receipt li .v { font-weight: 700; }
+.receipt .none { margin-top: 0.8rem; padding-top: 0.8rem; border-top: 1px dashed var(--paper-line); color: #6d6858; }
+.receipt .none li .v { color: #8a8472; font-weight: 500; }
+.receipt .total { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-top: 1rem; padding-top: 1rem; border-top: 2px solid var(--paper-ink); }
+.receipt .total b { font: 900 1.9rem/1 var(--display); font-stretch: 75%; text-transform: uppercase; }
+.receipt .total .amount { background: var(--paper-ink); color: var(--paper); padding: 0.45rem 0.7rem; border-radius: 6px; font: 900 1.9rem/1 var(--display); font-stretch: 75%; }
+.receipt .then { text-align: right; margin-top: 0.45rem; font-size: 0.82rem; }
+.receipt .thanks { text-align: center; margin-top: 1.3rem; font-size: 0.7rem; letter-spacing: 0.3em; color: #6d6858; }
+.js .slot .receipt { transform: translateY(-101%); transition: transform 2.2s cubic-bezier(0.25, 0.9, 0.3, 1); }
+.js .slot.play .receipt { transform: none; }
+details.tools { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 0.9rem 1.1rem; }
+details.tools summary { cursor: pointer; font-weight: 700; font-size: 0.95rem; }
+.tablewrap { overflow-x: auto; margin-top: 0.6rem; }
+table { width: 100%; border-collapse: collapse; min-width: 22rem; font-size: 0.92rem; }
+td { padding: 0.45rem 0.3rem; border-top: 1px solid var(--line); vertical-align: top; }
+td:last-child { text-align: right; white-space: nowrap; font-family: var(--mono); font-size: 0.85rem; }
+.pay { font-size: 0.88rem; color: var(--muted); }
+
+/* faq */
+.faq { display: grid; gap: 0.6rem; }
+.faq details { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
+.faq summary { cursor: pointer; list-style: none; display: flex; justify-content: space-between; gap: 1rem; align-items: center; padding: 1.05rem 1.2rem; font-weight: 700; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: "+"; flex: none; font: 700 1.3rem/1 var(--mono); color: var(--accent); transition: transform 0.2s; }
+.faq details[open] summary::after { transform: rotate(45deg); }
+.faq details p { padding: 0 1.2rem 1.1rem; color: var(--muted); }
+
+/* who + request */
+.who { display: grid; grid-template-columns: 4.6rem minmax(0, 1fr); gap: 1.1rem; align-items: start; }
+.who .mono { width: 4.6rem; height: 4.6rem; border-radius: 50%; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; font: 900 1.9rem/1 var(--display); }
+.request { background: var(--surface); border: 1px solid var(--line); border-top: 4px solid var(--accent); border-radius: 18px; padding: 2rem 1.7rem; display: grid; gap: 1rem; }
+.request label { display: grid; gap: 0.35rem; font-weight: 700; font-size: 0.95rem; }
+.request input, .request select { font: 400 1rem/1.4 var(--sans); padding: 0.8rem 0.9rem; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--ink); width: 100%; }
+#out { width: 100%; font: 0.9rem/1.4 var(--mono); border: 1px solid var(--line); border-radius: 10px; padding: 0.7rem; background: var(--bg); color: var(--ink); }
+.status { color: var(--accent); font-weight: 700; min-height: 1.4em; }
+footer { max-width: 46rem; margin: 0 auto; padding: 1.6rem 16px 3rem; color: var(--muted); font-size: 0.85rem; }
+
+/* scroll reveal */
+.js .rv { opacity: 0; transform: translateY(18px); transition: opacity 0.6s, transform 0.6s; }
+.js .rv.in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .js .rv, .js .chat .step, .js .slot .receipt { opacity: 1 !important; transform: none !important; transition: none !important; }
+  .js .chat.typing-now .typing { display: none; }
+  .js .chat.play .btns .ok, .typing i { animation: none; }
+}
+</style>
+</head>
+<body>
+<header id="hdr">
+  <div class="bar">
+    <a class="logo" href="#top">AI <span>Team</span></a>
+    <div class="right">
+      <div class="seg" role="group" aria-label="Theme" id="themes">
+        <button type="button" data-theme-set="day" aria-pressed="false" aria-label="Day">☀<span class="lbl" data-l="en">Day</span><span class="lbl" data-l="fr">Jour</span></button>
+        <button type="button" data-theme-set="sunset" aria-pressed="false" aria-label="Sunset">◐<span class="lbl" data-l="en">Sunset</span><span class="lbl" data-l="fr">Coucher</span></button>
+        <button type="button" data-theme-set="night" aria-pressed="false" aria-label="Night">☾<span class="lbl" data-l="en">Night</span><span class="lbl" data-l="fr">Nuit</span></button>
+      </div>
+      <div class="seg" role="group" aria-label="Language">
+        <button type="button" data-set="fr" aria-pressed="false">FR</button>
+        <button type="button" data-set="en" aria-pressed="true">EN</button>
+      </div>
+      <a class="btn sm" href="#request"><span data-l="en">Free sample</span><span data-l="fr">Échantillon gratuit</span></a>
+    </div>
+  </div>
+</header>
+
+<div class="hero" id="top">
+  <canvas id="sky" aria-hidden="true"></canvas>
+  <div class="inner">
+    <div class="text">
+      <span class="eyebrow" data-l="en">For online stores · France &amp; Belgium</span>
+      <span class="eyebrow" data-l="fr">Pour les boutiques en ligne · France &amp; Belgique</span>
+      <h1 data-l="en">The AI team you <em>install</em>, not the one you rent.</h1>
+      <h1 data-l="fr">L'équipe IA que vous <em>installez</em>, pas celle que vous louez.</h1>
+      <p class="lead" data-l="en">Six AI assistants work on your store every day, from your own computer. <b>They prepare, you approve.</b> Nothing goes out without your OK.</p>
+      <p class="lead" data-l="fr">Six assistants IA travaillent sur votre boutique chaque jour, depuis votre propre ordinateur. <b>Ils préparent, vous validez.</b> Rien ne part sans votre accord.</p>
+      <a class="btn" href="#request"><span data-l="en">Get a free sample on your store</span><span data-l="fr">Recevoir un échantillon gratuit sur ma boutique</span></a>
+      <ul class="trust" data-l="en"><li>Runs on your own computer</li><li>You approve everything</li><li>No password given to us</li></ul>
+      <ul class="trust" data-l="fr"><li>Tourne sur votre ordinateur</li><li>Vous validez tout</li><li>Aucun mot de passe donné</li></ul>
+    </div>
+  </div>
+  <a class="scrollcue" href="#problem"><span data-l="en">SCROLL</span><span data-l="fr">DÉFILER</span> ↓</a>
+</div>
+
+<main>
+
+  <!-- PAIN -->
+  <section class="s wide" id="problem">
+    <div class="head rv">
+      <span class="eyebrow" data-l="en">The problem</span><span class="eyebrow" data-l="fr">Le problème</span>
+      <h2 data-l="en">Sound <em>familiar?</em></h2><h2 data-l="fr">Ça vous <em>parle ?</em></h2>
+    </div>
+    <ul class="pains" data-l="en">
+      <li class="card rv">80% of my customer e-mails are the same questions, and I still answer every one myself.</li>
+      <li class="card rv">My ads die after two or three weeks and I don't know why.</li>
+      <li class="card rv">I don't have time to make new ad images and videos every week.</li>
+      <li class="card rv">I'm doing good revenue, but I'm not sure how much of it is real profit.</li>
+      <li class="card rv">I'd love help, but I won't hand my passwords to just anyone.</li>
+    </ul>
+    <ul class="pains" data-l="fr">
+      <li class="card rv">80 % de mes e-mails clients, ce sont les mêmes questions, et j'y réponds encore moi-même.</li>
+      <li class="card rv">Mes pubs meurent au bout de deux ou trois semaines et je ne sais pas pourquoi.</li>
+      <li class="card rv">Je n'ai pas le temps de faire de nouveaux visuels et vidéos chaque semaine.</li>
+      <li class="card rv">Je fais un bon chiffre d'affaires, mais je ne sais pas combien il me reste vraiment.</li>
+      <li class="card rv">J'aimerais de l'aide, mais je ne donne pas mes mots de passe à n'importe qui.</li>
+    </ul>
+  </section>
+
+  <!-- METHOD -->
+  <section class="s wide">
+    <div class="method">
+      <div class="head rv">
+        <span class="eyebrow" data-l="en">The method</span><span class="eyebrow" data-l="fr">La méthode</span>
+        <h2 data-l="en">Not another dashboard. <em>A team that asks.</em></h2>
+        <h2 data-l="fr">Pas un tableau de bord. <em>Une équipe qui demande.</em></h2>
+        <p class="muted" data-l="en">Your assistants live in your Discord, like colleagues. They do the work, then ask you. One tap to approve, one tap to change it.</p>
+        <p class="muted" data-l="fr">Vos assistants vivent dans votre Discord, comme des collègues. Ils font le travail, puis vous demandent. Un clic pour valider, un clic pour modifier.</p>
+      </div>
+      <div>
+        <div class="chat" data-l="en" aria-label="Example of an approval message">
+          <div class="top"><span class="live">Example of a message you would get</span><span>#customer-service</span></div>
+          <div class="body">
+            <span class="av">CS</span>
+            <span class="who">Customer service<span class="bot">APP</span> <small>today at 09:12</small></span>
+            <div class="msg">
+              <span class="typing" aria-hidden="true"><i></i><i></i><i></i></span>
+              <span class="step">Julie asks where order #1042 is. Tracking: in transit, delivery expected Thursday.</span>
+              <span class="step draft"><b>DRAFT REPLY</b>Hi Julie, your parcel left on Monday and should arrive on Thursday. Here is your tracking link. Have a lovely day!</span>
+              <span class="step">OK to send?</span>
+              <div class="step btns"><span class="ok">✓ Send</span><span>Change it</span></div>
+            </div>
+          </div>
+          <p class="foot">Nothing is sent until you click.</p>
+        </div>
+        <div class="chat" data-l="fr" aria-label="Exemple de message de validation">
+          <div class="top"><span class="live">Exemple de message que vous recevriez</span><span>#service-client</span></div>
+          <div class="body">
+            <span class="av">SC</span>
+            <span class="who">Service client<span class="bot">APP</span> <small>aujourd'hui à 09:12</small></span>
+            <div class="msg">
+              <span class="typing" aria-hidden="true"><i></i><i></i><i></i></span>
+              <span class="step">Julie demande où est la commande n°1042. Suivi : en transit, livraison prévue jeudi.</span>
+              <span class="step draft"><b>PROPOSITION DE RÉPONSE</b>Bonjour Julie, votre colis est parti lundi et devrait arriver jeudi. Voici votre lien de suivi. Belle journée !</span>
+              <span class="step">Je l'envoie ?</span>
+              <div class="step btns"><span class="ok">✓ Envoyer</span><span>Modifier</span></div>
+            </div>
+          </div>
+          <p class="foot">Rien ne part tant que vous n'avez pas cliqué.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEAM -->
+  <section class="s wide" id="team">
+    <div class="head rv">
+      <span class="eyebrow" data-l="en">Your team</span><span class="eyebrow" data-l="fr">Votre équipe</span>
+      <h2 data-l="en">Six assistants. <em>One team.</em></h2><h2 data-l="fr">Six assistants. <em>Une équipe.</em></h2>
+    </div>
+    <div class="team" data-l="en">
+      <div class="card agent rv"><div class="meta"><span class="num">01 / CUSTOMER SERVICE</span><span class="tag">You approve each reply</span></div><p>Twice a day it reads your store's e-mails, checks each real order and delivery in Shopify, and writes the answers. You approve each reply, refund or return.</p><span class="gives">The repetitive tickets handled, without hiring.</span></div>
+      <div class="card agent rv"><div class="meta"><span class="num">02 / AD IMAGES</span><span class="tag">3 sizes</span></div><p>New ad images in 3 sizes, made from your own product photos.</p><span class="gives">A designer's weekly output, without the designer.</span></div>
+      <div class="card agent rv"><div class="meta"><span class="num">03 / AD VIDEOS</span><span class="tag">Cost shown first</span></div><p>Ready-to-post video ads with a professional voice-over, moving scenes and subtitles. You see the cost before anything is made.</p><span class="gives">No filming, no editing, no surprise invoice.</span></div>
+      <div class="card agent rv"><div class="meta"><span class="num">04 / COMPETITOR WATCH</span><span class="tag">Every Monday</span></div><p>Every Monday, the 5 competitor ads that perform best right now, and why.</p><span class="gives">The research hour you never get to, done every week.</span></div>
+      <div class="card agent rv"><div class="meta"><span class="num">05 / META ADS</span><span class="tag">Always paused</span></div><p>Your Facebook and Instagram ads prepared in your own account, paused. You check them and press go yourself.</p><span class="gives">Ready-to-launch ads, and your money never moves without you.</span></div>
+      <div class="card agent rv"><div class="meta"><span class="num">06 / E-MAIL &amp; STORE</span><span class="tag">Drafts only</span></div><p>E-mail campaigns prepared as drafts, ideas to make your store sell more, and your real margin on each product.</p><span class="gives">You finally see what you really earn.</span></div>
+    </div>
+    <div class="team" data-l="fr">
+      <div class="card agent rv"><div class="meta"><span class="num">01 / SERVICE CLIENT</span><span class="tag">Vous validez tout</span></div><p>Deux fois par jour, il lit les e-mails de votre boutique, vérifie chaque vraie commande et livraison dans Shopify, et rédige les réponses. Vous validez chaque réponse, remboursement ou retour.</p><span class="gives">Les tickets répétitifs gérés, sans embaucher.</span></div>
+      <div class="card agent rv"><div class="meta"><span class="num">02 / VISUELS PUB</span><span class="tag">3 formats</span></div><p>De nouveaux visuels pub en 3 formats, faits à partir de vos propres photos produit.</p><span class="gives">Le travail hebdomadaire d'un graphiste, sans le graphiste.</span></div>
+      <div class="card agent rv"><div class="meta"><span class="num">03 / VIDÉOS PUB</span><span class="tag">Coût affiché avant</span></div><p>Des vidéos pub prêtes à publier, avec une voix off professionnelle, des scènes animées et des sous-titres. Vous voyez le coût avant toute création.</p><span class="gives">Pas de tournage, pas de montage, pas de facture surprise.</span></div>
+      <div class="card agent rv"><div class="meta"><span class="num">04 / VEILLE CONCURRENTS</span><span class="tag">Chaque lundi</span></div><p>Chaque lundi, les 5 pubs concurrentes qui marchent le mieux en ce moment, et pourquoi.</p><span class="gives">L'heure de recherche que vous ne prenez jamais, faite chaque semaine.</span></div>
+      <div class="card agent rv"><div class="meta"><span class="num">05 / PUBS META</span><span class="tag">Toujours en pause</span></div><p>Vos pubs Facebook et Instagram préparées dans votre propre compte, en pause. Vous vérifiez et vous lancez vous-même.</p><span class="gives">Des pubs prêtes à lancer, et votre argent ne bouge jamais sans vous.</span></div>
+      <div class="card agent rv"><div class="meta"><span class="num">06 / E-MAILS &amp; BOUTIQUE</span><span class="tag">Brouillons seulement</span></div><p>Des campagnes e-mail préparées en brouillon, des idées pour que votre boutique vende plus, et votre vraie marge sur chaque produit.</p><span class="gives">Vous voyez enfin ce que vous gagnez vraiment.</span></div>
+    </div>
+    <div class="also" data-l="en">
+      <div class="rv"><h3>Shaped to how you work</h3><p>Your tone with customers, your rules, your products.</p></div>
+      <div class="rv"><h3>Mac or Windows</h3><p>Installed on the computer you already have.</p></div>
+      <div class="rv"><h3>Set up with you</h3><p>We install it together, live, and show you how to use it.</p></div>
+    </div>
+    <div class="also" data-l="fr">
+      <div class="rv"><h3>Adaptée à votre façon de travailler</h3><p>Votre ton avec les clients, vos règles, vos produits.</p></div>
+      <div class="rv"><h3>Mac ou Windows</h3><p>Installée sur l'ordinateur que vous avez déjà.</p></div>
+      <div class="rv"><h3>Installée avec vous</h3><p>Nous l'installons ensemble, en direct, et vous montrons comment l'utiliser.</p></div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="s wide" id="how">
+    <div class="head rv">
+      <span class="eyebrow" data-l="en">Step by step</span><span class="eyebrow" data-l="fr">Étape par étape</span>
+      <h2 data-l="en">How it <em>works</em></h2><h2 data-l="fr">Comment ça <em>se passe</em></h2>
+    </div>
+    <ol class="steps" data-l="en">
+      <li class="card rv"><h3>Free sample</h3><p>A quick check of your store's settings, or this Monday's competitor report for your niche. Free, no commitment.</p></li>
+      <li class="card rv"><h3>A short call</h3><p>We look at where your week goes and what your team should do first.</p></li>
+      <li class="card rv"><h3>Live setup</h3><p>We install it together on your computer. You create your own access codes; you never give us a password.</p></li>
+      <li class="card rv"><h3>Tested, then yours</h3><p>Every assistant is tested live with you before the team is handed over.</p></li>
+    </ol>
+    <ol class="steps" data-l="fr">
+      <li class="card rv"><h3>Échantillon gratuit</h3><p>Une vérification rapide des réglages de votre boutique, ou le rapport concurrents de ce lundi pour votre niche. Gratuit, sans engagement.</p></li>
+      <li class="card rv"><h3>Un court appel</h3><p>On regarde où passe votre semaine et ce que votre équipe doit faire en premier.</p></li>
+      <li class="card rv"><h3>Installation en direct</h3><p>On l'installe ensemble sur votre ordinateur. Vous créez vous-même vos codes d'accès ; vous ne nous donnez jamais de mot de passe.</p></li>
+      <li class="card rv"><h3>Testée, puis à vous</h3><p>Chaque assistant est testé en direct avec vous avant la remise de l'équipe.</p></li>
+    </ol>
+  </section>
+
+  <!-- GUARANTEE -->
+  <section class="s col">
+    <div class="head rv">
+      <span class="eyebrow" data-l="en">Our promise</span><span class="eyebrow" data-l="fr">Notre engagement</span>
+      <h2 data-l="en">The <em>guarantee</em></h2><h2 data-l="fr">La <em>garantie</em></h2>
+    </div>
+    <div class="guarantee rv" data-l="en">
+      <blockquote>“If, after the live test with you, anything doesn't work exactly as described on this page, I fix it free, with no time limit on that issue. And you have 30 days to flag anything else you find; that's fixed free too.”</blockquote>
+      <p class="muted">You never give us a password, your access codes stay on your computer, and you can cut any access in one click.</p>
+      <span class="sign">YASSINE, WHO BUILDS AND INSTALLS YOUR TEAM</span>
+    </div>
+    <div class="guarantee rv" data-l="fr">
+      <blockquote>« Si, après le test en direct avec vous, quelque chose ne fonctionne pas exactement comme décrit sur cette page, je le corrige gratuitement, sans limite de temps pour ce problème. Et vous avez 30 jours pour signaler tout le reste ; c'est corrigé gratuitement aussi. »</blockquote>
+      <p class="muted">Vous ne nous donnez jamais de mot de passe, vos codes d'accès restent sur votre ordinateur, et vous pouvez couper un accès en un clic.</p>
+      <span class="sign">YASSINE, QUI CONSTRUIT ET INSTALLE VOTRE ÉQUIPE</span>
+    </div>
+  </section>
+
+  <!-- PRICE -->
+  <section class="s wide" id="price">
+    <div class="price-wrap" data-l="en">
+      <div class="price-side">
+        <span class="eyebrow">Clear pricing</span>
+        <h2>One price. <em>Everything included.</em></h2>
+        <p class="muted">Less than one month of a part-time employee, for a team that works every day. The €100 a month keeps it running and improving: fixes, updates, and 4 hours of changes a month (then €25 an hour).</p>
+        <details class="tools"><summary>What you pay your AI services directly (in your own name)</summary>
+          <div class="tablewrap"><table>
+            <tr><td>Claude (the AI behind the team)</td><td>$100 / month</td></tr>
+            <tr><td>ChatGPT Plus (ad images)</td><td>$20 / month</td></tr>
+            <tr><td>ElevenLabs (voice-overs)</td><td>$6 / month</td></tr>
+            <tr><td>Higgsfield (video scenes, billed yearly)</td><td>€39 / month</td></tr>
+            <tr><td>TrendTrack Pro (competitor ads, billed yearly)</td><td>$62 / month</td></tr>
+            <tr><td>Klaviyo (free up to 250 contacts)</td><td>$0</td></tr>
+            <tr><td>Discord</td><td>free</td></tr>
+          </table></div>
+          <p class="muted" style="font-size:0.85rem;margin-top:0.5rem">Official prices checked 7 to 10 November 2026; providers can change them. These accounts are yours: we never pay them or hold them for you.</p>
+        </details>
+        <a class="btn" href="#request" style="justify-self:start">Get a free sample on your store</a>
+        <span class="pay">Payment: 50% at the start, 50% once your team is running and tested.</span>
+      </div>
+      <div class="slot" aria-label="Price summary">
+        <div class="receipt">
+          <div class="rh"><strong>AI Team</strong><span>Installed on your computer · one time</span></div>
+          <ul>
+            <li><span>Customer service</span><span class="dots"></span><span class="v">incl.</span></li>
+            <li><span>Ad images</span><span class="dots"></span><span class="v">incl.</span></li>
+            <li><span>Ad videos</span><span class="dots"></span><span class="v">incl.</span></li>
+            <li><span>Competitor watch</span><span class="dots"></span><span class="v">incl.</span></li>
+            <li><span>Meta ads (paused)</span><span class="dots"></span><span class="v">incl.</span></li>
+            <li><span>E-mail &amp; store</span><span class="dots"></span><span class="v">incl.</span></li>
+            <li><span>Live setup with you</span><span class="dots"></span><span class="v">incl.</span></li>
+            <li><span>Shaped to your store</span><span class="dots"></span><span class="v">incl.</span></li>
+            <li><span>The guarantee</span><span class="dots"></span><span class="v">incl.</span></li>
+          </ul>
+          <ul class="none">
+            <li><span>Passwords given to us</span><span class="dots"></span><span class="v">none</span></li>
+            <li><span>Sent without your OK</span><span class="dots"></span><span class="v">none</span></li>
+            <li><span>Surprise invoices</span><span class="dots"></span><span class="v">none</span></li>
+          </ul>
+          <div class="total"><b>Total</b><span class="amount">€1,000</span></div>
+          <p class="then">then €100 / month · about €3.30 a day</p>
+          <p class="thanks">YOURS TO KEEP</p>
+        </div>
+      </div>
+    </div>
+    <div class="price-wrap" data-l="fr">
+      <div class="price-side">
+        <span class="eyebrow">Un prix clair</span>
+        <h2>Un seul prix. <em>Tout compris.</em></h2>
+        <p class="muted">Moins qu'un mois d'employé à temps partiel, pour une équipe qui travaille tous les jours. Les 100 € par mois la font tourner et l'améliorent : corrections, mises à jour, et 4 heures de modifications par mois (puis 25 € de l'heure).</p>
+        <details class="tools"><summary>Ce que vous payez directement à vos services IA (à votre nom)</summary>
+          <div class="tablewrap"><table>
+            <tr><td>Claude (l'IA de l'équipe)</td><td>100 $ / mois</td></tr>
+            <tr><td>ChatGPT Plus (visuels pub)</td><td>20 $ / mois</td></tr>
+            <tr><td>ElevenLabs (voix off)</td><td>6 $ / mois</td></tr>
+            <tr><td>Higgsfield (scènes vidéo, facturé à l'année)</td><td>39 € / mois</td></tr>
+            <tr><td>TrendTrack Pro (pubs concurrentes, facturé à l'année)</td><td>62 $ / mois</td></tr>
+            <tr><td>Klaviyo (gratuit jusqu'à 250 contacts)</td><td>0 $</td></tr>
+            <tr><td>Discord</td><td>gratuit</td></tr>
+          </table></div>
+          <p class="muted" style="font-size:0.85rem;margin-top:0.5rem">Prix officiels relevés du 7 au 10 novembre 2026 ; les fournisseurs peuvent les changer. Ces comptes sont à vous : nous ne les payons ni ne les détenons à votre place.</p>
+        </details>
+        <a class="btn" href="#request" style="justify-self:start">Recevoir un échantillon gratuit</a>
+        <span class="pay">Paiement : 50 % au démarrage, 50 % quand votre équipe tourne et est testée.</span>
+      </div>
+      <div class="slot" aria-label="Résumé du prix">
+        <div class="receipt">
+          <div class="rh"><strong>AI Team</strong><span>Installée sur votre ordinateur · une fois</span></div>
+          <ul>
+            <li><span>Service client</span><span class="dots"></span><span class="v">inclus</span></li>
+            <li><span>Visuels pub</span><span class="dots"></span><span class="v">inclus</span></li>
+            <li><span>Vidéos pub</span><span class="dots"></span><span class="v">inclus</span></li>
+            <li><span>Veille concurrents</span><span class="dots"></span><span class="v">inclus</span></li>
+            <li><span>Pubs Meta (en pause)</span><span class="dots"></span><span class="v">inclus</span></li>
+            <li><span>E-mails &amp; boutique</span><span class="dots"></span><span class="v">inclus</span></li>
+            <li><span>Installation avec vous</span><span class="dots"></span><span class="v">inclus</span></li>
+            <li><span>Adaptée à votre boutique</span><span class="dots"></span><span class="v">inclus</span></li>
+            <li><span>La garantie</span><span class="dots"></span><span class="v">inclus</span></li>
+          </ul>
+          <ul class="none">
+            <li><span>Mots de passe donnés</span><span class="dots"></span><span class="v">aucun</span></li>
+            <li><span>Envoyé sans votre accord</span><span class="dots"></span><span class="v">rien</span></li>
+            <li><span>Factures surprises</span><span class="dots"></span><span class="v">aucune</span></li>
+          </ul>
+          <div class="total"><b>Total</b><span class="amount">1 000 €</span></div>
+          <p class="then">puis 100 € / mois · environ 3,30 € par jour</p>
+          <p class="thanks">À VOUS POUR DE BON</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="s col" id="faq">
+    <div class="head rv">
+      <span class="eyebrow" data-l="en">Questions</span><span class="eyebrow" data-l="fr">Questions</span>
+      <h2 data-l="en">Questions owners <em>ask</em></h2><h2 data-l="fr">Les questions qu'on me <em>pose</em></h2>
+    </div>
+    <div class="faq" data-l="en">
+      <details><summary>Isn't this just a $15 chatbot?</summary><p>A $15 tool runs in someone else's cloud and gives generic answers. This team is installed on your computer, checks your real Shopify orders before answering, and asks you before anything is sent.</p></details>
+      <details><summary>I'm not technical. Can I really use this?</summary><p>That's who it's built for. You chat with your team on Discord, from your phone or your PC. There is no dashboard to learn, and we set everything up with you.</p></details>
+      <details><summary>Do I have to give you my passwords?</summary><p>Never. You create each access code yourself, it stays on your computer, and you can cut it in one click.</p></details>
+      <details><summary>What if it sends something wrong to a customer?</summary><p>It can't send anything on its own. Every reply, e-mail and ad waits for your yes.</p></details>
+      <details><summary>Could my Facebook ad account get banned because of this?</summary><p>The ads assistant only prepares paused ads in your existing account. Nothing is published or paid until you launch it yourself.</p></details>
+      <details><summary>Where does my data go?</summary><p>The team runs on your computer and uses AI services in your own name (Claude, ChatGPT and the others listed above). Nothing passes through us or through a server of ours.</p></details>
+      <details><summary>I already have someone for customer service.</summary><p>Then the assistant takes the repetitive questions, and your person keeps the cases that need a human.</p></details>
+      <details><summary>Can I take only one or two assistants?</summary><p>It's one package because the assistants share your store's information and the same approval system. That's what makes them useful together.</p></details>
+      <details><summary>What happens if I stop the €100 a month?</summary><p>You keep everything that is installed. Fixes, updates and the included hours stop; later changes are €25 an hour if you need them.</p></details>
+      <details><summary>Why trust one person rather than an agency?</summary><p>You see and approve everything live, one person is responsible for all of it, and nothing happens without your yes. That's more control than most agencies give you.</p></details>
+    </div>
+    <div class="faq" data-l="fr">
+      <details><summary>Ce n'est pas juste un chatbot à 15 $ ?</summary><p>Un outil à 15 $ tourne dans le cloud de quelqu'un d'autre et donne des réponses génériques. Cette équipe est installée sur votre ordinateur, vérifie vos vraies commandes Shopify avant de répondre, et vous demande avant tout envoi.</p></details>
+      <details><summary>Je ne suis pas technique. Je peux vraiment l'utiliser ?</summary><p>C'est pour vous qu'elle est faite. Vous parlez à votre équipe sur Discord, depuis votre téléphone ou votre PC. Pas de tableau de bord à apprendre, et on installe tout avec vous.</p></details>
+      <details><summary>Je dois vous donner mes mots de passe ?</summary><p>Jamais. Vous créez chaque code d'accès vous-même, il reste sur votre ordinateur, et vous pouvez le couper en un clic.</p></details>
+      <details><summary>Et s'il envoie une bêtise à un client ?</summary><p>Il ne peut rien envoyer seul. Chaque réponse, e-mail et pub attend votre accord.</p></details>
+      <details><summary>Mon compte pub Facebook risque d'être banni à cause de ça ?</summary><p>L'assistant pubs prépare seulement des pubs en pause dans votre compte existant. Rien n'est publié ni payé tant que vous ne le lancez pas vous-même.</p></details>
+      <details><summary>Où vont mes données ?</summary><p>L'équipe tourne sur votre ordinateur et utilise des services IA à votre nom (Claude, ChatGPT et les autres listés plus haut). Rien ne passe par nous ni par un serveur à nous.</p></details>
+      <details><summary>J'ai déjà quelqu'un pour le service client.</summary><p>Alors l'assistant prend les questions répétitives, et votre personne garde les cas qui demandent un humain.</p></details>
+      <details><summary>Je peux prendre seulement un ou deux assistants ?</summary><p>C'est une seule formule parce que les assistants partagent les informations de votre boutique et le même système de validation. C'est ce qui les rend utiles ensemble.</p></details>
+      <details><summary>Que se passe-t-il si j'arrête les 100 € par mois ?</summary><p>Vous gardez tout ce qui est installé. Les corrections, mises à jour et heures incluses s'arrêtent ; les changements plus tard sont à 25 € de l'heure si besoin.</p></details>
+      <details><summary>Pourquoi faire confiance à une seule personne plutôt qu'à une agence ?</summary><p>Vous voyez et validez tout en direct, une seule personne est responsable de l'ensemble, et rien ne se passe sans votre accord. C'est plus de contrôle que la plupart des agences.</p></details>
+    </div>
+  </section>
+
+  <!-- WHO -->
+  <section class="s col">
+    <div class="head rv">
+      <span class="eyebrow" data-l="en">The builder</span><span class="eyebrow" data-l="fr">Le créateur</span>
+      <h2 data-l="en">Who <em>builds it</em></h2><h2 data-l="fr">Qui la <em>construit</em></h2>
+    </div>
+    <div class="who rv">
+      <span class="mono" aria-hidden="true">Y</span>
+      <p data-l="en">I'm Yassine. I build AI teams for online stores, and I install each one myself, live with the owner. I don't sell you a subscription to my software: the team is yours, on your computer, and I stay on hand to keep it running.</p>
+      <p data-l="fr">Je suis Yassine. Je construis des équipes IA pour les boutiques en ligne, et j'installe chacune moi-même, en direct avec le commerçant. Je ne vous vends pas un abonnement à mon logiciel : l'équipe est à vous, sur votre ordinateur, et je reste disponible pour la faire tourner.</p>
+    </div>
+  </section>
+
+  <!-- REQUEST -->
+  <section class="s col" id="request" style="border-bottom:0">
+    <div class="request rv" aria-labelledby="req-en req-fr">
+      <span class="eyebrow" data-l="en">Free, no commitment</span><span class="eyebrow" data-l="fr">Gratuit, sans engagement</span>
+      <h2 id="req-en" data-l="en">Get a free sample on your <em>store</em></h2>
+      <h2 id="req-fr" data-l="fr">Un échantillon gratuit sur votre <em>boutique</em></h2>
+      <p class="muted" data-l="en">Tell me your store and what you'd like to see first.</p>
+      <p class="muted" data-l="fr">Dites-moi votre boutique et ce que vous voulez voir en premier.</p>
+      <form id="form" novalidate style="display:grid;gap:0.9rem">
+        <label for="store"><span data-l="en">Your store's website</span><span data-l="fr">Le site de votre boutique</span>
+          <input id="store" name="store" type="text" inputmode="url" autocomplete="url" placeholder="myshop.com"></label>
+        <label for="want"><span data-l="en">What would you like first?</span><span data-l="fr">Que voulez-vous en premier ?</span>
+          <select id="want" name="want">
+            <option value="check" data-en="A free check of my store's settings" data-fr="Une vérification gratuite des réglages de ma boutique">A free check of my store's settings</option>
+            <option value="watch" data-en="This Monday's competitor report for my niche" data-fr="Le rapport concurrents de ce lundi pour ma niche">This Monday's competitor report for my niche</option>
+            <option value="call" data-en="A short call to see if the team fits my store" data-fr="Un court appel pour voir si l'équipe convient à ma boutique">A short call to see if the team fits my store</option>
+          </select></label>
+        <button type="submit" class="btn"><span data-l="en">Create my request</span><span data-l="fr">Créer ma demande</span></button>
+      </form>
+      <p class="status" id="status" aria-live="polite"></p>
+      <textarea id="out" rows="4" readonly hidden aria-label="Your request"></textarea>
+    </div>
+  </section>
+
+</main>
+<footer>
+  <p data-l="en">Prices in euros, offer valid 30 days. Payment: 50% at the start, 50% once your team is running and tested.</p>
+  <p data-l="fr">Prix en euros, offre valable 30 jours. Paiement : 50 % au démarrage, 50 % quand votre équipe tourne et est testée.</p>
+</footer>
+
+<script>
+/* language, theme, header, reveals, request form */
+let lang = "en";
+function setLang(l) {
+  lang = l;
+  document.documentElement.lang = l;
+  document.querySelectorAll("[data-l]").forEach((el) => { el.hidden = el.dataset.l !== l; });
+  document.querySelectorAll("[data-set]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.set === l)));
+  document.querySelectorAll("option[data-en]").forEach((o) => { o.textContent = o.dataset[l]; });
+  document.getElementById("status").textContent = "";
+  try { localStorage.setItem("lang", l); } catch {}
+  window.dispatchEvent(new CustomEvent("langchange", { detail: l }));
+  watch();
+}
+document.querySelectorAll("[data-set]").forEach((b) => b.addEventListener("click", () => setLang(b.dataset.set)));
+
+function setTheme(t) {
+  document.documentElement.dataset.theme = t;
+  document.querySelectorAll("[data-theme-set]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.themeSet === t)));
+  try { localStorage.setItem("theme", t); } catch {}
+  window.dispatchEvent(new CustomEvent("themechange", { detail: t }));
+}
+document.querySelectorAll("[data-theme-set]").forEach((b) => b.addEventListener("click", () => setTheme(b.dataset.themeSet)));
+setTheme(document.documentElement.dataset.theme);
+
+const hdr = document.getElementById("hdr"), hero = document.getElementById("top");
+const solid = () => hdr.classList.toggle("solid", window.scrollY > hero.offsetHeight - 80);
+window.addEventListener("scroll", solid, { passive: true }); solid();
+
+const io = "IntersectionObserver" in window ? new IntersectionObserver((entries) => {
+  for (const e of entries) {
+    if (!e.isIntersecting) continue;
+    const el = e.target;
+    io.unobserve(el);
+    if (el.classList.contains("chat")) {
+      el.classList.add("typing-now");
+      setTimeout(() => { el.classList.remove("typing-now"); el.classList.add("play"); }, 900);
+    } else if (el.classList.contains("slot")) el.classList.add("play");
+    else el.classList.add("in");
+  }
+}, { threshold: 0.2 }) : null;
+function watch() {
+  document.querySelectorAll(".rv:not(.in), .chat:not(.play), .slot:not(.play)").forEach((el) => {
+    if (el.closest("[hidden]")) return;
+    if (io) io.observe(el); else el.classList.add("in", "play");
+  });
+}
+
+document.getElementById("form").addEventListener("submit", (ev) => {
+  ev.preventDefault();
+  const store = document.getElementById("store").value.trim();
+  const status = document.getElementById("status"), out = document.getElementById("out");
+  if (!store) {
+    status.textContent = lang === "fr" ? "Indiquez le site de votre boutique, puis recommencez." : "Add your store's website, then try again.";
+    document.getElementById("store").focus();
+    return;
+  }
+  const want = document.getElementById("want").selectedOptions[0].textContent;
+  const text = lang === "fr"
+    ? `Bonjour, je veux un échantillon gratuit. Ma boutique : ${store}. En premier : ${want}.`
+    : `Hi, I'd like a free sample. My store: ${store}. First: ${want}.`;
+  const done = lang === "fr" ? "Copié. Collez-le dans la conversation où vous avez reçu ce lien." : "Copied. Paste it in the chat where you got this link.";
+  const manual = lang === "fr" ? "Copiez ce texte et envoyez-le dans la conversation où vous avez reçu ce lien." : "Copy this text and send it in the chat where you got this link.";
+  out.value = text; out.hidden = false;
+  const fallback = () => { out.select(); status.textContent = manual; };
+  try { navigator.clipboard.writeText(text).then(() => { status.textContent = done; }, fallback); } catch { fallback(); }
+});
+
+let saved = null;
+try { saved = localStorage.getItem("lang"); } catch {}
+setLang(saved || ((navigator.language || "").toLowerCase().startsWith("fr") ? "fr" : "en"));
+</script>
+
+<script type="module">
+/* The 3D sky: a laptop floating in the clouds, its screen showing an approval message, six glowing assistants circling it.
+   Day / Sunset / Night change the light, clouds and stars. Paused when off screen; one still frame with reduced motion.
+   ponytail: no post-processing bloom, glow is additive sprites; add EffectComposer only if it looks flat on real screens. */
+import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js";
+
+const canvas = document.getElementById("sky");
+let renderer;
+try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true }); } catch (e) { canvas.remove(); throw e; }
+renderer.setPixelRatio(Math.min(devicePixelRatio, 1.75));
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 200);
+camera.position.set(0, 0.4, 9);
+
+/* themes: light, clouds, stars, materials */
+const THEMES = {
+  day:    { sun: 0xfff4e0, sunI: 2.4, sunPos: [5, 6, 4],  hemiSky: 0xd6e7ff, hemiGround: 0xb9b2a8, hemiI: 1.1, cloud: 0xffffff, cloudO: 0.7,  stars: 0,   body: 0xe9e5de, orb: 0x0fa57e, glowO: 0.35, screenGlow: 0.9, emis: 0.35 },
+  sunset: { sun: 0xff9a5c, sunI: 2.8, sunPos: [-6, 1.2, 3], hemiSky: 0xffb48a, hemiGround: 0x4a2f45, hemiI: 0.9, cloud: 0xffb38f, cloudO: 0.7,  stars: 0.25, body: 0xf0d8c8, orb: 0xffd27a, glowO: 0.75, screenGlow: 1.0, emis: 0.8 },
+  night:  { sun: 0x9fb4ff, sunI: 0.7, sunPos: [3, 5, 2],  hemiSky: 0x2a3a66, hemiGround: 0x06080e, hemiI: 0.55, cloud: 0x34466f, cloudO: 0.5,  stars: 1,   body: 0x8f98ab, orb: 0x3ce0b0, glowO: 1.0, screenGlow: 1.25, emis: 1.6 },
+};
+const sun = new THREE.DirectionalLight(0xffffff, 2); scene.add(sun);
+const hemi = new THREE.HemisphereLight(0xffffff, 0x888888, 1); scene.add(hemi);
+
+/* soft textures drawn once on a 2D canvas */
+function puff(size, blobs, seed) {
+  const c = document.createElement("canvas"); c.width = c.height = size;
+  const g = c.getContext("2d"); let s = seed;
+  const rnd = () => (s = (s * 9301 + 49297) % 233280) / 233280;
+  for (let i = 0; i < blobs; i++) {
+    const x = size * (0.25 + rnd() * 0.5), y = size * (0.35 + rnd() * 0.3), r = size * (0.12 + rnd() * 0.18);
+    const gr = g.createRadialGradient(x, y, 0, x, y, r);
+    gr.addColorStop(0, "rgba(255,255,255,0.55)"); gr.addColorStop(1, "rgba(255,255,255,0)");
+    g.fillStyle = gr; g.beginPath(); g.arc(x, y, r, 0, Math.PI * 2); g.fill();
+  }
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
+}
+function glowTex() {
+  const c = document.createElement("canvas"); c.width = c.height = 128;
+  const g = c.getContext("2d"), gr = g.createRadialGradient(64, 64, 0, 64, 64, 64);
+  gr.addColorStop(0, "rgba(255,255,255,1)"); gr.addColorStop(0.25, "rgba(255,255,255,0.45)"); gr.addColorStop(1, "rgba(255,255,255,0)");
+  g.fillStyle = gr; g.fillRect(0, 0, 128, 128);
+  return new THREE.CanvasTexture(c);
+}
+
+/* clouds */
+const clouds = [];
+for (let i = 0; i < 22; i++) {
+  const mat = new THREE.SpriteMaterial({ map: puff(256, 9, i * 7 + 3), transparent: true, depthWrite: false, opacity: 0.9 });
+  const sp = new THREE.Sprite(mat);
+  const depth = -4 - Math.random() * 22;
+  sp.position.set((Math.random() - 0.5) * 34, -4.5 + Math.random() * 6.5, depth);
+  const s = 4 + Math.random() * 5; sp.scale.set(s * 1.7, s, 1);
+  sp.userData.v = 0.08 + Math.random() * 0.12;
+  scene.add(sp); clouds.push(sp);
+}
+
+/* stars */
+const starGeo = new THREE.BufferGeometry(), N = 700, pos = new Float32Array(N * 3);
+for (let i = 0; i < N; i++) { pos[i * 3] = (Math.random() - 0.5) * 120; pos[i * 3 + 1] = Math.random() * 45 - 5; pos[i * 3 + 2] = -40 - Math.random() * 30; }
+starGeo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
+const starMat = new THREE.PointsMaterial({ color: 0xffffff, size: 0.18, transparent: true, opacity: 0, depthWrite: false });
+scene.add(new THREE.Points(starGeo, starMat));
+
+/* the laptop */
+const rig = new THREE.Group(); scene.add(rig);
+const laptop = new THREE.Group(); rig.add(laptop);
+const bodyMat = new THREE.MeshStandardMaterial({ color: 0xe9e5de, roughness: 0.55, metalness: 0.15 });
+const base = new THREE.Mesh(new THREE.BoxGeometry(3.2, 0.12, 2.1), bodyMat); laptop.add(base);
+const keys = new THREE.Mesh(new THREE.PlaneGeometry(2.7, 1.0), new THREE.MeshStandardMaterial({ color: 0x2a2f36, roughness: 0.8 }));
+keys.rotation.x = -Math.PI / 2; keys.position.set(0, 0.061, -0.25); laptop.add(keys);
+const pad = new THREE.Mesh(new THREE.PlaneGeometry(0.9, 0.55), new THREE.MeshStandardMaterial({ color: 0xcfcac2, roughness: 0.4 }));
+pad.rotation.x = -Math.PI / 2; pad.position.set(0, 0.062, 0.62); laptop.add(pad);
+const lid = new THREE.Group(); lid.position.set(0, 0.06, -1.05); lid.rotation.x = -0.32; laptop.add(lid);
+const back = new THREE.Mesh(new THREE.BoxGeometry(3.2, 2.05, 0.08), bodyMat); back.position.set(0, 1.03, -0.04); lid.add(back);
+
+const sc = document.createElement("canvas"); sc.width = 1024; sc.height = 640;
+const screenTex = new THREE.CanvasTexture(sc); screenTex.colorSpace = THREE.SRGBColorSpace;
+const screenMat = new THREE.MeshBasicMaterial({ map: screenTex, toneMapped: false });
+const screen = new THREE.Mesh(new THREE.PlaneGeometry(2.95, 1.84), screenMat); screen.position.set(0, 1.03, 0.005); lid.add(screen);
+function drawScreen(l) {
+  const g = sc.getContext("2d"), fr = l === "fr";
+  g.fillStyle = "#1e2124"; g.fillRect(0, 0, 1024, 640);
+  g.fillStyle = "#2b2f33"; g.fillRect(0, 0, 1024, 64);
+  g.fillStyle = "#8e9297"; g.font = "600 26px system-ui, sans-serif"; g.fillText(fr ? "# service-client" : "# customer-service", 36, 42);
+  g.fillStyle = "#3ce0b0"; g.beginPath(); g.arc(70, 130, 30, 0, Math.PI * 2); g.fill();
+  g.fillStyle = "#04150f"; g.font = "800 22px system-ui, sans-serif"; g.fillText(fr ? "SC" : "CS", 54, 138);
+  g.fillStyle = "#ffffff"; g.font = "700 28px system-ui, sans-serif"; g.fillText(fr ? "Service client" : "Customer service", 120, 122);
+  g.fillStyle = "#dcdee1"; g.font = "400 25px system-ui, sans-serif";
+  g.fillText(fr ? "Julie demande où est la commande n°1042." : "Julie asks where order #1042 is.", 120, 162);
+  g.fillStyle = "#2b2f33"; g.fillRect(120, 192, 860, 170); g.fillStyle = "#3ce0b0"; g.fillRect(120, 192, 6, 170);
+  g.fillStyle = "#8e9297"; g.font = "700 18px monospace"; g.fillText(fr ? "PROPOSITION DE RÉPONSE" : "DRAFT REPLY", 146, 228);
+  g.fillStyle = "#ffffff"; g.font = "400 24px system-ui, sans-serif";
+  g.fillText(fr ? "Bonjour Julie, votre colis est parti lundi" : "Hi Julie, your parcel left on Monday and", 146, 270);
+  g.fillText(fr ? "et devrait arriver jeudi. Belle journée !" : "should arrive on Thursday. Have a lovely day!", 146, 306);
+  g.fillStyle = "#dcdee1"; g.font = "600 26px system-ui, sans-serif"; g.fillText(fr ? "Je l'envoie ?" : "OK to send?", 120, 412);
+  g.fillStyle = "#248046"; g.fillRect(120, 440, 200, 64); g.fillStyle = "#4e5058"; g.fillRect(336, 440, 200, 64);
+  g.fillStyle = "#ffffff"; g.font = "700 26px system-ui, sans-serif"; g.fillText(fr ? "✓ Envoyer" : "✓ Send", 150, 482); g.fillText(fr ? "Modifier" : "Change it", 372, 482);
+  screenTex.needsUpdate = true;
+}
+drawScreen(document.documentElement.lang);
+window.addEventListener("langchange", (e) => drawScreen(e.detail));
+const screenGlow = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex(), color: 0x7fd8ff, transparent: true, opacity: 0.25, depthWrite: false, blending: THREE.AdditiveBlending }));
+screenGlow.position.set(0, 1.03, 0.3); screenGlow.scale.set(5, 3.4, 1); lid.add(screenGlow);
+laptop.rotation.set(0.32, -0.5, 0.04);
+
+/* six assistants */
+const orbs = [], gtex = glowTex();
+for (let i = 0; i < 6; i++) {
+  const core = new THREE.Mesh(new THREE.SphereGeometry(0.12, 32, 20), new THREE.MeshStandardMaterial({ color: 0x3ce0b0, emissive: 0x3ce0b0, emissiveIntensity: 1, roughness: 0.3 }));
+  const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: gtex, color: 0x3ce0b0, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, opacity: 0.8 }));
+  halo.scale.set(0.95, 0.95, 1); core.add(halo); rig.add(core);
+  orbs.push({ core, halo, r: 2.1 + (i % 3) * 0.25, lift: -0.25 + (i % 2) * 0.5, speed: 0.22 + i * 0.03, phase: (i / 6) * Math.PI * 2 });
+}
+
+/* theme blending */
+const cur = { sun: new THREE.Color(), hemiSky: new THREE.Color(), hemiGround: new THREE.Color(), cloud: new THREE.Color(), body: new THREE.Color(), orb: new THREE.Color(),
+  sunI: 2, hemiI: 1, cloudO: 0.9, stars: 0, glowO: 0.6, screenGlow: 1, emis: 1, sunPos: new THREE.Vector3(5, 6, 4) };
+let target = THEMES[document.documentElement.dataset.theme] || THEMES.day;
+function snap(t) {
+  cur.sun.set(t.sun); cur.hemiSky.set(t.hemiSky); cur.hemiGround.set(t.hemiGround); cur.cloud.set(t.cloud); cur.body.set(t.body); cur.orb.set(t.orb);
+  Object.assign(cur, { sunI: t.sunI, hemiI: t.hemiI, cloudO: t.cloudO, stars: t.stars, glowO: t.glowO, screenGlow: t.screenGlow, emis: t.emis }); cur.sunPos.set(...t.sunPos);
+}
+snap(target);
+window.addEventListener("themechange", (e) => { target = THEMES[e.detail] || THEMES.day; if (still) { snap(target); frame(0); } });
+const tmp = new THREE.Color();
+function blend(k) {
+  cur.sun.lerp(tmp.set(target.sun), k); cur.hemiSky.lerp(tmp.set(target.hemiSky), k); cur.hemiGround.lerp(tmp.set(target.hemiGround), k);
+  cur.cloud.lerp(tmp.set(target.cloud), k); cur.body.lerp(tmp.set(target.body), k); cur.orb.lerp(tmp.set(target.orb), k);
+  for (const key of ["sunI", "hemiI", "cloudO", "stars", "glowO", "screenGlow", "emis"]) cur[key] += (target[key] - cur[key]) * k;
+  cur.sunPos.lerp(new THREE.Vector3(...target.sunPos), k);
+}
+
+/* layout: object to the right on wide screens, above the text on phones */
+function layout() {
+  const w = canvas.clientWidth, h = canvas.clientHeight;
+  renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
+  const narrow = w < 860;
+  rig.position.set(narrow ? 0 : 2.45, narrow ? 1.45 : -0.1, 0);
+  rig.scale.setScalar(narrow ? 0.58 : 0.76);
+}
+layout(); addEventListener("resize", layout);
+
+/* motion: float, orbit, mouse parallax, scroll tilt */
+const mouse = { x: 0, y: 0 };
+addEventListener("pointermove", (e) => { mouse.x = e.clientX / innerWidth - 0.5; mouse.y = e.clientY / innerHeight - 0.5; }, { passive: true });
+const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+let visible = true, running = false, last = performance.now(), t0 = 0;
+function kick() { if (!running && visible && !document.hidden && !still) { running = true; last = performance.now(); requestAnimationFrame(loop); } }
+new IntersectionObserver(([e]) => { visible = e.isIntersecting; kick(); }).observe(canvas);
+document.addEventListener("visibilitychange", kick);
+
+function frame(dt) {
+  t0 += dt;
+  blend(still ? 1 : Math.min(1, dt * 2.5));
+  sun.color.copy(cur.sun); sun.intensity = cur.sunI; sun.position.copy(cur.sunPos);
+  hemi.color.copy(cur.hemiSky); hemi.groundColor.copy(cur.hemiGround); hemi.intensity = cur.hemiI;
+  bodyMat.color.copy(cur.body);
+  starMat.opacity = cur.stars;
+  screenGlow.material.opacity = 0.18 * cur.screenGlow;
+  for (const c of clouds) {
+    c.material.color.copy(cur.cloud); c.material.opacity = cur.cloudO;
+    c.position.x += c.userData.v * dt; if (c.position.x > 19) c.position.x = -19;
+  }
+  const scrollK = Math.min(1, scrollY / innerHeight);
+  laptop.position.y = Math.sin(t0 * 0.8) * 0.12;
+  laptop.rotation.y = -0.5 + Math.sin(t0 * 0.3) * 0.08 + mouse.x * 0.35 + scrollK * 0.6;
+  laptop.rotation.x = 0.32 + mouse.y * 0.15 - scrollK * 0.2;
+  for (const o of orbs) {
+    const a = o.phase + t0 * o.speed;
+    o.core.position.set(Math.cos(a) * o.r, 0.75 + o.lift + Math.sin(a * 2 + o.phase) * 0.18, Math.sin(a) * o.r * 0.8);
+    o.core.material.color.copy(cur.orb); o.core.material.emissive.copy(cur.orb); o.core.material.emissiveIntensity = cur.emis; o.halo.material.color.copy(cur.orb);
+    o.halo.material.opacity = cur.glowO * (0.75 + 0.25 * Math.sin(t0 * 2 + o.phase));
+  }
+  camera.position.x += (mouse.x * 0.6 - camera.position.x) * 0.05;
+  camera.position.y += (0.4 - mouse.y * 0.4 - scrollK * 1.2 - camera.position.y) * 0.05;
+  camera.lookAt(0, 0.2 - scrollK * 0.8, 0);
+  renderer.render(scene, camera);
+}
+function loop(now) {
+  if (!visible || document.hidden) { running = false; return; }
+  const dt = Math.min(0.05, (now - last) / 1000); last = now;
+  frame(dt);
+  requestAnimationFrame(loop);
+}
+if (still) frame(0); else kick();
+</script>
+</body>
+</html>

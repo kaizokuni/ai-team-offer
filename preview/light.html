@@ -1,0 +1,511 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>AI Team Offer</title>
+<meta name="description" content="Your own AI team for your online store, installed on your computer. It works, you approve.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Look from the Stitch design (11 Nov): mint paper, white bordered cards, serif titles, small green eyebrows, one narrow column. */
+:root {
+  --bg: #eafdfa; --bg-2: #e2f6f2; --surface: #ffffff; --ink: #0d1e1c; --muted: #3e4945; --line: #bdc9c3;
+  --accent: #0a7a62; --accent-strong: #005f4c; --accent-ink: #ffffff; --accent-soft: #c2ebdf;
+  --chat: #1f2b29; --chat-2: #2a3836; --chat-ink: #e1f5f1; --chat-muted: #9fb3ae;
+  --serif: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --sans: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", Consolas, ui-monospace, monospace;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 400 1.06rem/1.65 var(--sans); }
+[hidden] { display: none !important; }
+a { color: inherit; }
+h1, h2, h3 { font-family: var(--serif); margin: 0; text-wrap: balance; color: var(--ink); }
+h1 { font-size: clamp(2.3rem, 6.5vw, 3.6rem); line-height: 1.08; font-weight: 700; letter-spacing: -0.02em; }
+h2 { font-size: clamp(1.7rem, 4.5vw, 2.4rem); line-height: 1.15; font-weight: 700; letter-spacing: -0.015em; }
+h3 { font-size: 1.25rem; line-height: 1.25; font-weight: 700; }
+p { margin: 0; }
+.muted { color: var(--muted); }
+.eyebrow { font: 700 0.72rem/1.2 var(--sans); letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); }
+
+/* header */
+header { position: sticky; top: 0; z-index: 5; background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line); }
+.bar { max-width: 62rem; margin: 0 auto; padding: 0.8rem 16px; display: flex; align-items: center; gap: 1.2rem; }
+.logo { font: 700 1.3rem/1 var(--serif); text-decoration: none; white-space: nowrap; }
+.logo::after { content: ""; display: inline-block; width: 0.42rem; height: 0.42rem; border-radius: 50%; background: var(--accent); margin-left: 0.35rem; vertical-align: 0.15rem; }
+nav { display: flex; gap: 1.3rem; margin-left: 1rem; }
+nav a { text-decoration: none; color: var(--muted); font-size: 0.93rem; }
+nav a:hover { color: var(--accent); }
+.bar .right { margin-left: auto; display: flex; gap: 0.6rem; align-items: center; }
+.lang { display: inline-flex; border: 1px solid var(--line); background: var(--surface); }
+.lang button { font: 700 0.75rem/1 var(--sans); letter-spacing: 0.06em; border: 0; background: none; color: var(--muted); padding: 0.5rem 0.65rem; cursor: pointer; }
+.lang button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+.btn { display: inline-block; font: 700 0.98rem/1 var(--sans); background: var(--accent); color: var(--accent-ink); text-decoration: none;
+  border: 0; border-radius: 4px; padding: 1rem 1.5rem; cursor: pointer; text-align: center; }
+.btn:hover { background: var(--accent-strong); }
+.btn.sm { padding: 0.65rem 1rem; font-size: 0.88rem; }
+.btn:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible, a:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+@media (max-width: 760px) { nav, .bar .btn { display: none; } }
+
+/* page */
+main { padding: 0 16px; }
+.col { max-width: 41rem; margin: 0 auto; }
+section { padding: 4.5rem 0; border-bottom: 1px solid var(--line); display: grid; gap: 1.2rem; }
+section:last-of-type { border-bottom: 0; }
+.head { display: grid; gap: 0.6rem; margin-bottom: 0.6rem; }
+
+/* hero */
+.hero { text-align: center; justify-items: center; padding-top: 5rem; gap: 1.5rem; }
+.pill { display: inline-flex; align-items: center; gap: 0.5rem; font: 700 0.78rem/1 var(--sans); color: var(--accent-strong); background: var(--accent-soft);
+  border: 1px solid #a7cfc3; border-radius: 999px; padding: 0.5rem 0.9rem; }
+.pill::before { content: ""; width: 0.4rem; height: 0.4rem; border-radius: 50%; background: var(--accent); }
+.hero .lead { font-size: 1.22rem; color: var(--muted); max-width: 34rem; }
+.hero .under { font-size: 0.85rem; font-weight: 600; color: var(--muted); }
+.trust { list-style: none; margin: 1rem 0 0; padding: 1rem 0 0; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; justify-content: center; gap: 0.6rem 1.8rem;
+  font-weight: 700; font-size: 0.9rem; }
+.trust li { display: flex; align-items: center; gap: 0.45rem; }
+.trust svg { width: 1.1rem; height: 1.1rem; color: var(--accent); flex: none; }
+
+/* cards */
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 1.3rem 1.4rem; }
+.pains { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.8rem; }
+.pains li { font: 700 1.15rem/1.35 var(--serif); }
+
+/* chat mock */
+.chat { background: var(--chat); color: var(--chat-ink); border-radius: 6px; overflow: hidden; }
+.chat .top { display: flex; justify-content: space-between; gap: 1rem; padding: 0.7rem 1.1rem; border-bottom: 1px solid var(--chat-2);
+  font: 700 0.72rem/1.2 var(--sans); letter-spacing: 0.08em; text-transform: uppercase; color: var(--chat-muted); }
+.chat .top span:first-child::before { content: ""; display: inline-block; width: 0.45rem; height: 0.45rem; border-radius: 50%; background: #3ccaa6; margin-right: 0.45rem; }
+.chat .body { padding: 1.1rem; display: grid; grid-template-columns: 2.3rem minmax(0, 1fr); gap: 0.25rem 0.8rem; }
+.chat .av { grid-row: span 2; width: 2.3rem; height: 2.3rem; border-radius: 4px; background: var(--accent); display: grid; place-items: center; font: 700 0.75rem/1 var(--sans); color: #fff; }
+.chat .who { font-weight: 700; color: #fff; } .chat .who small { color: var(--chat-muted); font-weight: 400; margin-left: 0.4rem; }
+.chat .msg { display: grid; gap: 0.6rem; font-size: 0.98rem; }
+.chat .draft { border: 1px solid var(--chat-2); background: #172220; border-radius: 4px; padding: 0.8rem 0.9rem; font-style: italic; color: #fff; }
+.chat .draft b { display: block; font: 600 0.7rem/1.2 var(--mono); font-style: normal; letter-spacing: 0.06em; color: var(--chat-muted); margin-bottom: 0.35rem; }
+.chat .btns { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.chat .btns span { font: 700 0.85rem/1 var(--sans); padding: 0.55rem 0.9rem; border-radius: 4px; border: 1px solid var(--chat-2); color: #fff; }
+.chat .btns span.ok { background: var(--accent); border-color: var(--accent); }
+.chat .foot { padding: 0 1.1rem 0.9rem; text-align: right; font-size: 0.8rem; font-style: italic; color: var(--chat-muted); }
+
+/* team */
+.team { display: grid; grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)); gap: 0.9rem; }
+.agent { display: grid; gap: 0.5rem; align-content: start; }
+.agent .meta { display: flex; justify-content: space-between; gap: 0.6rem; align-items: center; }
+.agent .num { font: 700 0.7rem/1.2 var(--sans); letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); }
+.tag { font: 700 0.68rem/1 var(--sans); letter-spacing: 0.04em; background: var(--bg-2); border: 1px solid var(--line); padding: 0.35rem 0.5rem; white-space: nowrap; }
+.agent p { color: var(--muted); font-size: 0.97rem; }
+.agent .gives { border-top: 1px solid var(--line); padding-top: 0.6rem; margin-top: 0.2rem; font-weight: 700; font-size: 0.9rem; color: var(--accent-strong); }
+.also { display: grid; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); gap: 0.9rem; margin-top: 0.6rem; }
+.also div { border-top: 2px solid var(--accent); padding-top: 0.7rem; display: grid; gap: 0.25rem; }
+.also h3 { font-size: 1.05rem; }
+.also p { color: var(--muted); font-size: 0.95rem; }
+
+/* steps */
+.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.2rem; counter-reset: s; }
+.steps li { display: grid; grid-template-columns: 2.6rem minmax(0, 1fr); gap: 0.2rem 1rem; counter-increment: s; }
+.steps li::before { content: "0" counter(s); grid-row: span 2; font: 700 1.5rem/1 var(--serif); color: var(--accent); padding-top: 0.15rem; }
+.steps p { color: var(--muted); }
+
+/* guarantee */
+.guarantee { background: var(--accent-soft); border: 1px solid #a7cfc3; border-radius: 4px; padding: 1.6rem 1.6rem 1.3rem; display: grid; gap: 1rem; }
+.guarantee blockquote { margin: 0; font: 700 1.25rem/1.45 var(--serif); }
+.guarantee .sign { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; border-top: 1px solid #a7cfc3; padding-top: 0.8rem;
+  font-size: 0.9rem; font-style: italic; color: var(--muted); }
+
+/* price */
+.price-head { text-align: center; justify-items: center; }
+.price { text-align: center; display: grid; gap: 0.6rem; padding: 2.2rem 1.6rem 1.8rem; }
+.big { font: 700 clamp(3rem, 10vw, 4.2rem)/1 var(--serif); letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.big small { font: 400 1rem/1 var(--sans); letter-spacing: 0; color: var(--muted); margin-left: 0.4rem; }
+.plus { font: 700 1.15rem/1.3 var(--sans); color: var(--accent-strong); }
+.plus small { font-weight: 400; color: var(--muted); font-size: 0.9rem; }
+.chip { justify-self: center; font: 700 0.82rem/1.2 var(--sans); background: var(--bg-2); padding: 0.45rem 0.8rem; }
+.checks { list-style: none; margin: 0.8rem 0 0; padding: 1.1rem 0 0; border-top: 1px solid var(--line); display: grid; gap: 0.55rem; text-align: left; }
+.checks li { display: grid; grid-template-columns: 1.4rem minmax(0, 1fr); gap: 0.5rem; }
+.checks li::before { content: "✓"; color: var(--accent); font-weight: 700; font-size: 1.1rem; line-height: 1.4; }
+details.tools { text-align: left; background: var(--bg-2); border: 1px solid var(--line); padding: 0.8rem 1rem; margin-top: 0.6rem; }
+details.tools summary { cursor: pointer; font-weight: 700; font-size: 0.92rem; color: var(--accent-strong); }
+.tablewrap { overflow-x: auto; margin-top: 0.6rem; }
+table { width: 100%; border-collapse: collapse; min-width: 24rem; font-size: 0.92rem; }
+td { padding: 0.45rem 0.3rem; border-top: 1px solid var(--line); vertical-align: top; }
+td:last-child { text-align: right; white-space: nowrap; font-family: var(--mono); font-size: 0.85rem; }
+.price .btn { margin-top: 0.8rem; width: 100%; }
+.price .pay { font-size: 0.85rem; font-weight: 600; color: var(--muted); }
+
+/* faq */
+.faq { display: grid; gap: 0.6rem; }
+.faq details { background: var(--surface); border: 1px solid var(--line); border-radius: 4px; }
+.faq summary { cursor: pointer; list-style: none; display: flex; justify-content: space-between; gap: 1rem; align-items: center;
+  padding: 1rem 1.1rem; font: 700 1.05rem/1.35 var(--serif); }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: ""; flex: none; width: 0.55rem; height: 0.55rem; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: rotate(45deg) translateY(-3px); transition: transform 0.15s; }
+.faq details[open] summary::after { transform: rotate(-135deg); }
+.faq details p { padding: 0 1.1rem 1rem; color: var(--muted); }
+
+/* who + request */
+.who { display: grid; grid-template-columns: 4rem minmax(0, 1fr); gap: 1rem; align-items: start; }
+.who .mono { width: 4rem; height: 4rem; border-radius: 50%; background: var(--accent); color: #fff; display: grid; place-items: center; font: 700 1.5rem/1 var(--serif); }
+.request { background: var(--surface); border: 1px solid var(--line); border-top: 4px solid var(--accent); border-radius: 4px; padding: 1.8rem 1.6rem; display: grid; gap: 1rem; }
+.request label { display: grid; gap: 0.35rem; font-weight: 700; font-size: 0.95rem; }
+.request input, .request select { font: 400 1rem/1.4 var(--sans); padding: 0.75rem 0.85rem; border: 1px solid var(--line); border-radius: 4px; background: var(--bg); color: var(--ink); width: 100%; }
+#out { width: 100%; font: 0.9rem/1.4 var(--mono); border: 1px solid var(--line); border-radius: 4px; padding: 0.6rem; background: var(--bg); color: var(--ink); }
+.status { color: var(--accent-strong); font-weight: 700; min-height: 1.4em; }
+footer { max-width: 41rem; margin: 0 auto; padding: 1.5rem 16px 3rem; color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--line); }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .faq summary::after { transition: none; } }
+</style>
+</head>
+<body>
+<header>
+  <div class="bar">
+    <a class="logo" href="#top">AI Team</a>
+    <nav aria-label="Sections">
+      <a href="#method"><span data-l="en">The method</span><span data-l="fr">La méthode</span></a>
+      <a href="#team"><span data-l="en">The team</span><span data-l="fr">L'équipe</span></a>
+      <a href="#price"><span data-l="en">Price</span><span data-l="fr">Tarif</span></a>
+      <a href="#faq"><span data-l="en">Questions</span><span data-l="fr">Questions</span></a>
+    </nav>
+    <div class="right">
+      <div class="lang" role="group" aria-label="Language">
+        <button type="button" data-set="fr" aria-pressed="false">FR</button>
+        <button type="button" data-set="en" aria-pressed="true">EN</button>
+      </div>
+      <a class="btn sm" href="#request"><span data-l="en">Free sample</span><span data-l="fr">Échantillon gratuit</span></a>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+<div class="col">
+
+  <!-- HERO -->
+  <section class="hero">
+    <span class="pill"><span data-l="en">For online stores · France &amp; Belgium</span><span data-l="fr">Pour les boutiques en ligne · France &amp; Belgique</span></span>
+    <h1 data-l="en">The AI team you install, not the one you rent.</h1>
+    <h1 data-l="fr">L'équipe IA que vous installez, pas celle que vous louez.</h1>
+    <p class="lead" data-l="en">Six AI assistants work on your store every day, from your own computer. They prepare, you approve. Nothing goes out without your OK.</p>
+    <p class="lead" data-l="fr">Six assistants IA travaillent sur votre boutique chaque jour, depuis votre propre ordinateur. Ils préparent, vous validez. Rien ne part sans votre accord.</p>
+    <a class="btn" href="#request"><span data-l="en">Get a free sample on your store</span><span data-l="fr">Recevoir un échantillon gratuit sur ma boutique</span></a>
+    <p class="under" data-l="en">One price, set up with you, yours to keep.</p>
+    <p class="under" data-l="fr">Un seul prix, installée avec vous, à vous pour de bon.</p>
+    <ul class="trust">
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1"/><path d="M8 20h8M12 16v4"/></svg><span data-l="en">Runs on your own computer</span><span data-l="fr">Tourne sur votre ordinateur</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span data-l="en">You approve everything</span><span data-l="fr">Vous validez tout</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="1"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><span data-l="en">No password given to us</span><span data-l="fr">Aucun mot de passe donné</span></li>
+    </ul>
+  </section>
+
+  <!-- PAIN -->
+  <section>
+    <div class="head">
+      <span class="eyebrow" data-l="en">The problem</span><span class="eyebrow" data-l="fr">Le problème</span>
+      <h2 data-l="en">Sound familiar?</h2><h2 data-l="fr">Ça vous parle ?</h2>
+    </div>
+    <ul class="pains" data-l="en">
+      <li class="card">“80% of my customer e-mails are the same questions, and I still answer every one myself.”</li>
+      <li class="card">“My ads die after two or three weeks and I don't know why.”</li>
+      <li class="card">“I don't have time to make new ad images and videos every week.”</li>
+      <li class="card">“I'm doing good revenue, but I'm not sure how much of it is real profit.”</li>
+      <li class="card">“I'd love help, but I won't hand my passwords to just anyone.”</li>
+    </ul>
+    <ul class="pains" data-l="fr">
+      <li class="card">« 80 % de mes e-mails clients, ce sont les mêmes questions, et j'y réponds encore moi-même. »</li>
+      <li class="card">« Mes pubs meurent au bout de deux ou trois semaines et je ne sais pas pourquoi. »</li>
+      <li class="card">« Je n'ai pas le temps de faire de nouveaux visuels et vidéos chaque semaine. »</li>
+      <li class="card">« Je fais un bon chiffre d'affaires, mais je ne sais pas combien il me reste vraiment. »</li>
+      <li class="card">« J'aimerais de l'aide, mais je ne donne pas mes mots de passe à n'importe qui. »</li>
+    </ul>
+    <p data-l="en">You didn't start a store to spend your days in your inbox. The work that eats your week is the work this team does.</p>
+    <p data-l="fr">Vous n'avez pas lancé une boutique pour passer vos journées dans votre boîte mail. Le travail qui mange votre semaine, c'est celui que fait cette équipe.</p>
+  </section>
+
+  <!-- MECHANISM -->
+  <section id="method">
+    <div class="head">
+      <span class="eyebrow" data-l="en">The method</span><span class="eyebrow" data-l="fr">La méthode</span>
+      <h2 data-l="en">Not another dashboard. A team that asks before it acts.</h2>
+      <h2 data-l="fr">Pas un énième tableau de bord. Une équipe qui demande avant d'agir.</h2>
+    </div>
+    <p data-l="en">Your assistants live in your Discord, like colleagues. They do the work, then ask you. One tap to approve, one tap to change it.</p>
+    <p data-l="fr">Vos assistants vivent dans votre Discord, comme des collègues. Ils font le travail, puis vous demandent. Un clic pour valider, un clic pour modifier.</p>
+    <div class="chat" data-l="en" aria-label="Example of an approval message">
+      <div class="top"><span>Example of a message you would get</span><span>Discord</span></div>
+      <div class="body">
+        <span class="av">CS</span>
+        <span class="who">Customer service <small>today at 09:12</small></span>
+        <div class="msg">
+          <span>Julie asks where order #1042 is. Tracking: in transit, delivery expected Thursday.</span>
+          <span class="draft"><b>DRAFT REPLY</b>Hi Julie, your parcel left on Monday and should arrive on Thursday. Here is your tracking link. Have a lovely day!</span>
+          <span>OK to send?</span>
+          <div class="btns"><span class="ok">✓ Send</span><span>Change it</span></div>
+        </div>
+      </div>
+      <p class="foot">Nothing is sent until you click.</p>
+    </div>
+    <div class="chat" data-l="fr" aria-label="Exemple de message de validation">
+      <div class="top"><span>Exemple de message que vous recevriez</span><span>Discord</span></div>
+      <div class="body">
+        <span class="av">SC</span>
+        <span class="who">Service client <small>aujourd'hui à 09:12</small></span>
+        <div class="msg">
+          <span>Julie demande où est la commande n°1042. Suivi : en transit, livraison prévue jeudi.</span>
+          <span class="draft"><b>PROPOSITION DE RÉPONSE</b>Bonjour Julie, votre colis est parti lundi et devrait arriver jeudi. Voici votre lien de suivi. Belle journée !</span>
+          <span>Je l'envoie ?</span>
+          <div class="btns"><span class="ok">✓ Envoyer</span><span>Modifier</span></div>
+        </div>
+      </div>
+      <p class="foot">Rien ne part tant que vous n'avez pas cliqué.</p>
+    </div>
+  </section>
+
+  <!-- TEAM -->
+  <section id="team">
+    <div class="head">
+      <span class="eyebrow" data-l="en">Your team</span><span class="eyebrow" data-l="fr">Votre équipe</span>
+      <h2 data-l="en">Your team of six</h2><h2 data-l="fr">Votre équipe de six</h2>
+    </div>
+    <div class="team" data-l="en">
+      <div class="card agent"><div class="meta"><span class="num">01 · Customer service</span><span class="tag">You approve each reply</span></div><p>Twice a day it reads your store's e-mails, checks each real order and delivery in Shopify, and writes the answers. You approve each reply, refund or return.</p><span class="gives">The repetitive tickets handled, without hiring.</span></div>
+      <div class="card agent"><div class="meta"><span class="num">02 · Ad images</span><span class="tag">3 sizes</span></div><p>New ad images in 3 sizes, made from your own product photos.</p><span class="gives">A designer's weekly output, without the designer.</span></div>
+      <div class="card agent"><div class="meta"><span class="num">03 · Ad videos</span><span class="tag">Cost shown first</span></div><p>Ready-to-post video ads with a professional voice-over, moving scenes and subtitles. You see the cost before anything is made.</p><span class="gives">No filming, no editing, no surprise invoice.</span></div>
+      <div class="card agent"><div class="meta"><span class="num">04 · Competitor watch</span><span class="tag">Every Monday</span></div><p>Every Monday, the 5 competitor ads that perform best right now, and why.</p><span class="gives">The research hour you never get to, done every week.</span></div>
+      <div class="card agent"><div class="meta"><span class="num">05 · Meta ads</span><span class="tag">Always paused</span></div><p>Your Facebook and Instagram ads prepared in your own account, paused. You check them and press go yourself.</p><span class="gives">Ready-to-launch ads, and your money never moves without you.</span></div>
+      <div class="card agent"><div class="meta"><span class="num">06 · E-mail and store</span><span class="tag">Drafts only</span></div><p>E-mail campaigns prepared as drafts, ideas to make your store sell more, and your real margin on each product.</p><span class="gives">You finally see what you really earn.</span></div>
+    </div>
+    <div class="team" data-l="fr">
+      <div class="card agent"><div class="meta"><span class="num">01 · Service client</span><span class="tag">Vous validez chaque réponse</span></div><p>Deux fois par jour, il lit les e-mails de votre boutique, vérifie chaque vraie commande et livraison dans Shopify, et rédige les réponses. Vous validez chaque réponse, remboursement ou retour.</p><span class="gives">Les tickets répétitifs gérés, sans embaucher.</span></div>
+      <div class="card agent"><div class="meta"><span class="num">02 · Visuels pub</span><span class="tag">3 formats</span></div><p>De nouveaux visuels pub en 3 formats, faits à partir de vos propres photos produit.</p><span class="gives">Le travail hebdomadaire d'un graphiste, sans le graphiste.</span></div>
+      <div class="card agent"><div class="meta"><span class="num">03 · Vidéos pub</span><span class="tag">Coût affiché avant</span></div><p>Des vidéos pub prêtes à publier, avec une voix off professionnelle, des scènes animées et des sous-titres. Vous voyez le coût avant toute création.</p><span class="gives">Pas de tournage, pas de montage, pas de facture surprise.</span></div>
+      <div class="card agent"><div class="meta"><span class="num">04 · Veille concurrents</span><span class="tag">Chaque lundi</span></div><p>Chaque lundi, les 5 pubs concurrentes qui marchent le mieux en ce moment, et pourquoi.</p><span class="gives">L'heure de recherche que vous ne prenez jamais, faite chaque semaine.</span></div>
+      <div class="card agent"><div class="meta"><span class="num">05 · Pubs Meta</span><span class="tag">Toujours en pause</span></div><p>Vos pubs Facebook et Instagram préparées dans votre propre compte, en pause. Vous vérifiez et vous lancez vous-même.</p><span class="gives">Des pubs prêtes à lancer, et votre argent ne bouge jamais sans vous.</span></div>
+      <div class="card agent"><div class="meta"><span class="num">06 · E-mails et boutique</span><span class="tag">Brouillons seulement</span></div><p>Des campagnes e-mail préparées en brouillon, des idées pour que votre boutique vende plus, et votre vraie marge sur chaque produit.</p><span class="gives">Vous voyez enfin ce que vous gagnez vraiment.</span></div>
+    </div>
+    <div class="also" data-l="en">
+      <div><h3>Shaped to how you work</h3><p>Your tone with customers, your rules, your products.</p></div>
+      <div><h3>Mac or Windows</h3><p>Installed on the computer you already have.</p></div>
+      <div><h3>Set up with you</h3><p>We install it together, live, and show you how to use it.</p></div>
+    </div>
+    <div class="also" data-l="fr">
+      <div><h3>Adaptée à votre façon de travailler</h3><p>Votre ton avec les clients, vos règles, vos produits.</p></div>
+      <div><h3>Mac ou Windows</h3><p>Installée sur l'ordinateur que vous avez déjà.</p></div>
+      <div><h3>Installée avec vous</h3><p>Nous l'installons ensemble, en direct, et vous montrons comment l'utiliser.</p></div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section>
+    <div class="head">
+      <span class="eyebrow" data-l="en">Step by step</span><span class="eyebrow" data-l="fr">Étape par étape</span>
+      <h2 data-l="en">How it works</h2><h2 data-l="fr">Comment ça se passe</h2>
+    </div>
+    <ol class="steps" data-l="en">
+      <li><h3>Free sample</h3><p>You get a quick check of your store's settings, or this Monday's competitor report for your niche. Free, no commitment.</p></li>
+      <li><h3>A short call</h3><p>We look at where your week goes and what your team should do first.</p></li>
+      <li><h3>Live setup</h3><p>We install it together on your computer. You create your own access codes; you never give us a password.</p></li>
+      <li><h3>Tested, then yours</h3><p>Every assistant is tested live with you before the team is handed over.</p></li>
+    </ol>
+    <ol class="steps" data-l="fr">
+      <li><h3>Échantillon gratuit</h3><p>Vous recevez une vérification rapide des réglages de votre boutique, ou le rapport concurrents de ce lundi pour votre niche. Gratuit, sans engagement.</p></li>
+      <li><h3>Un court appel</h3><p>On regarde où passe votre semaine et ce que votre équipe doit faire en premier.</p></li>
+      <li><h3>Installation en direct</h3><p>On l'installe ensemble sur votre ordinateur. Vous créez vous-même vos codes d'accès ; vous ne nous donnez jamais de mot de passe.</p></li>
+      <li><h3>Testée, puis à vous</h3><p>Chaque assistant est testé en direct avec vous avant la remise de l'équipe.</p></li>
+    </ol>
+  </section>
+
+  <!-- GUARANTEE -->
+  <section>
+    <div class="head">
+      <span class="eyebrow" data-l="en">Our promise</span><span class="eyebrow" data-l="fr">Notre engagement</span>
+      <h2 data-l="en">The guarantee</h2><h2 data-l="fr">La garantie</h2>
+    </div>
+    <div class="guarantee" data-l="en">
+      <blockquote>“If, after the live test with you, anything doesn't work exactly as described on this page, I fix it free, with no time limit on that issue. And you have 30 days to flag anything else you find; that's fixed free too.”</blockquote>
+      <p>You never give us a password, your access codes stay on your computer, and you can cut any access in one click.</p>
+      <div class="sign"><span>Yassine, who builds and installs your team</span></div>
+    </div>
+    <div class="guarantee" data-l="fr">
+      <blockquote>« Si, après le test en direct avec vous, quelque chose ne fonctionne pas exactement comme décrit sur cette page, je le corrige gratuitement, sans limite de temps pour ce problème. Et vous avez 30 jours pour signaler tout le reste ; c'est corrigé gratuitement aussi. »</blockquote>
+      <p>Vous ne nous donnez jamais de mot de passe, vos codes d'accès restent sur votre ordinateur, et vous pouvez couper un accès en un clic.</p>
+      <div class="sign"><span>Yassine, qui construit et installe votre équipe</span></div>
+    </div>
+  </section>
+
+  <!-- PRICE -->
+  <section id="price">
+    <div class="head price-head">
+      <span class="eyebrow" data-l="en">Clear pricing</span><span class="eyebrow" data-l="fr">Un prix clair</span>
+      <h2 data-l="en">One price, everything included</h2><h2 data-l="fr">Un seul prix, tout compris</h2>
+    </div>
+    <div class="card price" data-l="en">
+      <span class="big">€1,000<small>one time</small></span>
+      <span class="plus">+ €100 a month <small>(about €3.30 a day)</small></span>
+      <span class="chip">Less than one month of a part-time employee.</span>
+      <ul class="checks">
+        <li>All 6 assistants, shaped to how you work</li>
+        <li>Mac or Windows, set up live with you</li>
+        <li>Your approval on every reply, e-mail and ad</li>
+        <li>The guarantee above</li>
+        <li>The €100 a month keeps your team running and improving: fixes, updates, and 4 hours of changes a month (then €25 an hour)</li>
+      </ul>
+      <details class="tools"><summary>What you pay your AI services directly (in your own name)</summary>
+        <div class="tablewrap"><table>
+          <tr><td>Claude (the AI behind the team)</td><td>$100 / month</td></tr>
+          <tr><td>ChatGPT Plus (ad images)</td><td>$20 / month</td></tr>
+          <tr><td>ElevenLabs (voice-overs)</td><td>$6 / month</td></tr>
+          <tr><td>Higgsfield (video scenes, billed yearly)</td><td>€39 / month</td></tr>
+          <tr><td>TrendTrack Pro (competitor ads, billed yearly)</td><td>$62 / month</td></tr>
+          <tr><td>Klaviyo (free up to 250 contacts)</td><td>$0</td></tr>
+          <tr><td>Discord</td><td>free</td></tr>
+        </table></div>
+        <p class="muted" style="font-size:0.85rem;margin-top:0.5rem">Official prices checked 7 to 10 November 2026; providers can change them. These accounts are yours: we never pay them or hold them for you.</p>
+      </details>
+      <a class="btn" href="#request">Get a free sample on your store</a>
+      <span class="pay">50% at the start, 50% once your team is running and tested.</span>
+    </div>
+    <div class="card price" data-l="fr">
+      <span class="big">1 000 €<small>une seule fois</small></span>
+      <span class="plus">+ 100 € par mois <small>(environ 3,30 € par jour)</small></span>
+      <span class="chip">Moins qu'un mois d'employé à temps partiel.</span>
+      <ul class="checks">
+        <li>Les 6 assistants, adaptés à votre façon de travailler</li>
+        <li>Mac ou Windows, installée en direct avec vous</li>
+        <li>Votre accord sur chaque réponse, e-mail et pub</li>
+        <li>La garantie ci-dessus</li>
+        <li>Les 100 € par mois font tourner et améliorer votre équipe : corrections, mises à jour, et 4 heures de modifications par mois (puis 25 € de l'heure)</li>
+      </ul>
+      <details class="tools"><summary>Ce que vous payez directement à vos services IA (à votre nom)</summary>
+        <div class="tablewrap"><table>
+          <tr><td>Claude (l'IA de l'équipe)</td><td>100 $ / mois</td></tr>
+          <tr><td>ChatGPT Plus (visuels pub)</td><td>20 $ / mois</td></tr>
+          <tr><td>ElevenLabs (voix off)</td><td>6 $ / mois</td></tr>
+          <tr><td>Higgsfield (scènes vidéo, facturé à l'année)</td><td>39 € / mois</td></tr>
+          <tr><td>TrendTrack Pro (pubs concurrentes, facturé à l'année)</td><td>62 $ / mois</td></tr>
+          <tr><td>Klaviyo (gratuit jusqu'à 250 contacts)</td><td>0 $</td></tr>
+          <tr><td>Discord</td><td>gratuit</td></tr>
+        </table></div>
+        <p class="muted" style="font-size:0.85rem;margin-top:0.5rem">Prix officiels relevés du 7 au 10 novembre 2026 ; les fournisseurs peuvent les changer. Ces comptes sont à vous : nous ne les payons ni ne les détenons à votre place.</p>
+      </details>
+      <a class="btn" href="#request">Recevoir un échantillon gratuit</a>
+      <span class="pay">50 % au démarrage, 50 % quand votre équipe tourne et est testée.</span>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq">
+    <div class="head">
+      <span class="eyebrow" data-l="en">Questions</span><span class="eyebrow" data-l="fr">Questions</span>
+      <h2 data-l="en">Questions owners ask</h2><h2 data-l="fr">Les questions qu'on me pose</h2>
+    </div>
+    <div class="faq" data-l="en">
+      <details><summary>Isn't this just a $15 chatbot?</summary><p>A $15 tool runs in someone else's cloud and gives generic answers. This team is installed on your computer, checks your real Shopify orders before answering, and asks you before anything is sent.</p></details>
+      <details><summary>I'm not technical. Can I really use this?</summary><p>That's who it's built for. You chat with your team on Discord, from your phone or your PC. There is no dashboard to learn, and we set everything up with you.</p></details>
+      <details><summary>Do I have to give you my passwords?</summary><p>Never. You create each access code yourself, it stays on your computer, and you can cut it in one click.</p></details>
+      <details><summary>What if it sends something wrong to a customer?</summary><p>It can't send anything on its own. Every reply, e-mail and ad waits for your yes.</p></details>
+      <details><summary>Could my Facebook ad account get banned because of this?</summary><p>The ads assistant only prepares paused ads in your existing account. Nothing is published or paid until you launch it yourself.</p></details>
+      <details><summary>Where does my data go?</summary><p>The team runs on your computer and uses AI services in your own name (Claude, ChatGPT and the others listed above). Nothing passes through us or through a server of ours.</p></details>
+      <details><summary>I already have someone for customer service.</summary><p>Then the assistant takes the repetitive questions, and your person keeps the cases that need a human.</p></details>
+      <details><summary>Can I take only one or two assistants?</summary><p>It's one package because the assistants share your store's information and the same approval system. That's what makes them useful together.</p></details>
+      <details><summary>What happens if I stop the €100 a month?</summary><p>You keep everything that is installed. Fixes, updates and the included hours stop; later changes are €25 an hour if you need them.</p></details>
+      <details><summary>Why trust one person rather than an agency?</summary><p>You see and approve everything live, one person is responsible for all of it, and nothing happens without your yes. That's more control than most agencies give you.</p></details>
+    </div>
+    <div class="faq" data-l="fr">
+      <details><summary>Ce n'est pas juste un chatbot à 15 $ ?</summary><p>Un outil à 15 $ tourne dans le cloud de quelqu'un d'autre et donne des réponses génériques. Cette équipe est installée sur votre ordinateur, vérifie vos vraies commandes Shopify avant de répondre, et vous demande avant tout envoi.</p></details>
+      <details><summary>Je ne suis pas technique. Je peux vraiment l'utiliser ?</summary><p>C'est pour vous qu'elle est faite. Vous parlez à votre équipe sur Discord, depuis votre téléphone ou votre PC. Pas de tableau de bord à apprendre, et on installe tout avec vous.</p></details>
+      <details><summary>Je dois vous donner mes mots de passe ?</summary><p>Jamais. Vous créez chaque code d'accès vous-même, il reste sur votre ordinateur, et vous pouvez le couper en un clic.</p></details>
+      <details><summary>Et s'il envoie une bêtise à un client ?</summary><p>Il ne peut rien envoyer seul. Chaque réponse, e-mail et pub attend votre accord.</p></details>
+      <details><summary>Mon compte pub Facebook risque d'être banni à cause de ça ?</summary><p>L'assistant pubs prépare seulement des pubs en pause dans votre compte existant. Rien n'est publié ni payé tant que vous ne le lancez pas vous-même.</p></details>
+      <details><summary>Où vont mes données ?</summary><p>L'équipe tourne sur votre ordinateur et utilise des services IA à votre nom (Claude, ChatGPT et les autres listés plus haut). Rien ne passe par nous ni par un serveur à nous.</p></details>
+      <details><summary>J'ai déjà quelqu'un pour le service client.</summary><p>Alors l'assistant prend les questions répétitives, et votre personne garde les cas qui demandent un humain.</p></details>
+      <details><summary>Je peux prendre seulement un ou deux assistants ?</summary><p>C'est une seule formule parce que les assistants partagent les informations de votre boutique et le même système de validation. C'est ce qui les rend utiles ensemble.</p></details>
+      <details><summary>Que se passe-t-il si j'arrête les 100 € par mois ?</summary><p>Vous gardez tout ce qui est installé. Les corrections, mises à jour et heures incluses s'arrêtent ; les changements plus tard sont à 25 € de l'heure si besoin.</p></details>
+      <details><summary>Pourquoi faire confiance à une seule personne plutôt qu'à une agence ?</summary><p>Vous voyez et validez tout en direct, une seule personne est responsable de l'ensemble, et rien ne se passe sans votre accord. C'est plus de contrôle que la plupart des agences.</p></details>
+    </div>
+  </section>
+
+  <!-- WHO -->
+  <section>
+    <div class="head">
+      <span class="eyebrow" data-l="en">The builder</span><span class="eyebrow" data-l="fr">Le créateur</span>
+      <h2 data-l="en">Who builds it</h2><h2 data-l="fr">Qui la construit</h2>
+    </div>
+    <div class="who">
+      <span class="mono" aria-hidden="true">Y</span>
+      <p data-l="en">I'm Yassine. I build AI teams for online stores, and I install each one myself, live with the owner. I don't sell you a subscription to my software: the team is yours, on your computer, and I stay on hand to keep it running.</p>
+      <p data-l="fr">Je suis Yassine. Je construis des équipes IA pour les boutiques en ligne, et j'installe chacune moi-même, en direct avec le commerçant. Je ne vous vends pas un abonnement à mon logiciel : l'équipe est à vous, sur votre ordinateur, et je reste disponible pour la faire tourner.</p>
+    </div>
+  </section>
+
+  <!-- REQUEST -->
+  <section id="request">
+    <div class="request" aria-labelledby="req-en req-fr">
+      <h2 id="req-en" data-l="en">Get a free sample on your store</h2>
+      <h2 id="req-fr" data-l="fr">Recevez un échantillon gratuit sur votre boutique</h2>
+      <p class="muted" data-l="en">No commitment. Tell me your store and what you'd like to see first.</p>
+      <p class="muted" data-l="fr">Sans engagement. Dites-moi votre boutique et ce que vous voulez voir en premier.</p>
+      <form id="form" novalidate style="display:grid;gap:0.9rem">
+        <label for="store"><span data-l="en">Your store's website</span><span data-l="fr">Le site de votre boutique</span>
+          <input id="store" name="store" type="text" inputmode="url" autocomplete="url" placeholder="myshop.com"></label>
+        <label for="want"><span data-l="en">What would you like first?</span><span data-l="fr">Que voulez-vous en premier ?</span>
+          <select id="want" name="want">
+            <option value="check" data-en="A free check of my store's settings" data-fr="Une vérification gratuite des réglages de ma boutique">A free check of my store's settings</option>
+            <option value="watch" data-en="This Monday's competitor report for my niche" data-fr="Le rapport concurrents de ce lundi pour ma niche">This Monday's competitor report for my niche</option>
+            <option value="call" data-en="A short call to see if the team fits my store" data-fr="Un court appel pour voir si l'équipe convient à ma boutique">A short call to see if the team fits my store</option>
+          </select></label>
+        <button type="submit" class="btn"><span data-l="en">Create my request</span><span data-l="fr">Créer ma demande</span></button>
+      </form>
+      <p class="status" id="status" aria-live="polite"></p>
+      <textarea id="out" rows="4" readonly hidden aria-label="Your request"></textarea>
+    </div>
+  </section>
+
+</div>
+</main>
+<footer>
+  <p data-l="en">Prices in euros, offer valid 30 days. Payment: 50% at the start, 50% once your team is running and tested.</p>
+  <p data-l="fr">Prix en euros, offre valable 30 jours. Paiement : 50 % au démarrage, 50 % quand votre équipe tourne et est testée.</p>
+</footer>
+
+<script>
+let lang = "en";
+function setLang(l) {
+  lang = l;
+  document.documentElement.lang = l;
+  document.querySelectorAll("[data-l]").forEach((el) => { el.hidden = el.dataset.l !== l; });
+  document.querySelectorAll(".lang button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.set === l)));
+  document.querySelectorAll("option[data-en]").forEach((o) => { o.textContent = o.dataset[l]; });
+  document.getElementById("status").textContent = "";
+  try { localStorage.setItem("lang", l); } catch {}
+}
+document.querySelectorAll(".lang button").forEach((b) => b.addEventListener("click", () => setLang(b.dataset.set)));
+
+document.getElementById("form").addEventListener("submit", (ev) => {
+  ev.preventDefault();
+  const store = document.getElementById("store").value.trim();
+  const status = document.getElementById("status"), out = document.getElementById("out");
+  if (!store) {
+    status.textContent = lang === "fr" ? "Indiquez le site de votre boutique, puis recommencez." : "Add your store's website, then try again.";
+    document.getElementById("store").focus();
+    return;
+  }
+  const want = document.getElementById("want").selectedOptions[0].textContent;
+  const text = lang === "fr"
+    ? `Bonjour, je veux un échantillon gratuit. Ma boutique : ${store}. En premier : ${want}.`
+    : `Hi, I'd like a free sample. My store: ${store}. First: ${want}.`;
+  const done = lang === "fr" ? "Copié. Collez-le dans la conversation où vous avez reçu ce lien." : "Copied. Paste it in the chat where you got this link.";
+  const manual = lang === "fr" ? "Copiez ce texte et envoyez-le dans la conversation où vous avez reçu ce lien." : "Copy this text and send it in the chat where you got this link.";
+  out.value = text; out.hidden = false;
+  const fallback = () => { out.select(); status.textContent = manual; };
+  try { navigator.clipboard.writeText(text).then(() => { status.textContent = done; }, fallback); } catch { fallback(); }
+});
+
+let saved = null;
+try { saved = localStorage.getItem("lang"); } catch {}
+setLang(saved || ((navigator.language || "").toLowerCase().startsWith("fr") ? "fr" : "en"));
+</script>
+</body>
+</html>
